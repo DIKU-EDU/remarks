@@ -17,7 +17,7 @@ data ParseErrorImpl a
 
 instance (Out a) => Out (ParseErrorImpl a)
 
-type ParseError = ParseErrorImpl Judgement
+type ParseError = ParseErrorImpl [Judgement]
 
 parseIntegral :: ReadP String
 parseIntegral = munch1 (`elem` ['0'..'9'])
@@ -108,6 +108,9 @@ parseJudgement depth = do
   parts <- parseJudgementParts depth
   pure $ Judgement (header, parts)
 
+parseJudgements :: Int -> ReadP [Judgement]
+parseJudgements = many . parseJudgement
+
 parse :: ReadP a -> String -> [(a, String)]
 parse = readP_to_S
 
@@ -121,11 +124,11 @@ parseString' p s =
     [a] -> Right a
     as -> Left $ AmbiguousGrammar as
 
-parseString :: String -> Either ParseError Judgement
-parseString = parseString' (parseJudgement 1)
+parseString :: String -> Either ParseError [Judgement]
+parseString = parseString' (parseJudgements 1)
 
 parseFile' :: ReadP a -> FilePath -> IO (Either (ParseErrorImpl a) a)
 parseFile' p path = fmap (parseString' p) $ readFile path
 
-parseFile :: FilePath -> IO (Either ParseError Judgement)
-parseFile = parseFile' (parseJudgement 1)
+parseFile :: FilePath -> IO (Either ParseError [Judgement])
+parseFile = parseFile' (parseJudgements 1)

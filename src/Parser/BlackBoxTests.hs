@@ -16,7 +16,7 @@ unitTests :: TestTree
 unitTests = testGroup "Unit tests"
   [ testCase "Lone header line" $
       parseString "# A: 0/0\n" @?=
-        Right (Judgement (Header ("A",0.0,0.0),[]))
+        Right [Judgement (Header ("A",0.0,0.0),[])]
   ]
 
 qcTests :: TestTree
