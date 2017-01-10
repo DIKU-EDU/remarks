@@ -18,11 +18,12 @@ library
   exposed-modules:     Ast
                      , Parser
                      , Parser.Impl
+                     , Validator
   build-depends:       base >= 4.7 && < 5
                      , GenericPretty >= 1.2.1
   default-language:    Haskell2010
 
-executable MRK-exe
+executable mrk
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
@@ -36,6 +37,7 @@ test-suite MRK-test
   hs-source-dirs:      test
   main-is:             Tests.hs
   other-modules:       Parser.BlackBoxTests
+                       ValidatorTests
   build-depends:       base
                      , MRK
                      , GenericPretty >= 1.2.1
