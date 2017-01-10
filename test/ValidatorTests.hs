@@ -19,8 +19,8 @@ validateStr s =
     Right js -> map validate js
     Left e -> []
 
-unitTests :: TestTree
-unitTests = testGroup "Unit tests"
+posUnitTests :: TestTree
+posUnitTests = testGroup "Positive Unit Tests"
   [ testCase "Lone header line" $
       validateStr "# A: 0/0\n" @?=
         [Right ()]
@@ -35,6 +35,23 @@ unitTests = testGroup "Unit tests"
         [Right (), Right ()]
   ]
 
+negUnitTests :: TestTree
+negUnitTests = testGroup "Positive Unit Tests"
+  [ testCase "Points exceed max points" $
+      validateStr "# A: 1/0\n" @?=
+        [Left $ PointsExceedMaxPoints (Header ("A", 1.0, 0.0))]
+  , testCase "Sub-judgement points don't sum up to points" $
+      validateStr "# A: 0/0\n## B: 1/0\n" @?=
+        [Left $ BadSubJudgementPointsSum
+          (Judgement (Header ("A", 0.0, 0.0), [],
+            [Judgement (Header ("B", 1.0, 0.0), [], [])]))]
+  , testCase "Sub-judgement max-points don't sum up to max-points" $
+      validateStr "# A: 0/0\n## B: 0/1\n" @?=
+        [Left $ BadSubJudgementMaxPointsSum
+          (Judgement (Header ("A", 0.0, 0.0), [],
+            [Judgement (Header ("B", 0.0, 1.0), [], [])]))]
+  ]
+
 qcTests :: TestTree
 qcTests = testGroup "QuickCheck tests" []
 
@@ -43,4 +60,4 @@ goldenTests = testGroup "Golden tests" []
 
 allTests :: TestTree
 allTests = testGroup "Validator tests"
-  [ unitTests, qcTests, goldenTests ]
+  [ posUnitTests, negUnitTests, qcTests, goldenTests ]
