@@ -54,6 +54,7 @@ golden' basename =
 goldenTests :: TestTree
 goldenTests = testGroup "Golden tests"
   [ golden' "deep-judgement"
+  , golden' "some-top-level-judgements"
   ]
 
 main :: IO ()
