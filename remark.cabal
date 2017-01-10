@@ -30,6 +30,8 @@ executable remark
   build-depends:       base
                      , remark
                      , GenericPretty >= 1.2.1
+                     , directory >= 1.2.6.2
+                     , filepath >= 1.4.1.0
   default-language:    Haskell2010
 
 test-suite remark-test
