@@ -1,5 +1,7 @@
 #+TITLE: MRK — A file format for marking student work
 
+#+ATTR_HTML: title="License: BSD 3-Clause"
+[[LICENSE][file:https://img.shields.io/badge/License-BSD%203--Clause-blue.svg]]
 #+ATTR_HTML: title="Travis CI Status"
 [[https://travis-ci.org/oleks/MRK][file:https://travis-ci.org/oleks/MRK.svg]]
 
