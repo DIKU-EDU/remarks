@@ -8,6 +8,11 @@ cache:
   - $HOME/.cabal
   - $HOME/.stack
 
+addons:
+  apt:
+    packages:
+      - libgmp-dev
+
 matrix:
   include:
   - env: BUILD=stack STACK_YAML=stack.yaml
