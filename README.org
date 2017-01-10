@@ -1,4 +1,4 @@
-#+TITLE: remark — a DSL for marking student work
+#+TITLE: remark — A DSL for marking student work
 
 #+ATTR_HTML: title="License: BSD 3-Clause"
 [[LICENSE][file:https://img.shields.io/badge/License-BSD%203--Clause-blue.svg]]
