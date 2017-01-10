@@ -2,18 +2,22 @@
 
 module Parser.BlackBoxTests where
 
--- import Ast
+import Ast
 import Parser
 
 import Test.Tasty
--- import Test.Tasty.HUnit
+import Test.Tasty.HUnit
 -- import Test.Tasty.QuickCheck
 import Test.Tasty.Golden
 
 import Text.PrettyPrint.GenericPretty
 
 unitTests :: TestTree
-unitTests = testGroup "Unit tests" []
+unitTests = testGroup "Unit tests"
+  [ testCase "Lone header line" $
+      parseString "# A: 0/0\n" @?=
+        Right (Judgement (Header ("A",0.0,0.0),[]))
+  ]
 
 qcTests :: TestTree
 qcTests = testGroup "QuickCheck tests" []
