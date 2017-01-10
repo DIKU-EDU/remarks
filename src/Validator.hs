@@ -20,13 +20,17 @@ try :: Bool -> Invalid -> Either Invalid ()
 try True = \_ -> Right ()
 try False = Left
 
+infix 4 ~=
+(~=) :: Double -> Double -> Bool
+x ~= y = abs (x - y) <= 0.01
+
 validate :: Judgement -> Either Invalid ()
 validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subjs)) = do
   try (p <= maxP)
     (PointsExceedMaxPoints h)
-  try (sum (map points subjs) - p <= 0.01)
+  try ((sum $ map points subjs) ~= p)
     (BadSubJudgementPointsSum j)
-  try (sum (map maxPoints subjs) - maxP <= 0.01)
+  try ((sum $ map maxPoints subjs) ~= maxP)
     (BadSubJudgementMaxPointsSum j)
   forM_ subjs validate
 
