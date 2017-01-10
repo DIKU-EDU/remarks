@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Validator where
+module Validator ( validate ) where
 
 import Ast
 
