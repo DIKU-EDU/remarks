@@ -1,9 +1,9 @@
-#+TITLE: MRK — a DSL for marking student work
+#+TITLE: remark — a DSL for marking student work
 
 #+ATTR_HTML: title="License: BSD 3-Clause"
 [[LICENSE][file:https://img.shields.io/badge/License-BSD%203--Clause-blue.svg]]
 #+ATTR_HTML: title="Travis CI Status"
-[[https://travis-ci.org/oleks/MRK][file:https://travis-ci.org/oleks/MRK.svg]]
+[[https://travis-ci.org/oleks/remark][file:https://travis-ci.org/oleks/remark.svg]]
 
 When judging student performance, it is useful to have both small, composable,
 quantitive judgements, and qualitative remarks. This makes both spreadsheets
@@ -21,6 +21,6 @@ marked.
   3. git-friendly file format.
   4. Synchronization options with Dropbox and/or Google Drive.
 
-Goal 4 is not necessarily related to MRK, but is related to marking student
+Goal 4 is not necessarily related to remark, but is related to marking student
 work with external examiners, who are not always willing to use more explicit
 version-control systems, such as git.
