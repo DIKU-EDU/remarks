@@ -94,18 +94,12 @@ parseJudgementPart depth = do
     (fmap JudgementCmt parseComment')
 
 parseJudgementParts :: Int -> ReadP [JudgementPart]
-parseJudgementParts depth = choice
-  [ do
-      first <- fmap JudgementCmt parseComment'
-      rest <- many $ parseJudgementPart depth
-      pure $ first : rest
-  , pure []
-  ]
+parseJudgementParts = many . parseJudgementPart
 
 parseJudgement :: Int -> ReadP Judgement
 parseJudgement depth = do
   header <- parseHeader depth
-  parts <- parseJudgementParts depth
+  parts <- parseJudgementParts (depth + 1)
   pure $ Judgement (header, parts)
 
 parseJudgements :: Int -> ReadP [Judgement]
