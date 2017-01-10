@@ -17,6 +17,12 @@ unitTests = testGroup "Unit tests"
   [ testCase "Lone header line" $
       parseString "# A: 0/0\n" @?=
         Right [Judgement (Header ("A",0.0,0.0),[])]
+  , testCase "A couple same-depth header lines" $
+      parseString "# A: 0/0\n# B: 0/0\n" @?=
+        Right
+          [ Judgement (Header ("A",0.0,0.0),[])
+          , Judgement (Header ("B",0.0,0.0),[])
+          ]
   ]
 
 qcTests :: TestTree
