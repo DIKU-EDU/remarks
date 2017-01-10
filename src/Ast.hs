@@ -32,15 +32,8 @@ newtype Comment
 
 instance Out Comment
 
-data JudgementPart
-  = JudgementCmt Comment
-  | JudgementJdt Judgement
-  deriving(Eq, Show, Generic)
-
-instance Out JudgementPart
-
 newtype Judgement
-  = Judgement (Header, [JudgementPart])
+  = Judgement (Header, [Comment], [Judgement])
   deriving (Eq, Show, Generic)
 
 instance Out Judgement

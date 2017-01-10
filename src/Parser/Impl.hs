@@ -88,19 +88,12 @@ parseComment' = do
   void $ string "  "
   parseComment "  "
 
-parseJudgementPart :: Int -> ReadP JudgementPart
-parseJudgementPart depth = do
-  (fmap JudgementJdt $ parseJudgement depth) <++
-    (fmap JudgementCmt parseComment')
-
-parseJudgementParts :: Int -> ReadP [JudgementPart]
-parseJudgementParts = many . parseJudgementPart
-
 parseJudgement :: Int -> ReadP Judgement
 parseJudgement depth = do
   header <- parseHeader depth
-  parts <- parseJudgementParts (depth + 1)
-  pure $ Judgement (header, parts)
+  comments <- many parseComment'
+  subjs <- many $ parseJudgement (depth + 1)
+  pure $ Judgement (header, comments, subjs)
 
 parseJudgements :: Int -> ReadP [Judgement]
 parseJudgements = many . parseJudgement

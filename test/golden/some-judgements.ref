@@ -1,0 +1,9 @@
+Right [Judgement (Header ("A", 0.0, 0.0),
+                  [Comment (Positive, [CommentStr "Very good."])],
+                  [Judgement (Header ("B", 0.0, 0.0),
+                              [Comment (Negative, [CommentStr "Not so good."])],
+                              [])]),
+       Judgement (Header ("C", 0.0, 0.0),
+                  [Comment (Impartial,
+                            [CommentStr "Something in-between."])],
+                  [])]

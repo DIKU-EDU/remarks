@@ -1,9 +1,9 @@
 Right [Judgement (Header ("Test", 0.0, 0.0),
-                  [JudgementCmt (Comment (Positive,
-                                          [CommentStr "Very good.",
-                                           CommentStr "More text."])),
-                   JudgementCmt (Comment (Negative,
-                                          [CommentStr "Not very good.",
-                                           CommentStr "Even more text.",
-                                           CommentCmt (Comment (Impartial,
-                                                                [CommentStr "You judge."]))]))])]
+                  [Comment (Positive,
+                            [CommentStr "Very good.",CommentStr "More text."]),
+                   Comment (Negative,
+                            [CommentStr "Not very good.",
+                             CommentStr "Even more text.",
+                             CommentCmt (Comment (Impartial,
+                                                  [CommentStr "You judge."]))])],
+                  [])]
