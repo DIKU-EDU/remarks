@@ -23,6 +23,17 @@ unitTests = testGroup "Unit tests"
           [ Judgement (Header ("A",0.0,0.0),[])
           , Judgement (Header ("B",0.0,0.0),[])
           ]
+  , testCase "A simple hierarchy of headers" $
+      parseString "# A: 0/0\n## B: 0/0\n" @?=
+        Right [Judgement (Header ("A",0.0,0.0), [
+          JudgementJdt (Judgement (Header ("B",0.0,0.0),[]))])]
+  , testCase "A couple simple hierarchies" $
+      parseString "# A: 0/0\n## B: 0/0\n# C: 0/0\n" @?=
+        Right
+          [ Judgement (Header ("A",0.0,0.0), [
+              JudgementJdt (Judgement (Header ("B",0.0,0.0),[]))])
+          , Judgement (Header ("C",0.0,0.0),[])
+          ]
   ]
 
 qcTests :: TestTree
