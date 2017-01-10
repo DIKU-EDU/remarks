@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Parser.BlackBoxTests where
+module Parser.BlackBoxTests ( allTests ) where
 
 import Ast
 import Parser
@@ -64,6 +64,6 @@ goldenTests = testGroup "Golden tests"
   , golden' "some-judgements"
   ]
 
-main :: IO ()
-main = defaultMain $ testGroup "White-box parser tests"
+allTests :: TestTree
+allTests = testGroup "Black-box parser tests"
   [ unitTests, qcTests, goldenTests ]
