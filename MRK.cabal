@@ -32,6 +32,10 @@ test-suite MRK-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      src
   main-is:             Tests.hs
+  other-modules:       Ast
+                     , Parser
+                     , Parser.BlackBoxTests
+                     , Parser.Impl
   build-depends:       base
                      , MRK
                      , GenericPretty >= 1.2.1
