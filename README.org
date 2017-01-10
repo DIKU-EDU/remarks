@@ -1,6 +1,7 @@
 #+TITLE: MRK — A file format for marking student work
 
-[[https://travis-ci.org/oleks/MRK][[https://travis-ci.org/oleks/MRK.svg]]]
+#+ATTR_HTML: title="Travis CI Status"
+[[https://travis-ci.org/oleks/MRK][file:https://travis-ci.org/oleks/MRK.svg]]
 
 When judging student performance, it is useful to have both smaller, composable
 quantitive judgements, and some qualitative remarks on key areas of interest.
