@@ -35,7 +35,10 @@ parsePoints = do
     _ -> pfail
 
 lineToken :: ReadP a -> ReadP a
-lineToken p = munch (`elem` [' ', '\t']) *> p
+lineToken p = munch (`elem` [' ', '\t', '\r', '\v', '\f']) *> p
+
+lineBreak :: ReadP ()
+lineBreak = void $ lineToken $ char '\n'
 
 munchTillExcl :: Char -> ReadP String
 munchTillExcl c = munch (/= c) <* char c
@@ -51,7 +54,7 @@ parseHeader depth = do
   void $ lineToken $ char '/'
   maxPoints <- lineToken $ parsePoints
 
-  void $ lineToken $ char '\n'
+  void $ lineBreak
 
   pure $ Header (title, points, maxPoints)
 
@@ -70,7 +73,7 @@ parseLines :: String -> ReadP [String]
 parseLines indent = many $ string indent *> parseLine
 
 parseCommentPart :: String -> ReadP CommentPart
-parseCommentPart indent = do
+parseCommentPart indent = many lineBreak *> do
   void $ string indent
   (fmap CommentCmt $ parseComment indent) <++
     (fmap CommentStr parseLine)
@@ -84,12 +87,12 @@ parseComment indent = do
   pure $ Comment (mood, (first : rest))
 
 parseComment' :: ReadP Comment
-parseComment' = do
+parseComment' = many lineBreak *> do
   void $ string "  "
   parseComment "  "
 
 parseJudgement :: Int -> ReadP Judgement
-parseJudgement depth = do
+parseJudgement depth = skipSpaces *> do
   header <- parseHeader depth
   comments <- many parseComment'
   subjs <- many $ parseJudgement (depth + 1)
@@ -111,11 +114,14 @@ parseString' p s =
     [a] -> Right a
     as -> Left $ AmbiguousGrammar as
 
+parseEntry :: ReadP [Judgement]
+parseEntry = parseJudgements 1 <* skipSpaces
+
 parseString :: String -> Either ParseError [Judgement]
-parseString = parseString' (parseJudgements 1)
+parseString = parseString' parseEntry
 
 parseFile' :: ReadP a -> FilePath -> IO (Either (ParseErrorImpl a) a)
 parseFile' p path = fmap (parseString' p) $ readFile path
 
 parseFile :: FilePath -> IO (Either ParseError [Judgement])
-parseFile = parseFile' (parseJudgements 1)
+parseFile = parseFile' parseEntry
