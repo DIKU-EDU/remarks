@@ -5,8 +5,7 @@
 #+ATTR_HTML: title="Travis CI (Linux + macOS) Status"
 [[https://travis-ci.org/oleks/remark][file:https://travis-ci.org/oleks/remark.svg]]
 #+ATTR_HTML: title="AppVeyor (Windows) Status"
-[[https://ci.appveyor.com/project/oleks/remark/branch/master][file:https://ci.appveyor.com/project/oleks/remark/branch/master
-?svg=true]]
+[[https://ci.appveyor.com/project/oleks/remark][file:https://ci.appveyor.com/api/projects/status/xj8rbfhld9mjrjmg?svg=true]]
 
 When judging student performance, it is useful to have both small, composable,
 quantitive judgements, and qualitative remarks. This makes both spreadsheets
