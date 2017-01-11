@@ -5,7 +5,7 @@
 #+ATTR_HTML: title="Travis CI (Linux + macOS) Status"
 [[https://travis-ci.org/oleks/remark][file:https://travis-ci.org/oleks/remark.svg]]
 #+ATTR_HTML: title="AppVeyor (Windows) Status"
-[[https://ci.appveyor.com/project/oleks/remark][file:https://ci.appveyor.com/api/projects/status/xj8rbfhld9mjrjmg?svg=true]]
+[[https://ci.appveyor.com/project/oleks/remark][file:https://ci.appveyor.com/api/projects/status/xj8rbfhld9mjrjmg]]
 
 When judging student performance, it is useful to have both small, composable,
 quantitive judgements, and qualitative remarks. This makes both spreadsheets
@@ -26,3 +26,39 @@ marked.
 Goal 4 is not necessarily related to remark, but is related to marking student
 work with external examiners, who are not always willing to use more explicit
 version-control systems, such as git.
+
+* Files and Directories
+
+=remark= looks for files ending in =.mrk=.
+
+The suggested filename extension for remark files is =.mrk=, but the file
+system structure is otherwise quite flexible.
+
+The basic usage is to have a =.mrk= file per student.
+
+#+BEGIN_SRC
+oleks.mrk
+oleks-1.mrk
+oleks-2.mrk
+oleks-3.mrk
+oleks/4.mrk
+oleks/5.mrk
+oleks/6.mrk
+#+END_SRC
+
+* Syntax
+
+A =.mrk= file consists of a list of judgements.
+
+A judgement starts with a header mark (a sequence of `#`), a title (followed by
+a `:`), given points (followed by `/`), and maximum points (followed by a line
+break). The number of `#` determines the depth of the header, and every file
+must start at depth 1, but may have multiple depth 1 judgements. For instance,
+a file may contains two depth 1 judgements as follows:
+
+#+BEGIN_SRC
+# Theory: 27/50
+# Practice: 35/50
+#+END_SRC
+
+The header of a judgement may be followed by qualitative remarks. Remarks begin with an indentation
