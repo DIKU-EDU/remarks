@@ -80,8 +80,8 @@ contents is appended (in lexicographic filename order) to the last top-level
 judgement of =<basename>.mrk=. This allows you to structure your remarks using
 directories.
 
-See [[samples][samples]] for some examples of how =.mrk= files may be
-structured:
+See the [[organization samples][samples/organization]] for some examples of how
+judgements may be structured using files and directories.
 
 #+BEGIN_SRC
 ├── basic.mrk
