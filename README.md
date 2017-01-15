@@ -2,7 +2,7 @@
 
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 [![Travis CI (Linux + macOS) Status](https://travis-ci.org/oleks/remarks.svg)](https://travis-ci.org/oleks/remarks)
-[![AppVeyor (Windows) Status"](https://ci.appveyor.com/api/projects/status/xj8rbfhld9mjrjmg?svg=true)](https://ci.appveyor.com/project/oleks/remarks)
+[![AppVeyor (Windows) Status"](https://ci.appveyor.com/api/projects/status/g0hviw442o2bl8yi?svg=true)](https://ci.appveyor.com/project/oleks/remarks)
 
 When judging student performance, it is useful to have both small, composable,
 quantitative judgements, and qualitative remarks. This makes both spreadsheets
