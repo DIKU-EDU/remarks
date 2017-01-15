@@ -156,7 +156,7 @@ The simplest setup is to have one `.mrk` file per student (e.g.
 To support more exotic setups, `remarks` can also work with directories:
 
   * If supplied with a directory path, `remarks` looks for files ending in
-    `.mrk` inside that directory, and comprehends the files, as above, in
+    `.mrk` inside that directory, and comprehends the files as above, in
     lexicographic filename order (e.g.,
     [directory-with-mrk-files](samples/organization/directory-with-mrk-files)).
 
