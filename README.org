@@ -54,11 +54,16 @@ A judgement starts with a header mark (a sequence of =#=), a title (followed by
 a =:=), given points (followed by =/=), and maximum points (followed by a line
 break). The number of =#= determines the /depth/ of the header, and every file
 /must/ start at depth 1, but may have multiple depth 1 judgements. For
-instance, a file may contain two depth 1 judgements as follows:
+instance, here is a file containing only quantative remarks:
 
 #+BEGIN_SRC
 # Theory: 27/50
+## Question 1: 10/10
+## Question 2: 10/20
+## Question 3: 7/20
 # Practice: 35/50
+## Task 1: 20/25
+## Task 2: 15/25
 #+END_SRC
 
 The header of a judgement may be followed by qualitative remarks. Remarks begin with an indentation
