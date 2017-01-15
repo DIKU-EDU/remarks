@@ -123,7 +123,7 @@ Once filled in by a teaching assistant, this may look something like this:
     + In a complicated way, but yes.
 ```
 
-* Files and Directories
+## Files and Directories
 
 The file-format is kept "git-friendly" by keeping it comprehensible in
 plain-text, and allowing for independent marking by splitting the remarks for a
