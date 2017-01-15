@@ -30,6 +30,9 @@ There is a [parser](src/Parser/Impl.hs) and baseline
 [validator](src/Validator.hs). These can be invoked using `remark parse` and
 `remark check`, respectively.
 
+See [Issues](https://github.com/oleks/remark/issues) for a roadmap. Feel free
+to add or fix some.
+
 ## Syntax
 
 A `.mrk` file is a list of judgements.
