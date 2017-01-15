@@ -99,7 +99,7 @@ parseJudgement depth = skipSpaces *> do
   pure $ Judgement (header, comments, subjs)
 
 parseJudgements :: Int -> ReadP [Judgement]
-parseJudgements = many . parseJudgement
+parseJudgements depth = many $ parseJudgement depth
 
 parse :: ReadP a -> String -> [(a, String)]
 parse = readP_to_S
