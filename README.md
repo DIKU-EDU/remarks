@@ -33,6 +33,23 @@ There is a [parser](src/Parser/Impl.hs) and baseline
 See [Issues](https://github.com/oleks/remarks/issues) for a roadmap. Feel free
 to add or fix some.
 
+## Installation
+
+[`remarks` is on Hackage](http://hackage.haskell.org/package/remarks), so you
+can just use [Cabal](https://www.haskell.org/cabal/):
+
+```
+$ cabal install remarks
+```
+
+You can also clone this repository and use
+[Stack](https://docs.haskellstack.org/en/stable/README/):
+
+```
+$ stack build
+$ stack install
+```
+
 ## Syntax
 
 A `.mrk` file is a list of judgements.
@@ -174,21 +191,4 @@ $ cd samples/organization/
 $ remarks parse basic.mrk
 $ remarks parse directory-with-mrk-files
 $ remarks parse mixed-directory
-```
-
-## Installation
-
-[`remarks` is on Hackage](http://hackage.haskell.org/package/remarks), so you
-can just use [Cabal](https://www.haskell.org/cabal/):
-
-```
-$ cabal install remarks
-```
-
-You can also clone this repository and use
-[Stack](https://docs.haskellstack.org/en/stable/README/):
-
-```
-$ stack build
-$ stack install
 ```
