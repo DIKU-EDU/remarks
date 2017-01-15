@@ -95,3 +95,7 @@ structured:
     │   └── Task2.mrk
     └── 02-practice.mrk
 #+END_SRC
+
+=basic.mrk=, =directory-with-mrk-files=, and =mixed-directory= all yield the
+same overall judgements once parsed by =remark=. They merely differ in their
+source structure.
