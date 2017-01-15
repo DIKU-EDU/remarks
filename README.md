@@ -1,4 +1,4 @@
-# TITLE: remark — A DSL for marking student work
+# `remark` — A DSL for marking student work
 
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 [![Travis CI (Linux + macOS) Status](https://travis-ci.org/oleks/remark.svg)](https://travis-ci.org/oleks/remark)
