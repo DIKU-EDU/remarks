@@ -27,25 +27,6 @@ Goal 4 is not necessarily related to remark, but is related to marking student
 work with external examiners, who are not always willing to use more explicit
 version-control systems, such as git.
 
-* Files and Directories
-
-=remark= looks for files ending in =.mrk=.
-
-The suggested filename extension for remark files is =.mrk=, but the file
-system structure is otherwise quite flexible.
-
-The basic usage is to have a =.mrk= file per student.
-
-#+BEGIN_SRC
-oleks.mrk
-oleks-1.mrk
-oleks-2.mrk
-oleks-3.mrk
-oleks/4.mrk
-oleks/5.mrk
-oleks/6.mrk
-#+END_SRC
-
 * Syntax
 
 A =.mrk= file is a list of judgements.
@@ -67,4 +48,50 @@ containing only quantative remarks:
 ## Task 2: 15/25
 #+END_SRC
 
-The header of a judgement may be followed by qualitative remarks. Remarks begin with an indentation
+The header of a judgement may be followed by qualitative remarks. Remarks begin
+with an indent (two spaces), and a mood mark:
+
+* =*= for neutral/structural remarks
+* =+= for positive remarks
+* =-= for negative remarks
+* =?= for impartial remarks, where the mood judgement is left to a higher
+  authority (e.g., when a teaching assistant is not sure if something is good
+  or bad, and would like to let the teacher decide).
+
+Qualitative remarks may be nested arbitrarily.
+
+* Files and Directories
+
+The file-format is kept "git-friendly" by keeping it comprehensible in
+plain-text, and allowing for independent marking by splitting the remarks for a
+student into multiple files.
+
+The simplest setup is to have one =.mrk= file per student.
+
+To support more exotic setups, =remark= can also work with directories:
+
+If supplied with a directory path, =remark= looks for files ending in =.mrk=
+inside that directory, and comprehends the files, as above, in lexicographic
+filename order.
+
+Furthermore, if there exists a directory =<basename>= for any =<basename>.mrk=
+along the way, =<basename>= is recursively searched for =.mrk= files, and their
+contents is appended (in lexicographic filename order) to the last top-level
+judgement of =<basename>.mrk=. This allows you to structure your remarks using
+directories.
+
+See [[samples][samples]] for some examples of how =.mrk= files may be
+structured:
+
+#+BEGIN_SRC
+├── basic.mrk
+├── directory-with-mrk-files
+│   ├── 01-theory.mrk
+│   └── 02-practice.mrk
+└── mixed-directory
+    ├── 01-theory.mrk
+    ├── 02-practice
+    │   ├── Task1.mrk
+    │   └── Task2.mrk
+    └── 02-practice.mrk
+#+END_SRC
