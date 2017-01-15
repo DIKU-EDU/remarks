@@ -171,7 +171,7 @@ is identical:
 
 ```
 $ cd samples/organization/
-$ remark basic.mrk
-$ remark directory-with-mrk-files
-$ remark mixed-directory
+$ remark parse basic.mrk
+$ remark parse directory-with-mrk-files
+$ remark parse mixed-directory
 ```
