@@ -48,7 +48,7 @@ oleks/6.mrk
 
 * Syntax
 
-A =.mrk= file consists of a list of judgements.
+A =.mrk= file is a list of judgements.
 
 A judgement starts with a header mark (a sequence of `#`), a title (followed by
 a `:`), given points (followed by `/`), and maximum points (followed by a line
