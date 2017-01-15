@@ -57,9 +57,9 @@ containing only quantitative remarks:
 The header of a judgement may be followed by qualitative remarks. Remarks begin
 with an indent (two spaces), and a mood mark:
 
-  * `*` for neutral/structural remarks
-  * `+` for positive remarks
-  * `-` for negative remarks
+  * `*` for neutral/structural remarks;
+  * `+` for positive remarks;
+  * `-` for negative remarks;
   * `?` for impartial remarks.
 
 Impartial remarks are good for judgements where the mood is left to be judged
