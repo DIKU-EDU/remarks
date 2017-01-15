@@ -133,19 +133,21 @@ The file-format is kept "git-friendly" by keeping it comprehensible in
 plain-text, and allowing for independent marking by splitting the remarks for a
 student into multiple files.
 
-The simplest setup is to have one `.mrk` file per student.
+The simplest setup is to have one `.mrk` file per student (e.g.
+[basic.mrk](samples/organization/basic.mrk)).
 
 To support more exotic setups, `remark` can also work with directories:
 
-If supplied with a directory path, `remark` looks for files ending in `.mrk`
-inside that directory, and comprehends the files, as above, in lexicographic
-filename order.
+  * If supplied with a directory path, `remark` looks for files ending in `.mrk`
+    inside that directory, and comprehends the files, as above, in lexicographic
+    filename order (e.g.,
+    [directory-with-mrk-files](samples/organization/directory-with-mrk-files)).
 
-Furthermore, if there exists a directory `<basename>` for any `<basename>.mrk`
-along the way, `<basename>` is recursively searched for `.mrk` files, and their
-contents is appended (in lexicographic filename order) to the last top-level
-judgement of `<basename>.mrk`. This allows you to structure your remarks using
-directories.
+  * If there exists a directory `<basename>` for any `<basename>.mrk`,
+    `<basename>` is recursively searched for further `.mrk` files. Their
+    contents is appended, in lexicographic filename order, to the last
+    top-level judgement of `<basename>.mrk`
+    [mixed-directory](samples/organization/mixed-directory)).
 
 See the [organization samples](samples/organization) for some examples of how
 judgements may be structured using files and directories.
@@ -163,6 +165,13 @@ judgements may be structured using files and directories.
     └── 02-practice.mrk
 ```
 
-`basic.mrk`, `directory-with-mrk-files`, and `mixed-directory` all yield the
-same overall judgements once parsed by `remark`. They merely differ in their
-source structure.
+`basic.mrk`, `directory-with-mrk-files`, and `mixed-directory` all parse to the
+same judgements. In particular, the output from the following `remark` commands
+is identical:
+
+```
+$ cd samples/organization/
+$ remark basic.mrk
+$ remark directory-with-mrk-files
+$ remark mixed-directory
+```
