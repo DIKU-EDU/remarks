@@ -1,7 +1,7 @@
 name:                remark
 version:             0.0.0.0
 synopsis:            A DSL for marking student work
-description:         Please see README.org
+description:         A DSL for marking student work; see README.org for further details.
 homepage:            https://github.com/oleks/remark#readme
 license:             BSD3
 license-file:        LICENSE
