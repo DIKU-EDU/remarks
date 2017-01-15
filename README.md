@@ -56,8 +56,8 @@ A `.mrk` file is a list of judgements.
 
 A judgement starts with a header mark (a sequence of `#`), a title (followed by
 a `:`), given points (followed by `/`), and maximum points (followed by a line
-break). The number of `#` determines the /depth/ of the header, and every file
-/must/ start at depth 1, but may have multiple depth 1 judgements. Headings may
+break). The number of `#` determines the _depth_ of the header, and every file
+_must_ start at depth 1, but may have multiple depth 1 judgements. Headings may
 be arbitrarily nested, but must sum up correctly. For instance, here is a file
 containing only quantitative remarks:
 
