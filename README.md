@@ -5,7 +5,7 @@
 [![AppVeyor (Windows) Status"](https://ci.appveyor.com/api/projects/status/xj8rbfhld9mjrjmg?svg=true)](https://ci.appveyor.com/project/oleks/remark)
 
 When judging student performance, it is useful to have both small, composable,
-quantitive judgements, and qualitative remarks. This makes both spreadsheets
+quantitative judgements, and qualitative remarks. This makes both spreadsheets
 and mere text-files ill-suited for marking student work.  Although
 [org-mode](http://orgmode.org/) can solve this problem to a great extent, it
 becomes a heavy tool in the light of having to mark hundreds of students in a
@@ -38,7 +38,7 @@ a `:`), given points (followed by `/`), and maximum points (followed by a line
 break). The number of `#` determines the /depth/ of the header, and every file
 /must/ start at depth 1, but may have multiple depth 1 judgements. Headings may
 be arbitrarily nested, but must sum up correctly. For instance, here is a file
-containing only quantative remarks:
+containing only quantitative remarks:
 
 ```
 # Theory: 27/50
