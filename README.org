@@ -51,12 +51,12 @@ containing only quantative remarks:
 The header of a judgement may be followed by qualitative remarks. Remarks begin
 with an indent (two spaces), and a mood mark:
 
-* =*= for neutral/structural remarks
-* =+= for positive remarks
-* =-= for negative remarks
-* =?= for impartial remarks, where the mood judgement is left to a higher
-  authority (e.g., when a teaching assistant is not sure if something is good
-  or bad, and would like to let the teacher decide).
+  * =*= for neutral/structural remarks
+  * =+= for positive remarks
+  * =-= for negative remarks
+  * =?= for impartial remarks, where the mood judgement is left to a higher
+    authority (e.g., when a teaching assistant is not sure if something is good
+    or bad, and would like to let the teacher decide).
 
 Qualitative remarks may be nested arbitrarily.
 
