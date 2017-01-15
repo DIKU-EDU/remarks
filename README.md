@@ -175,3 +175,20 @@ $ remark parse basic.mrk
 $ remark parse directory-with-mrk-files
 $ remark parse mixed-directory
 ```
+
+## Installation
+
+[`remark` is on Hackage](http://hackage.haskell.org/package/remark), so you can
+just use [Cabal](https://www.haskell.org/cabal/):
+
+```
+$ cabal install remark
+```
+
+You can also clone this repository and use
+[Stack](https://docs.haskellstack.org/en/stable/README/):
+
+```
+$ stack build
+$ stack install
+```
