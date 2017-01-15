@@ -26,8 +26,8 @@ version-control systems, such as git.
 
 ## Status
 
-There is a parser and baseline validator. These can be invoked using =remark
-parse= and =remark check= respectively.
+There is a parser and baseline validator. These can be invoked using `remark
+parse` and `remark check` respectively.
 
 ## Syntax
 
