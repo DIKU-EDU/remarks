@@ -50,11 +50,11 @@ oleks/6.mrk
 
 A =.mrk= file is a list of judgements.
 
-A judgement starts with a header mark (a sequence of `#`), a title (followed by
-a `:`), given points (followed by `/`), and maximum points (followed by a line
-break). The number of `#` determines the depth of the header, and every file
-must start at depth 1, but may have multiple depth 1 judgements. For instance,
-a file may contains two depth 1 judgements as follows:
+A judgement starts with a header mark (a sequence of =#=), a title (followed by
+a =:=), given points (followed by =/=), and maximum points (followed by a line
+break). The number of =#= determines the /depth/ of the header, and every file
+/must/ start at depth 1, but may have multiple depth 1 judgements. For
+instance, a file may contain two depth 1 judgements as follows:
 
 #+BEGIN_SRC
 # Theory: 27/50
