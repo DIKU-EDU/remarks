@@ -27,6 +27,11 @@ Goal 4 is not necessarily related to remark, but is related to marking student
 work with external examiners, who are not always willing to use more explicit
 version-control systems, such as git.
 
+* Status
+
+There is a parser and baseline validator. These can be invoked using =remark
+parse= and =remark check= respectively.
+
 * Syntax
 
 A =.mrk= file is a list of judgements.
