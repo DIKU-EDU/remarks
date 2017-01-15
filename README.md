@@ -1,8 +1,8 @@
-# `remark` — A DSL for marking student work
+# `remarks` — A DSL for marking student work
 
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
-[![Travis CI (Linux + macOS) Status](https://travis-ci.org/oleks/remark.svg)](https://travis-ci.org/oleks/remark)
-[![AppVeyor (Windows) Status"](https://ci.appveyor.com/api/projects/status/xj8rbfhld9mjrjmg?svg=true)](https://ci.appveyor.com/project/oleks/remark)
+[![Travis CI (Linux + macOS) Status](https://travis-ci.org/oleks/remarks.svg)](https://travis-ci.org/oleks/remarks)
+[![AppVeyor (Windows) Status"](https://ci.appveyor.com/api/projects/status/xj8rbfhld9mjrjmg?svg=true)](https://ci.appveyor.com/project/oleks/remarks)
 
 When judging student performance, it is useful to have both small, composable,
 quantitative judgements, and qualitative remarks. This makes both spreadsheets
@@ -20,17 +20,17 @@ marked.
   3. git-friendly file format.
   4. Synchronization options with Dropbox and/or Google Drive.
 
-Goal 4 is not necessarily related to remark, but is related to marking student
-work with external examiners, who are not always willing to use more explicit
-version-control systems, such as git.
+Goal 4 is not necessarily related to `remarks`, but is related to marking
+student work with external examiners, who are not always willing to use more
+explicit version-control systems, such as git.
 
 ## Status
 
 There is a [parser](src/Parser/Impl.hs) and baseline
-[validator](src/Validator.hs). These can be invoked using `remark parse` and
-`remark check`, respectively.
+[validator](src/Validator.hs). These can be invoked using `remarks parse` and
+`remarks check`, respectively.
 
-See [Issues](https://github.com/oleks/remark/issues) for a roadmap. Feel free
+See [Issues](https://github.com/oleks/remarks/issues) for a roadmap. Feel free
 to add or fix some.
 
 ## Syntax
@@ -136,11 +136,11 @@ student into multiple files.
 The simplest setup is to have one `.mrk` file per student (e.g.
 [basic.mrk](samples/organization/basic.mrk)).
 
-To support more exotic setups, `remark` can also work with directories:
+To support more exotic setups, `remarks` can also work with directories:
 
-  * If supplied with a directory path, `remark` looks for files ending in `.mrk`
-    inside that directory, and comprehends the files, as above, in lexicographic
-    filename order (e.g.,
+  * If supplied with a directory path, `remarks` looks for files ending in
+    `.mrk` inside that directory, and comprehends the files, as above, in
+    lexicographic filename order (e.g.,
     [directory-with-mrk-files](samples/organization/directory-with-mrk-files)).
 
   * If there exists a directory `<basename>` for any `<basename>.mrk`,
@@ -166,23 +166,23 @@ judgements may be structured using files and directories.
 ```
 
 `basic.mrk`, `directory-with-mrk-files`, and `mixed-directory` all parse to the
-same judgements. In particular, the output from the following `remark` commands
-is identical:
+same judgements. In particular, the output from the following `remarks`
+commands is identical:
 
 ```
 $ cd samples/organization/
-$ remark parse basic.mrk
-$ remark parse directory-with-mrk-files
-$ remark parse mixed-directory
+$ remarks parse basic.mrk
+$ remarks parse directory-with-mrk-files
+$ remarks parse mixed-directory
 ```
 
 ## Installation
 
-[`remark` is on Hackage](http://hackage.haskell.org/package/remark), so you can
-just use [Cabal](https://www.haskell.org/cabal/):
+[`remarks` is on Hackage](http://hackage.haskell.org/package/remarks), so you
+can just use [Cabal](https://www.haskell.org/cabal/):
 
 ```
-$ cabal install remark
+$ cabal install remarks
 ```
 
 You can also clone this repository and use
