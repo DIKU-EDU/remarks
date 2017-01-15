@@ -1,7 +1,7 @@
 name:                remarks
 version:             0.1.0
 synopsis:            A DSL for marking student work
-description:         A DSL for marking student work; see README.org for further details.
+description:         A DSL for marking student work; see README.md for further details.
 homepage:            https://github.com/oleks/remarks#readme
 license:             BSD3
 license-file:        LICENSE
