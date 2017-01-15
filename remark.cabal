@@ -1,5 +1,5 @@
 name:                remark
-version:             0.0.0.0
+version:             0.1.0
 synopsis:            A DSL for marking student work
 description:         A DSL for marking student work; see README.org for further details.
 homepage:            https://github.com/oleks/remark#readme
