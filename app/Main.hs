@@ -131,5 +131,5 @@ main = do
     [] -> noCommand
     ("parse" : paths) -> parsePaths paths >>= putStrLn . pretty
     ("check" : paths) -> parsePaths paths >>= mapM_ check
-    ("markup" : paths) -> parsePaths paths >>= mapM_ ppMarkup
+    ("show" : paths) -> parsePaths paths >>= mapM_ ppMarkup
     (c:args) -> invalidCommand c args
