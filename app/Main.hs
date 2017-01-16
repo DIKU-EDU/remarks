@@ -3,6 +3,7 @@ module Main where
 import Ast
 import Parser
 import Validator
+import PPmrk
 
 import Control.Monad ( void, filterM )
 import Data.List ( sort, partition )
@@ -120,6 +121,9 @@ parsePaths = mapM parsePath
 check :: [Judgement] -> IO ()
 check js = putStrLn $ pretty $ map validate js
 
+ppMarkup :: [Judgement] -> IO ()
+ppMarkup = putStrLn . toMrk
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -127,4 +131,5 @@ main = do
     [] -> noCommand
     ("parse" : paths) -> parsePaths paths >>= putStrLn . pretty
     ("check" : paths) -> parsePaths paths >>= mapM_ check
+    ("markup" : paths) -> parsePaths paths >>= mapM_ ppMarkup
     (c:args) -> invalidCommand c args
