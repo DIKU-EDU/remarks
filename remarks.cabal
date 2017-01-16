@@ -22,6 +22,7 @@ library
                      , PPmrk
   build-depends:       base >= 4.7 && < 5
                      , GenericPretty >= 1.2.1
+                     , pretty >= 1.1.3.3
   default-language:    Haskell2010
 
 executable remarks
