@@ -28,10 +28,13 @@ validate :: Judgement -> Either Invalid ()
 validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subjs)) = do
   try (p <= maxP)
     (PointsExceedMaxPoints h)
-  try ((sum $ map points subjs) ~= p)
-    (BadSubJudgementPointsSum j)
-  try ((sum $ map maxPoints subjs) ~= maxP)
-    (BadSubJudgementMaxPointsSum j)
+  case subjs of
+    [] -> return ()
+    _ -> do
+      try ((sum $ map points subjs) ~= p)
+        (BadSubJudgementPointsSum j)
+      try ((sum $ map maxPoints subjs) ~= maxP)
+        (BadSubJudgementMaxPointsSum j)
   forM_ subjs validate
 
 points :: Judgement -> Double
