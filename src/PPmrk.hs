@@ -12,8 +12,16 @@ formatJudgement level (Judgement (header, comments, judgements)) =
   (nest 2 $ vcat $ map (formatComment) comments) $+$
   (vcat $ map (formatJudgement (level + 1)) judgements)
 
+isIntegral :: Double -> Bool
+isIntegral x = x == fromInteger (round x)
+
+pointsDoc :: Double -> Doc
+pointsDoc v | isIntegral v = integer (round v)
+pointsDoc v = double v
+
 formatHeader level (Header (title, point, maxPoints)) =
-  (text $ replicate level '#') <+> text title <> colon <+> double point <> text "/" <> double maxPoints
+  (text $ replicate level '#') <+> text title <> colon <+>
+    pointsDoc point <> text "/" <> pointsDoc maxPoints
 
 formatComment (Comment (mood, commentParts)) =
   formatMood mood <+> (vcat $ map formatCommentPart commentParts)
