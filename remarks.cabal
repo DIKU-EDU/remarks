@@ -7,7 +7,7 @@ license:             BSD3
 license-file:        LICENSE
 author:              Oleks
 maintainer:          oleks@oleks.info
-copyright:           2017 Oleks
+copyright:           2017 DIKU
 category:            Web
 build-type:          Simple
 extra-source-files:  README.md
