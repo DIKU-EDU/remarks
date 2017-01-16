@@ -3,6 +3,7 @@
 module Parser.Impl where
 
 import Ast
+import Config
 import Text.ParserCombinators.ReadP
 import Text.PrettyPrint.GenericPretty
 
@@ -83,13 +84,13 @@ parseComment indent = do
   mood <- parseMood
   void $ char ' '
   first <- fmap CommentStr parseLine
-  rest <- many $ parseCommentPart (indent ++ "  ")
+  rest <- many $ parseCommentPart (indent ++ indentation)
   pure $ Comment (mood, (first : rest))
 
 parseComment' :: ReadP Comment
 parseComment' = many lineBreak *> do
-  void $ string "  "
-  parseComment "  "
+  void $ string indentation
+  parseComment indentation
 
 parseJudgement :: Int -> ReadP Judgement
 parseJudgement depth = skipSpaces *> do
