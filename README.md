@@ -26,12 +26,16 @@ explicit version-control systems, such as git.
 
 ## Status
 
-There is a [parser](src/Parser/Impl.hs) and baseline
-[validator](src/Validator.hs). These can be invoked using `remarks parse` and
-`remarks check`, respectively.
+There is:
+* a [parser](src/Parser/Impl.hs);
+* a (basic) [validator](src/Validator.hs); and
+* a [pretty printer](src/PrettyPrinter.hs).
+
+These can be invoked using `remarks parse`, `remarks check`, and `remarks
+show`, respectively.
 
 See [Issues](https://github.com/oleks/remarks/issues) for a roadmap. Feel free
-to add or fix some.
+to add or fix a couple issues.
 
 ## Installation
 
