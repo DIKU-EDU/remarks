@@ -51,7 +51,7 @@ parseHeader depth = do
   void $ char ' '
   title <- lineToken $ munchTillExcl ':'
 
-  points <- (lineToken $ parsePoints) +++ (return $ 0/0)
+  points <- (lineToken $ parsePoints) +++ (return $ 1/0)
   void $ lineToken $ char '/'
   maxPoints <- lineToken $ parsePoints
 

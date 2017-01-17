@@ -32,9 +32,9 @@ validateSubJs (Judgement (h @ (Header (t, _, maxP)), cs, subJs)) = do
   pure $ Judgement (Header (t, newP, maxP), cs, newSubJs)
 
 validate :: Judgement -> Either Invalid Judgement
-validate j @ (Judgement (h @ (Header (_, p, maxP)), _, [])) | isNaN p = do
+validate j @ (Judgement (h @ (Header (_, p, maxP)), _, [])) | isInfinite p = do
   Left $ NoPointsInBottomJudgement j
-validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs @ (_:_))) | isNaN p = do
+validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs @ (_:_))) | isInfinite p = do
   try ((sum $ map maxPoints subJs) ~= maxP)
     (BadSubJudgementMaxPointsSum j)
   validateSubJs j
