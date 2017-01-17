@@ -93,14 +93,14 @@ Structural remarks are good for listing things to look for. For instance, a
 this:
 
 ```
-## T1: 15/15
+## T1: /15
 
-### Formal requirements: 5/5
+### Formal requirements: /5
   * Has code
   * Has XML in a reloadable/testable form
   * Has an explanation
 
-### Quality assessment: 10/10
+### Quality assessment: /10
   * Understands semaphores
   * Understands deadlocks
   * Understands starvation
@@ -147,6 +147,12 @@ Once filled in by a teaching assistant, this may look something like this:
   * Solves the problem
     + In a complicated way, but yes.
 ```
+
+## Points and sums
+
+You do not need to manually enter sums. Points are only required for the
+bottom-most judgements. Given the template above you can do a `remarks check`
+to check if the teaching assistant has given points for all judgements.
 
 ## Files and Directories
 
