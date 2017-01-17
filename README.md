@@ -95,7 +95,7 @@ this:
 ```
 ## T1: 15/15
 
-## Formal requirements: 5/5
+### Formal requirements: 5/5
   * Has code
   * Has XML in a reloadable/testable form
   * Has an explanation
