@@ -1,11 +1,11 @@
-module PrettyPrinter (toMrk) where
+module PrettyPrinter (ppJs) where
 
 import Ast
 
 import Text.PrettyPrint
 
-toMrk :: [Judgement] -> String
-toMrk js = render $ vcat $ map (formatJudgement 1) js
+ppJs :: [Judgement] -> String
+ppJs = render . vcat . map (formatJudgement 1)
 
 formatJudgement :: Int -> Judgement -> Doc
 formatJudgement level (Judgement (header, comments, judgements)) =

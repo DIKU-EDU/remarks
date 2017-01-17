@@ -119,10 +119,10 @@ parsePaths :: [FilePath] -> IO [[Judgement]]
 parsePaths = mapM parsePath
 
 check :: [Judgement] -> IO ()
-check js = putStrLn $ pretty $ map validate js
+check = putStrLn . pretty . map validate
 
-ppMarkup :: [Judgement] -> IO ()
-ppMarkup = putStrLn . toMrk
+printJs :: [Judgement] -> IO ()
+printJs = putStrLn . ppJs
 
 main :: IO ()
 main = do
@@ -131,5 +131,5 @@ main = do
     [] -> noCommand
     ("parse" : paths) -> parsePaths paths >>= putStrLn . pretty
     ("check" : paths) -> parsePaths paths >>= mapM_ check
-    ("show" : paths) -> parsePaths paths >>= mapM_ ppMarkup
+    ("show" : paths) -> parsePaths paths >>= mapM_ printJs
     (c:args) -> invalidCommand c args
