@@ -35,7 +35,7 @@ validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subjs)) = do
         (BadSubJudgementPointsSum j)
       try ((sum $ map maxPoints subjs) ~= maxP)
         (BadSubJudgementMaxPointsSum j)
-  forM_ subjs validate
+      forM_ subjs validate
 
 points :: Judgement -> Double
 points (Judgement (Header (_, v, _), _, _)) = v
