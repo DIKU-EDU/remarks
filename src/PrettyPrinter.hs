@@ -17,12 +17,13 @@ isIntegral :: Double -> Bool
 isIntegral x = x == fromInteger (round x)
 
 pointsDoc :: Double -> Doc
+pointsDoc v | isNaN v = empty
 pointsDoc v | isIntegral v = integer (round v)
 pointsDoc v = double v
 
 formatHeader :: Int -> Header -> Doc
 formatHeader level (Header (title, point, maxPoints)) =
-  (text $ replicate level '#') <+> text title <> colon <+>
+  (text $ replicate level '#') <+> text title <> colon <> space <>
     pointsDoc point <> text "/" <> pointsDoc maxPoints
 
 formatComment :: Comment -> Doc

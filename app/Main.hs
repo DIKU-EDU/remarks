@@ -119,7 +119,10 @@ parsePaths :: [FilePath] -> IO [[Judgement]]
 parsePaths = mapM parsePath
 
 check :: [Judgement] -> IO ()
-check = putStrLn . pretty . map validate
+check js = do
+  case mapM validate js of
+    Right newJs -> printJs newJs
+    Left e -> putStrLn $ show e
 
 printJs :: [Judgement] -> IO ()
 printJs = putStrLn . ppJs

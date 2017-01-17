@@ -12,6 +12,7 @@ data Invalid
   = PointsExceedMaxPoints Header
   | BadSubJudgementPointsSum Judgement
   | BadSubJudgementMaxPointsSum Judgement
+  | NoPointsInBottomJudgement Judgement
   deriving (Eq, Show, Generic)
 
 instance Out Invalid
@@ -24,18 +25,30 @@ infix 4 ~=
 (~=) :: Double -> Double -> Bool
 x ~= y = abs (x - y) <= 0.01
 
-validate :: Judgement -> Either Invalid ()
-validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subjs)) = do
+validateSubJs :: Judgement -> Either Invalid Judgement
+validateSubJs (Judgement (h @ (Header (t, _, maxP)), cs, subJs)) = do
+  newSubJs <- mapM validate subJs
+  let newP = sum $ map points newSubJs
+  pure $ Judgement (Header (t, newP, maxP), cs, newSubJs)
+
+validate :: Judgement -> Either Invalid Judgement
+validate j @ (Judgement (h @ (Header (_, p, maxP)), _, [])) | isNaN p = do
+  Left $ NoPointsInBottomJudgement j
+validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs @ (_:_))) | isNaN p = do
+  try ((sum $ map maxPoints subJs) ~= maxP)
+    (BadSubJudgementMaxPointsSum j)
+  validateSubJs j
+validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs)) = do
   try (p <= maxP)
     (PointsExceedMaxPoints h)
-  case subjs of
-    [] -> return ()
+  case subJs of
+    [] -> pure j
     _ -> do
-      try ((sum $ map points subjs) ~= p)
+      try ((sum $ map points subJs) ~= p)
         (BadSubJudgementPointsSum j)
-      try ((sum $ map maxPoints subjs) ~= maxP)
+      try ((sum $ map maxPoints subJs) ~= maxP)
         (BadSubJudgementMaxPointsSum j)
-      forM_ subjs validate
+      validateSubJs j
 
 points :: Judgement -> Double
 points (Judgement (Header (_, v, _), _, _)) = v
