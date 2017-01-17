@@ -9,6 +9,9 @@ ppJs :: [Judgement] -> String
 ppJs = render . vcat . intersperse (text "") . map (formatJudgement 1)
 
 formatJudgement :: Int -> Judgement -> Doc
+formatJudgement level (Bonus (points, comments)) =
+  (text $ replicate level '#') <+> text "Bonus" <> colon <+> text "+" <>
+    pointsDoc points
 formatJudgement level (Judgement (header, comments, judgements)) =
   formatHeader level header $+$
   (nest 2 $ vcat $ map (formatComment) comments) $+$

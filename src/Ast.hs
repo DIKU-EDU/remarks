@@ -32,8 +32,9 @@ newtype Comment
 
 instance Out Comment
 
-newtype Judgement
+data Judgement
   = Judgement (Header, [Comment], [Judgement])
+  | Bonus (Double, [Comment])
   deriving (Eq, Show, Generic)
 
 instance Out Judgement

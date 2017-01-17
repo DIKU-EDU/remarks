@@ -30,6 +30,7 @@ validateSubJs (Judgement (h @ (Header (t, _, maxP)), cs, subJs)) = do
   newSubJs <- mapM validate subJs
   let newP = sum $ map points newSubJs
   pure $ Judgement (Header (t, newP, maxP), cs, newSubJs)
+validateSubJs j = pure j
 
 validate :: Judgement -> Either Invalid Judgement
 validate j @ (Judgement (h @ (Header (_, p, maxP)), _, [])) | isInfinite p = do
@@ -49,9 +50,12 @@ validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs)) = do
       try ((sum $ map maxPoints subJs) ~= maxP)
         (BadSubJudgementMaxPointsSum j)
       validateSubJs j
+validate j = pure j
 
 points :: Judgement -> Double
+points (Bonus (v, _)) = v
 points (Judgement (Header (_, v, _), _, _)) = v
 
 maxPoints :: Judgement -> Double
+maxPoints (Bonus _) = 0.0
 maxPoints (Judgement (Header (_, _, v), _, _)) = v

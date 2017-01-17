@@ -51,20 +51,37 @@ lineBreak = void $ lineToken $ char '\n'
 munchTillExcl :: Char -> ReadP String
 munchTillExcl c = munch (/= c) <* char c
 
-parseHeader :: Int -> ReadP Header
-parseHeader depth = do
+parseBonus :: String -> ReadP Judgement
+parseBonus title = do
+  lineToken $ char '+'
+  points <- parsePoints
+  void $ lineBreak
+  comments <- many parseComment'
+  pure $ Bonus (points, comments)
+
+parseRegularJudgement :: Int -> String -> ReadP Judgement
+parseRegularJudgement depth title = do
+  points <- (lineToken $ parsePoints) +++ (return $ 1/0)
+  void $ lineToken $ char '/'
+  maxPoints <- lineToken $ parseMaxPoints
+  void $ lineBreak
+
+  let header = Header (title, points, maxPoints)
+
+  comments <- many parseComment'
+  subjs <- many $ parseJudgement (depth + 1)
+  pure $ Judgement (header, comments, subjs)
+
+parseJudgement :: Int -> ReadP Judgement
+parseJudgement depth = skipSpaces *> do
   let mark = take depth $ repeat '#'
   void $ string mark
   void $ char ' '
   title <- lineToken $ munchTillExcl ':'
 
-  points <- (lineToken $ parsePoints) +++ (return $ 1/0)
-  void $ lineToken $ char '/'
-  maxPoints <- lineToken $ parseMaxPoints
-
-  void $ lineBreak
-
-  pure $ Header (title, points, maxPoints)
+  case title of
+    "Bonus" -> parseBonus title
+    _ -> parseRegularJudgement depth title
 
 parseMood :: ReadP Mood
 parseMood = choice
@@ -98,13 +115,6 @@ parseComment' :: ReadP Comment
 parseComment' = many lineBreak *> do
   void $ string indentation
   parseComment indentation
-
-parseJudgement :: Int -> ReadP Judgement
-parseJudgement depth = skipSpaces *> do
-  header <- parseHeader depth
-  comments <- many parseComment'
-  subjs <- many $ parseJudgement (depth + 1)
-  pure $ Judgement (header, comments, subjs)
 
 parseJudgements :: Int -> ReadP [Judgement]
 parseJudgements depth = many $ parseJudgement depth
