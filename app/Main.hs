@@ -5,7 +5,7 @@ import Parser
 import Validator
 import PrettyPrinter
 
-import Control.Monad ( void, filterM )
+import Control.Monad ( void, filterM, liftM )
 import Data.List ( sort )
 import System.Directory
   ( doesFileExist, doesDirectoryExist, listDirectory )
@@ -63,12 +63,12 @@ parseTopFile path = do
     Right js -> pure js
     Left e -> parseError e
 
-parseFileInDir :: FilePath -> IO Judgement
+parseFileInDir :: FilePath -> IO [Judgement]
 parseFileInDir path = do
   js <- parsePath path
   case js of
-    [j] -> pure j
-    _ -> noTopLevelJudgement path
+    [] -> noTopLevelJudgement path
+    _ -> pure js
 
 parseFileWithDir :: FilePath -> IO ([Judgement], Judgement)
 parseFileWithDir path = do
@@ -88,7 +88,7 @@ parseDir path = do
   paths <- listDirectory path
   let mrkPaths = filter isMrkPath paths
   let fullMrkPaths = map (path </>) (sort mrkPaths)
-  mapM parseFileInDir fullMrkPaths
+  liftM concat $ mapM parseFileInDir fullMrkPaths
 
 extPaths :: FilePath -> (FilePath, FilePath)
 extPaths path =
