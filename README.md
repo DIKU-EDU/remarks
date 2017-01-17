@@ -16,8 +16,8 @@ marked.
 ## Design Goals
 
   1. One, or several, human-readable/editable file(s) _per student_.
-  2. Export options to spreadsheet-formats.
-  3. git-friendly file format.
+  2. git-friendly file format.
+  3. Export options to spreadsheet-formats.
   4. Synchronization options with Dropbox and/or Google Drive.
 
 Goal 4 is not necessarily related to `remarks`, but is related to marking
