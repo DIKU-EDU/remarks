@@ -6,33 +6,40 @@ import Text.PrettyPrint
 
 htmlRemarks :: [Judgement] -> Doc
 htmlRemarks js = 
-  html $ 
+  doctype $ html $ 
     (head_ $ documentStyle $$ documentScript) $$ 
     (body . table $ htmlTableHead (head js) $+$ vcat (map htmlJudgement js))
 
-tag :: String -> String -> Doc -> Doc
-tag tagStr contStr doc = text ("<" ++ tagStr ++ " " ++ contStr ++ ">") $$ nest 2 doc $$ text ("</" ++ tagStr ++ ">") 
+tag :: String -> Doc -> Doc -> Doc
+tag tagStr attr doc = (text "<" <> text tagStr <+> attr <> text ">") $$ nest 2 doc $$ text ("</" ++ tagStr ++ ">") 
 
-html   = tag "html" ""
-head_  = tag "head" ""
-body   = tag "body" ""
-script = tag "script" "type=\"text/javascript\""
-style_ = tag "style" ""
-table  = tag "table" "border=\"1\""
-tr     = tag "tr" ""
-trhidden = tag "tr" "style=\"display: none;\""
-th     = tag "th" ""
-td     = tag "td" ""
-toggle = tag "a" "href=\"#\" onclick=\"toggleRow(this);\""
-ul     = tag "ul" ""
-li     = tag "li" ""
+etag :: String -> Doc -> Doc
+etag tagStr = tag tagStr empty
 
-liclass c = tag "li" $ "class=\"" ++ c ++ "\""
-tdspan i  = tag "td" $ "colspan=\"" ++ (show i) ++ "\""
+atag :: String -> String -> Doc -> Doc
+atag tagStr attrStr = tag tagStr (text attrStr)
+
+doctype = ($$) (text "<!DOCTYPE html>")
+html   = etag "html"
+head_  = etag "head"
+body   = etag "body"
+script = atag "script" "type=\"text/javascript\""
+style_ = etag "style"
+table  = atag "table" "border=\"1\""
+tr     = etag "tr"
+trhidden = atag "tr" "style=\"display: none;\""
+th     = etag "th"
+td     = etag "td"
+toggle = atag "a" "href=\"#\" onclick=\"toggleRow(this);\""
+ul     = etag "ul"
+li     = etag "li"
+
+liclass c = atag "li" $ "class=\"" ++ c ++ "\""
+tdspan i  = atag "td" $ "colspan=\"" ++ (show i) ++ "\""
 
 br = text "<br>"
 
-details d1 d2 = tag "details" "" ((tag "summary" "" d1) $$ d2)
+details d1 d2 = etag "details" ((etag "summary" d1) $$ d2)
 
 documentStyle = style_ $ 
   text "details {padding-left: 16px;}" $$      
