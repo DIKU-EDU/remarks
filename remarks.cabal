@@ -5,7 +5,7 @@ description:         A DSL for marking student work; see README.md for further d
 homepage:            https://github.com/oleks/remarks#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Oleks
+author:              Oleks Shturmov <oleks@oleks.info>, Michael Kirkedal
 maintainer:          oleks@oleks.info
 copyright:           2017 DIKU
 category:            Web
