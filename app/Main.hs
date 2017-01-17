@@ -4,6 +4,7 @@ import Ast
 import Parser
 import Validator
 import PrettyPrinter
+import Collector
 
 import Control.Monad ( void, filterM, liftM )
 import Data.List ( sort )
@@ -127,6 +128,12 @@ check js = do
 printJs :: [Judgement] -> IO ()
 printJs = putStrLn . ppJs
 
+collect :: [Judgement] -> IO ()
+collect js = do
+  case mapM validate js of
+    Right newJs -> putStrLn $ collectHTML newJs
+    Left e -> putStrLn $ show e
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -135,4 +142,5 @@ main = do
     ("parse" : paths) -> parsePaths paths >>= putStrLn . pretty
     ("check" : paths) -> parsePaths paths >>= mapM_ check
     ("show" : paths) -> parsePaths paths >>= mapM_ printJs
+    ("collect" : paths) -> parsePaths paths >>= mapM_ collect
     (c:args) -> invalidCommand c args
