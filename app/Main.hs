@@ -3,7 +3,7 @@ module Main where
 import Ast
 import Parser
 import Validator
-import PPmrk
+import PrettyPrinter
 
 import Control.Monad ( void, filterM )
 import Data.List ( sort )

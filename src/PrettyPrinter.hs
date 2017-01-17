@@ -1,4 +1,4 @@
-module PPmrk (toMrk) where
+module PrettyPrinter (toMrk) where
 
 import Ast
 
