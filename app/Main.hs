@@ -6,7 +6,7 @@ import Validator
 import PPmrk
 
 import Control.Monad ( void, filterM )
-import Data.List ( sort, partition )
+import Data.List ( sort )
 import System.Directory
   ( doesFileExist, doesDirectoryExist, listDirectory )
 import System.FilePath
@@ -86,7 +86,7 @@ isMrkPath = (== ".mrk") . takeExtension
 parseDir :: FilePath -> IO [Judgement]
 parseDir path = do
   paths <- listDirectory path
-  let (mrkPaths, otherPaths) = partition isMrkPath paths
+  let mrkPaths = filter isMrkPath paths
   let fullMrkPaths = map (path </>) (sort mrkPaths)
   mapM parseFileInDir fullMrkPaths
 
