@@ -148,11 +148,18 @@ Once filled in by a teaching assistant, this may look something like this:
     + In a complicated way, but yes.
 ```
 
-## Points and sums
+## Points and Sums
 
 You do not need to manually enter sums. Points are only required for the
 bottom-most judgements. Given the template above you can do a `remarks check`
-to check if the teaching assistant has given points for all judgements.
+to check if all necessary points have been given. This makes a "pointless"
+template a rather useful starting point for grading.
+
+Points can be integers or half-points, that is, the number may end in `.5`.
+Please note, `.5` is exactly representable in an IEEE-754 (the internal
+representation of points), so no numerical imprecision occurs when dealing with
+half-points. Maximum points may only be integers (the internal representation
+of maximum points is still an IEEE-754 double to avoid numerical conversions).
 
 ## Files and Directories
 

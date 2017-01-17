@@ -30,8 +30,15 @@ maybeRead = fmap fst . listToMaybe . reads
 parsePoints :: ReadP Double
 parsePoints = do
   is <- parseIntegral
-  fs <- (char '.' *> parseIntegral) +++ pure "0"
+  fs <- (string ".5") +++ pure "0"
   case (maybeRead (is ++ "." ++ fs)) of
+    Just x -> pure x
+    _ -> pfail
+
+parseMaxPoints :: ReadP Double
+parseMaxPoints = do
+  is <- parseIntegral
+  case (maybeRead is) of
     Just x -> pure x
     _ -> pfail
 
@@ -53,7 +60,7 @@ parseHeader depth = do
 
   points <- (lineToken $ parsePoints) +++ (return $ 1/0)
   void $ lineToken $ char '/'
-  maxPoints <- lineToken $ parsePoints
+  maxPoints <- lineToken $ parseMaxPoints
 
   void $ lineBreak
 
