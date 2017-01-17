@@ -3,9 +3,10 @@ module PrettyPrinter (ppJs) where
 import Ast
 
 import Text.PrettyPrint
+import Data.List (intersperse)
 
 ppJs :: [Judgement] -> String
-ppJs = render . vcat . map (formatJudgement 1)
+ppJs = render . vcat . intersperse (text "") . map (formatJudgement 1)
 
 formatJudgement :: Int -> Judgement -> Doc
 formatJudgement level (Judgement (header, comments, judgements)) =
