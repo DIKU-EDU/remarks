@@ -13,7 +13,7 @@ import Test.Tasty.Golden
 
 import Text.PrettyPrint.GenericPretty
 
-validateStr :: String -> [Either Invalid ()]
+validateStr :: String -> [Either Invalid Judgement]
 validateStr s =
   case parseString s of
     Right js -> map validate js
@@ -23,16 +23,28 @@ posUnitTests :: TestTree
 posUnitTests = testGroup "Positive Unit Tests"
   [ testCase "Lone header line" $
       validateStr "# A: 0/0\n" @?=
-        [Right ()]
+        [ Right $
+          Judgement (Header ("A", 0.0, 0.0), [], [])]
   , testCase "A couple same-depth header lines" $
       validateStr "# A: 0/0\n# B: 0/0\n" @?=
-        [Right (), Right ()]
+        [ Right $
+          Judgement (Header ("A", 0.0, 0.0), [], [])
+        , Right $
+          Judgement (Header ("B", 0.0, 0.0), [], [])
+        ]
   , testCase "A simple hierarchy of headers" $
       validateStr "# A: 0/0\n## B: 0/0\n" @?=
-        [Right ()]
+        [ Right $
+          Judgement (Header ("A", 0.0, 0.0), [],
+            [Judgement (Header ("B", 0.0, 0.0), [], [])])]
   , testCase "A couple simple hierarchies" $
       validateStr "# A: 0/0\n## B: 0/0\n# C: 0/0\n" @?=
-        [Right (), Right ()]
+        [ Right $
+          Judgement (Header ("A", 0.0, 0.0), [],
+            [Judgement (Header ("B", 0.0, 0.0), [], [])])
+        , Right $
+          Judgement (Header ("C", 0.0, 0.0), [], [])
+        ]
   ]
 
 negUnitTests :: TestTree
@@ -50,6 +62,10 @@ negUnitTests = testGroup "Positive Unit Tests"
         [Left $ BadSubJudgementMaxPointsSum
           (Judgement (Header ("A", 0.0, 0.0), [],
             [Judgement (Header ("B", 0.0, 1.0), [], [])]))]
+  , testCase "Single judgement with no points" $
+      validateStr "# A: /0\n" @?=
+        [Left $ NoPointsInBottomJudgement
+          (Judgement (Header ("A", 1/0, 0.0), [], []))]
   ]
 
 qcTests :: TestTree
