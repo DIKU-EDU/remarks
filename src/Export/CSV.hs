@@ -25,6 +25,8 @@ lookupProperty name (Judgement (_, properties, _, _)) =
   case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
     Nothing -> Left $ PropertyNotFound name
     Just(value) -> pure $ formatPropertyExp value
+lookupProperty name _ =
+  Left $ PropertyNotFound name
 
 formatPropertyExp :: PropertyExp -> Doc
 formatPropertyExp (Lookup (index, name)) =
