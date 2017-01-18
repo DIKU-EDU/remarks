@@ -24,13 +24,14 @@ interpProps j =
     Left invalid -> Left invalid
 
 interpJudgement :: Judgement -> Either Invalid (Judgement, [(String, PropertyValue)])
-interpJudgement j @ (Judgement (h, prop, cs, js)) = do
+interpJudgement (Judgement (h, prop, cs, js)) = do
   updlist <- mapM interpJudgement js
   let (jupdates, jsPropVals) = unzip updlist
   predef <- generatePredefinedValues h
   propVals <- mapM (bindProp (predef:jsPropVals)) (addPredifinedProps prop)
   let newProps = map propValToProperties propVals
   pure (Judgement (h, newProps, cs, jupdates), propVals)
+interpJudgement j @ (Bonus (v, _)) = pure (j, [("Bonus", DoubVal v)])
 
 propValToProperties :: (String, PropertyValue) -> Property
 propValToProperties (str, StrVal string) = Property (str, Value string)
@@ -46,14 +47,17 @@ generatePredefinedValues :: Header -> Either Invalid [(String, PropertyValue)]
 generatePredefinedValues (Header (t, p, maxP)) =
   pure [("Title", StrVal t), ("Total", DoubVal p), ("MaxPoints", DoubVal maxP)]
 
-bindProp :: [[(String, PropertyValue)]] -> Property -> Either Invalid (String, PropertyValue)
+bindProp :: [[(String, PropertyValue)]] -> Property ->
+  Either Invalid (String, PropertyValue)
 bindProp propEnv (Property (name, propExp)) =
   case (evalPropExp propExp propEnv) of
     Right (val)  -> pure (name, val)
     Left invalid -> Left invalid
 
-evalPropExp :: PropertyExp -> [[(String, PropertyValue)]] -> Either Invalid PropertyValue
+evalPropExp :: PropertyExp -> [[(String, PropertyValue)]] ->
+  Either Invalid PropertyValue
 evalPropExp (Value s) _ = pure $ StrVal s
+evalPropExp (Num n) _ = pure $ DoubVal n
 evalPropExp (Lookup (i, p)) propEnv =
   case (lookup p (propEnv !! (i))) of
     Nothing -> Left $ PropertyNotFound p
