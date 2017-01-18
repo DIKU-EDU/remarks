@@ -18,9 +18,6 @@ formatJudgement delimiter properties judgement =
     mapfun = flip lookupProperty 
 
 lookupProperty :: String -> Judgement -> Doc
-lookupProperty ("Title") (Judgement (Header(t, _, _), _, _, _)) = text t
-lookupProperty ("Total") (Judgement (Header(_, t, _), _, _, _)) = pointsDoc t
-lookupProperty ("MaxPoints") (Judgement (Header(_, _, t), _, _, _)) = pointsDoc t
 lookupProperty name (Judgement (_, properties, _, _)) = 
   case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
     Nothing -> error "Property not found."
