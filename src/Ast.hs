@@ -32,8 +32,14 @@ newtype Comment
 
 instance Out Comment
 
+newtype Property 
+  = Property (String, String)
+  deriving (Eq, Show, Generic)
+
+instance Out Property
+
 data Judgement
-  = Judgement (Header, [Comment], [Judgement])
+  = Judgement (Header, [Property], [Comment], [Judgement])
   | Bonus (Double, [Comment])
   deriving (Eq, Show, Generic)
 

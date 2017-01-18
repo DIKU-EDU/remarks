@@ -64,25 +64,25 @@ pointsDoc v | isIntegral v = integer (round v)
 pointsDoc v = double v
 
 htmlTableHead :: Judgement -> Doc
-htmlTableHead (Judgement (_, _, js)) = 
+htmlTableHead (Judgement (_, _, _, js)) = 
   tr $ th (text "Title") $$ (vcat $ map maketd js) $$ th (text "Total")
   where
-    maketd (Judgement (Header(title, _, maxPoint), _, _)) = th $ text (title ++ "/") <> pointsDoc maxPoint
+    maketd (Judgement (Header(title, _, maxPoint), _, _, _)) = th $ text (title ++ "/") <> pointsDoc maxPoint
 
 htmlJudgement :: Judgement -> Doc
-htmlJudgement (Judgement (Header(title, points, maxPoint), comments, judgements)) = 
+htmlJudgement (Judgement (Header(title, points, maxPoint), _, comments, judgements)) = 
   (tr $ (td . toggle $ text title) $$ vcat (map htmlSubJudgement judgements) $$ (td $ pointsDoc points)) $$
   (trhidden $ tdspan (length judgements+2) $ (htmlDetailComments comments $$ htmlDetailJudgements judgements))
 
 htmlSubJudgement :: Judgement -> Doc
-htmlSubJudgement (Judgement (Header(title, points, maxPoint), comments, judgements)) = 
+htmlSubJudgement (Judgement (Header(title, points, maxPoint), _, comments, judgements)) = 
   (td $ pointsDoc points) 
 
 htmlDetailJudgements :: [Judgement] -> Doc 
 htmlDetailJudgements = vcat . (map htmlDetailJudgement) 
 
 htmlDetailJudgement :: Judgement -> Doc
-htmlDetailJudgement (Judgement (Header(title, points, maxPoint), comments, judgements)) = 
+htmlDetailJudgement (Judgement (Header(title, points, maxPoint), _, comments, judgements)) = 
   details 
     (text title <> parens (pointsDoc points <> text "/" <> pointsDoc maxPoint)) 
     (htmlDetailComments comments $$ htmlDetailJudgements judgements)

@@ -59,6 +59,14 @@ parseBonus title = do
   comments <- many parseComment'
   pure $ Bonus (points, comments)
 
+parseProperty :: ReadP Property
+parseProperty = do
+  void $ string "  :"
+  name <- lineToken $ munchTillExcl ':'
+  void $ char ' '
+  value <- parseLine
+  pure $ Property (name, value)
+
 parseRegularJudgement :: Int -> String -> ReadP Judgement
 parseRegularJudgement depth title = do
   points <- (lineToken $ parsePoints) +++ (return $ 1/0)
@@ -68,9 +76,10 @@ parseRegularJudgement depth title = do
 
   let header = Header (title, points, maxPoints)
 
+  properties <- many parseProperty
   comments <- many parseComment'
   subjs <- many $ parseJudgement (depth + 1)
-  pure $ Judgement (header, comments, subjs)
+  pure $ Judgement (header, properties, comments, subjs)
 
 parseJudgement :: Int -> ReadP Judgement
 parseJudgement depth = skipSpaces *> do

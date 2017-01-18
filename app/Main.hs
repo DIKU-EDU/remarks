@@ -112,9 +112,9 @@ parsePath path = do
     if not hasDir
     then parseTopFile pathWithExt
     else do -- we now also have directory
-      (fjs, (Judgement (h, cs, js))) <- parseFileWithDir pathWithExt
+      (fjs, (Judgement (h, p, cs, js))) <- parseFileWithDir pathWithExt
       dirJs <- parseDir pathWithoutExt
-      pure $ fjs ++ [Judgement (h, cs, js ++ dirJs)]
+      pure $ fjs ++ [Judgement (h, p, cs, js ++ dirJs)]
 
 parsePaths :: [FilePath] -> IO [[Judgement]]
 parsePaths = mapM parsePath
