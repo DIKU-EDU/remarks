@@ -73,8 +73,9 @@ parsePropertyExp = choice [lookupProp, value]
         _ -> pfail
     value = do
       v <- satisfy (/='[')
-      value <- parseLine
-      pure $ Value (v:value)
+      case (v) of
+       '\n' -> pure $ Value ""
+       _    -> (\value -> pure $ Value (v:value)) =<< parseLine      
 
 parseProperty :: ReadP Property
 parseProperty = do
