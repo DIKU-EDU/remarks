@@ -1,5 +1,5 @@
 name:                remarks
-version:             0.1.7
+version:             0.1.8
 synopsis:            A DSL for marking student work
 description:         A DSL for marking student work; see README.md for further details.
 homepage:            https://github.com/oleks/remarks#readme
@@ -16,13 +16,17 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Ast
+                     , Config
+                     , Export
+                     , Export.Html
+                     , Export.Generic
+                     , Export.CSV
+                     , Invalid
                      , Parser
                      , Parser.Impl
                      , PointsChecker
                      , PrettyPrinter
-                     , Config
-                     , Collector
-                     , Collector.Html
+                     , PropertyInterp
   build-depends:       base >= 4.7 && < 5
                      , GenericPretty >= 1.2.1
                      , pretty >= 1.1.3.3
