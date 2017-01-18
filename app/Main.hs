@@ -135,8 +135,8 @@ printJs = putStrLn . ppJs
 
 export :: [String] -> [Judgement] -> IO ()
 export format js = do
-  case mapM (interpProps <=< checkPoints) js of
-    Right newJs -> putStrLn $ exportCSV ";" format newJs
+  case (exportCSV ";" format =<< (mapM (interpProps <=< checkPoints) js)) of
+    Right docs -> putStrLn docs
     Left e -> putStrLn $ show e
 
 main :: IO ()
