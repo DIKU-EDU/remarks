@@ -33,10 +33,17 @@ newtype Comment
 instance Out Comment
 
 newtype Property 
-  = Property (String, String)
+  = Property (String, PropertyExp)
   deriving (Eq, Show, Generic)
 
 instance Out Property
+
+data PropertyExp 
+  = Lookup (Int, String)
+  | Value  String
+  deriving (Eq, Show, Generic)
+
+instance Out PropertyExp
 
 data Judgement
   = Judgement (Header, [Property], [Comment], [Judgement])

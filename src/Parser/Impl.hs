@@ -59,12 +59,29 @@ parseBonus title = do
   comments <- many parseComment'
   pure $ Bonus (points, comments)
 
+parsePropertyExp :: ReadP PropertyExp
+parsePropertyExp = choice [lookupProp, value]
+  where 
+    lookupProp = do
+      void $ char '['
+      index <- parseIntegral
+      void $ char '.'
+      name <- lineToken $ munchTillExcl ']'
+      void $ lineBreak
+      case (maybeRead (index)) of
+        Just i -> pure $ Lookup (i, name)
+        _ -> pfail
+    value = do
+      v <- satisfy (/='[')
+      value <- parseLine
+      pure $ Value (v:value)
+
 parseProperty :: ReadP Property
 parseProperty = do
   void $ string "  :"
   name <- lineToken $ munchTillExcl ':'
   void $ char ' '
-  value <- parseLine
+  value <- parsePropertyExp
   pure $ Property (name, value)
 
 parseRegularJudgement :: Int -> String -> ReadP Judgement

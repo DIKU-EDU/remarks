@@ -33,7 +33,13 @@ formatHeader level (Header (title, point, maxPoints)) =
 
 formatProperty :: Property -> Doc
 formatProperty (Property (name, value)) =
-  colon <> text name <> colon <+> text value
+  colon <> text name <> colon <+> formatPropertyExp value
+
+formatPropertyExp :: PropertyExp -> Doc
+formatPropertyExp (Lookup (index, name)) =
+  brackets $ int index <> text "." <> text name
+formatPropertyExp (Value value) = 
+  text value
 
 formatComment :: Comment -> Doc
 formatComment (Comment (mood, commentParts)) =

@@ -24,5 +24,10 @@ lookupProperty ("MaxPoints") (Judgement (Header(_, _, t), _, _, _)) = pointsDoc 
 lookupProperty name (Judgement (_, properties, _, _)) = 
   case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
     Nothing -> error "Property not found."
-    Just(value) -> text value
+    Just(value) -> formatPropertyExp value
 
+formatPropertyExp :: PropertyExp -> Doc
+formatPropertyExp (Lookup (index, name)) =
+  brackets $ int index <> text "." <> text name
+formatPropertyExp (Value value) = 
+  text value
