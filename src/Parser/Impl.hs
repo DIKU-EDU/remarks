@@ -51,8 +51,8 @@ lineBreak = void $ lineToken $ char '\n'
 munchTillExcl :: Char -> ReadP String
 munchTillExcl c = munch (/= c) <* char c
 
-parseBonus :: String -> ReadP Judgement
-parseBonus title = do
+parseBonus :: ReadP Judgement
+parseBonus = do
   lineToken $ char '+'
   points <- parsePoints
   void $ lineBreak
@@ -107,7 +107,7 @@ parseJudgement depth = skipSpaces *> do
   title <- lineToken $ munchTillExcl ':'
 
   case title of
-    "Bonus" -> parseBonus title
+    "Bonus" -> parseBonus
     _ -> parseRegularJudgement depth title
 
 parseMood :: ReadP Mood
