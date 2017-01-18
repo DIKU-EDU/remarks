@@ -1,5 +1,5 @@
 name:                remarks
-version:             0.1.6
+version:             0.1.7
 synopsis:            A DSL for marking student work
 description:         A DSL for marking student work; see README.md for further details.
 homepage:            https://github.com/oleks/remarks#readme
@@ -18,7 +18,7 @@ library
   exposed-modules:     Ast
                      , Parser
                      , Parser.Impl
-                     , Validator
+                     , PointsChecker
                      , PrettyPrinter
                      , Config
                      , Collector
@@ -44,7 +44,7 @@ test-suite remarks-test
   hs-source-dirs:      test
   main-is:             Tests.hs
   other-modules:       Parser.BlackBoxTests
-                       ValidatorTests
+                       PointsCheckerTests
   build-depends:       base
                      , remarks
                      , GenericPretty >= 1.2.1

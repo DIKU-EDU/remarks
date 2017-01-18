@@ -2,7 +2,7 @@ module Main where
 
 import Ast
 import Parser
-import Validator
+import PointsChecker
 import PrettyPrinter
 import Collector
 
@@ -121,7 +121,7 @@ parsePaths = mapM parsePath
 
 check :: [Judgement] -> IO ()
 check js = do
-  case mapM validate js of
+  case mapM checkPoints js of
     Right newJs -> printJs newJs
     Left e -> putStrLn $ show e
 
@@ -130,7 +130,7 @@ printJs = putStrLn . ppJs
 
 collect :: [Judgement] -> IO ()
 collect js = do
-  case mapM validate js of
+  case mapM checkPoints js of
     Right newJs -> putStrLn $ collectHTML newJs
     Left e -> putStrLn $ show e
 

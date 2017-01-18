@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Validator ( validate, Invalid(..) ) where
+module PointsChecker ( checkPoints, Invalid(..) ) where
 
 import Ast
 
@@ -25,21 +25,21 @@ infix 4 ~=
 (~=) :: Double -> Double -> Bool
 x ~= y = abs (x - y) <= 0.01
 
-validateSubJs :: Judgement -> Either Invalid Judgement
-validateSubJs (Judgement (h @ (Header (t, _, maxP)), cs, subJs)) = do
-  newSubJs <- mapM validate subJs
+checkPointsSubJs :: Judgement -> Either Invalid Judgement
+checkPointsSubJs (Judgement (h @ (Header (t, _, maxP)), cs, subJs)) = do
+  newSubJs <- mapM checkPoints subJs
   let newP = sum $ map points newSubJs
   pure $ Judgement (Header (t, newP, maxP), cs, newSubJs)
-validateSubJs j = pure j
+checkPointsSubJs j = pure j
 
-validate :: Judgement -> Either Invalid Judgement
-validate j @ (Judgement (h @ (Header (_, p, maxP)), _, [])) | isInfinite p = do
+checkPoints :: Judgement -> Either Invalid Judgement
+checkPoints j @ (Judgement (h @ (Header (_, p, maxP)), _, [])) | isInfinite p = do
   Left $ NoPointsInBottomJudgement j
-validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs @ (_:_))) | isInfinite p = do
+checkPoints j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs @ (_:_))) | isInfinite p = do
   try ((sum $ map maxPoints subJs) ~= maxP)
     (BadSubJudgementMaxPointsSum j)
-  validateSubJs j
-validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs)) = do
+  checkPointsSubJs j
+checkPoints j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs)) = do
   try (p <= maxP)
     (PointsExceedMaxPoints h)
   case subJs of
@@ -49,8 +49,8 @@ validate j @ (Judgement (h @ (Header (_, p, maxP)), _, subJs)) = do
         (BadSubJudgementPointsSum j)
       try ((sum $ map maxPoints subJs) ~= maxP)
         (BadSubJudgementMaxPointsSum j)
-      validateSubJs j
-validate j = pure j
+      checkPointsSubJs j
+checkPoints j = pure j
 
 points :: Judgement -> Double
 points (Bonus (v, _)) = v
