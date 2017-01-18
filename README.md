@@ -109,12 +109,15 @@ like this:
   * Avoids race conditions
   * Has a good degree of multiprogramming
   * Solves the problem
+
+### Bonus: +0
+  * Has an accompanying implementation / simulation
 ```
 
 Once filled in by a teaching assistant, this may look something like this:
 
 ```
-## T1: 7/15
+## T1: 9/15
 
 ### Formal requirements: 5/5
   * Has code
@@ -146,7 +149,15 @@ Once filled in by a teaching assistant, this may look something like this:
     + It's a ticket system, so it could be okay.
   * Solves the problem
     + In a complicated way, but yes.
+
+### Bonus: +2
+  * Has an accompanying implementation / simulation
+    + Yes!
 ```
+
+Bonus-judgements _must_ have the title `Bonus`, but they don't have to be there
+if you don't like them. The presence of bonus judgments also allows points to
+sum up to more than the given maximum. This is regarded as a feature.
 
 ## Points and Sums
 
