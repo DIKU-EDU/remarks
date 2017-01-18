@@ -1,7 +1,8 @@
-module Collector.Html (htmlRemarks) where
+module Export.Html (htmlRemarks) where
 
 import Ast
 
+import Export.Generic
 import Text.PrettyPrint
 
 htmlRemarks :: [Judgement] -> Doc
@@ -54,14 +55,6 @@ documentScript = script $
           nest  2 ((text "var subRow = e.parentNode.parentNode.nextElementSibling;") $$
           text "subRow.style.display = subRow.style.display === 'none' ? 'table-row' : 'none';") $$
    (text "}"))
-
-isIntegral :: Double -> Bool
-isIntegral x = x == fromInteger (round x)
-
-pointsDoc :: Double -> Doc
-pointsDoc v | isNaN v = empty
-pointsDoc v | isIntegral v = integer (round v)
-pointsDoc v = double v
 
 htmlTableHead :: Judgement -> Doc
 htmlTableHead (Judgement (_, _, _, js)) = 

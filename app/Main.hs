@@ -4,7 +4,7 @@ import Ast
 import Parser
 import PointsChecker
 import PrettyPrinter
-import Collector
+import Export
 
 import Control.Monad ( void, filterM, liftM )
 import Data.List ( sort )
@@ -17,6 +17,10 @@ import System.Exit ( exitWith, ExitCode ( ExitFailure ) )
 import System.IO ( hPutStrLn, stderr )
 
 import Text.PrettyPrint.GenericPretty
+
+splitBy delimiter = foldr f [[]] 
+  where f c l@(x:xs) | c == delimiter = []:l
+                     | otherwise = (c:x):xs
 
 report :: String -> IO ()
 report = hPutStrLn stderr
@@ -128,10 +132,10 @@ check js = do
 printJs :: [Judgement] -> IO ()
 printJs = putStrLn . ppJs
 
-collect :: [Judgement] -> IO ()
-collect js = do
+export :: [String] -> [Judgement] -> IO ()
+export format js = do
   case mapM checkPoints js of
-    Right newJs -> putStrLn $ collectHTML newJs
+    Right newJs -> putStrLn $ exportCSV ";" format newJs
     Left e -> putStrLn $ show e
 
 main :: IO ()
@@ -142,5 +146,6 @@ main = do
     ("parse" : paths) -> parsePaths paths >>= putStrLn . pretty
     ("check" : paths) -> parsePaths paths >>= mapM_ check
     ("show" : paths) -> parsePaths paths >>= mapM_ printJs
-    ("collect" : paths) -> parsePaths paths >>= mapM_ collect
+    ("export" : "--format" : format : paths) -> parsePaths paths >>= mapM_ (export (splitBy ';' format))
+    ("export" : paths) -> parsePaths paths >>= mapM_ (export ["Title", "Total", "MaxPoints"])
     (c:args) -> invalidCommand c args
