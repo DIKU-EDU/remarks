@@ -10,7 +10,7 @@ ppJs :: [Judgement] -> String
 ppJs = render . vcat . intersperse (text "") . map (formatJudgement 1)
 
 formatJudgement :: Int -> Judgement -> Doc
-formatJudgement level (Bonus (points, comments)) =
+formatJudgement level (Bonus (points, _)) =
   (text $ replicate level '#') <+> text "Bonus" <> colon <+> text "+" <>
     pointsDoc points
 formatJudgement level (Judgement (header, properties, comments, judgements)) =
@@ -31,8 +31,8 @@ formatProperty (Property (name, value)) =
 formatPropertyExp :: PropertyExp -> Doc
 formatPropertyExp (Lookup (index, name)) =
   brackets $ int index <> text "." <> text name
-formatPropertyExp (Value value) = text value
-formatPropertyExp (Num double) = pointsDoc double
+formatPropertyExp (Value v) = text v
+formatPropertyExp (Num v) = pointsDoc v
 
 formatComment :: Comment -> Doc
 formatComment (Comment (mood, commentParts)) =
