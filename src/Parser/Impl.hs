@@ -53,7 +53,7 @@ munchTillExcl c = munch (/= c) <* char c
 
 parseBonus :: ReadP Judgement
 parseBonus = do
-  lineToken $ char '+'
+  void $ lineToken $ char '+'
   points <- parsePoints
   void $ lineBreak
   comments <- many parseComment'
