@@ -89,8 +89,8 @@ and would like to let the teacher decide, or the solution cannot be used to
 make a judgement about this point.
 
 Structural remarks are good for listing things to look for. For instance, a
-(template) judgement for an operating systems exercise may look something like
-this:
+(template) judgement for an operating systems exercise might look something
+like this:
 
 ```
 ## T1: /15
