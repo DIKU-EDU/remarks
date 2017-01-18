@@ -7,20 +7,22 @@ import PropertyInterp
 import PrettyPrinter
 import Export
 
-import Control.Monad ( void, filterM, liftM, (<=<) )
+import Control.Monad ( liftM, (<=<) )
 import Data.List ( sort )
 import System.Directory
   ( doesFileExist, doesDirectoryExist, listDirectory )
 import System.FilePath
-  ( (<.>), (</>), takeDirectory, takeExtension, dropExtension )
+  ( (<.>), (</>), takeExtension, dropExtension )
 import System.Environment( getArgs )
 import System.Exit ( exitWith, ExitCode ( ExitFailure ) )
 import System.IO ( hPutStrLn, stderr )
 
 import Text.PrettyPrint.GenericPretty
 
-splitBy delimiter = foldr f [[]]
-  where f c l@(x:xs) | c == delimiter = []:l
+splitBy :: (Foldable f, Eq t) => t -> f t -> [[t]]
+splitBy delimiter = foldr f []
+  where f c [] = f c [[]]
+        f c l@(x:xs) | c == delimiter = []:l
                      | otherwise = (c:x):xs
 
 report :: String -> IO ()
@@ -144,9 +146,17 @@ main = do
   args <- getArgs
   case args of
     [] -> noCommand
-    ("parse" : paths) -> parsePaths paths >>= putStrLn . pretty
-    ("check" : paths) -> parsePaths paths >>= mapM_ check
-    ("show" : paths) -> parsePaths paths >>= mapM_ printJs
-    ("export" : "--format" : format : paths) -> parsePaths paths >>= mapM_ (export (splitBy ';' format))
-    ("export" : paths) -> parsePaths paths >>= mapM_ (export ["Title", "Total", "MaxPoints"])
-    (c:args) -> invalidCommand c args
+    ("parse" : paths) ->
+      with paths $ putStrLn . pretty
+    ("check" : paths) ->
+      with paths $ mapM_ check
+    ("show" : paths) ->
+      with paths $ mapM_ printJs
+    ("export" : "--format" : format : paths) ->
+      with paths $ mapM_ $ export (splitBy ';' format)
+    ("export" : paths) ->
+      with paths $ mapM_ $ export ["Title", "Total", "MaxPoints"]
+    (c:rest) -> invalidCommand c rest
+  where
+    with :: [FilePath] -> ([[Judgement]] -> IO ()) -> IO ()
+    with paths f = parsePaths paths >>= f
