@@ -3,10 +3,11 @@ module Main where
 import Ast
 import Parser
 import PointsChecker
+import PropertyInterp
 import PrettyPrinter
 import Export
 
-import Control.Monad ( void, filterM, liftM )
+import Control.Monad ( void, filterM, liftM, (<=<) )
 import Data.List ( sort )
 import System.Directory
   ( doesFileExist, doesDirectoryExist, listDirectory )
@@ -125,7 +126,7 @@ parsePaths = mapM parsePath
 
 check :: [Judgement] -> IO ()
 check js = do
-  case mapM checkPoints js of
+  case mapM (interpProps <=< checkPoints) js of
     Right newJs -> printJs newJs
     Left e -> putStrLn $ show e
 
@@ -134,7 +135,7 @@ printJs = putStrLn . ppJs
 
 export :: [String] -> [Judgement] -> IO ()
 export format js = do
-  case mapM checkPoints js of
+  case mapM (interpProps <=< checkPoints) js of
     Right newJs -> putStrLn $ exportCSV ";" format newJs
     Left e -> putStrLn $ show e
 

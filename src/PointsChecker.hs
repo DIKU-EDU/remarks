@@ -1,21 +1,11 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module PointsChecker ( checkPoints, Invalid(..) ) where
+module PointsChecker ( checkPoints ) where
 
 import Ast
+import Invalid
 
 import Control.Monad ( forM_ )
-
-import Text.PrettyPrint.GenericPretty
-
-data Invalid
-  = PointsExceedMaxPoints Header
-  | BadSubJudgementPointsSum Judgement
-  | BadSubJudgementMaxPointsSum Judgement
-  | NoPointsInBottomJudgement Judgement
-  deriving (Eq, Show, Generic)
-
-instance Out Invalid
 
 try :: Bool -> Invalid -> Either Invalid ()
 try True = \_ -> Right ()

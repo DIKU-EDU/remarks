@@ -1,6 +1,7 @@
 module PrettyPrinter (ppJs) where
 
 import Ast
+import Export.Generic
 
 import Text.PrettyPrint
 import Data.List (intersperse)
@@ -18,14 +19,6 @@ formatJudgement level (Judgement (header, properties, comments, judgements)) =
   (nest 2 $ vcat $ map formatComment comments) $+$
   (vcat $ map (formatJudgement (level + 1)) judgements)
 
-isIntegral :: Double -> Bool
-isIntegral x = x == fromInteger (round x)
-
-pointsDoc :: Double -> Doc
-pointsDoc v | isNaN v = empty
-pointsDoc v | isIntegral v = integer (round v)
-pointsDoc v = double v
-
 formatHeader :: Int -> Header -> Doc
 formatHeader level (Header (title, point, maxPoints)) =
   (text $ replicate level '#') <+> text title <> colon <>
@@ -38,8 +31,8 @@ formatProperty (Property (name, value)) =
 formatPropertyExp :: PropertyExp -> Doc
 formatPropertyExp (Lookup (index, name)) =
   brackets $ int index <> text "." <> text name
-formatPropertyExp (Value value) = 
-  text value
+formatPropertyExp (Value value) = text value
+formatPropertyExp (Num double) = pointsDoc double
 
 formatComment :: Comment -> Doc
 formatComment (Comment (mood, commentParts)) =

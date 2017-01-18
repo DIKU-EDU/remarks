@@ -41,6 +41,7 @@ instance Out Property
 data PropertyExp 
   = Lookup (Int, String)
   | Value  String
+  | Num  Double
   deriving (Eq, Show, Generic)
 
 instance Out PropertyExp

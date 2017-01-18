@@ -29,5 +29,5 @@ lookupProperty name (Judgement (_, properties, _, _)) =
 formatPropertyExp :: PropertyExp -> Doc
 formatPropertyExp (Lookup (index, name)) =
   brackets $ int index <> text "." <> text name
-formatPropertyExp (Value value) = 
-  text value
+formatPropertyExp (Value value) = text value
+formatPropertyExp (Num value) = pointsDoc value
