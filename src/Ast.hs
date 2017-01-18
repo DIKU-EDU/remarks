@@ -32,13 +32,13 @@ newtype Comment
 
 instance Out Comment
 
-newtype Property 
+newtype Property
   = Property (String, PropertyExp)
   deriving (Eq, Show, Generic)
 
 instance Out Property
 
-data PropertyExp 
+data PropertyExp
   = Lookup (Int, String)
   | Value  String
   | Num  Double

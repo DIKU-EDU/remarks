@@ -61,7 +61,7 @@ parseBonus title = do
 
 parsePropertyExp :: ReadP PropertyExp
 parsePropertyExp = choice [lookupProp, value]
-  where 
+  where
     lookupProp = do
       void $ char '['
       index <- parseIntegral
@@ -75,7 +75,7 @@ parsePropertyExp = choice [lookupProp, value]
       v <- satisfy (/='[')
       case (v) of
        '\n' -> pure $ Value ""
-       _    -> (\value -> pure $ Value (v:value)) =<< parseLine      
+       _    -> (\value -> pure $ Value (v:value)) =<< parseLine
 
 parseProperty :: ReadP Property
 parseProperty = do

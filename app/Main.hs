@@ -19,7 +19,7 @@ import System.IO ( hPutStrLn, stderr )
 
 import Text.PrettyPrint.GenericPretty
 
-splitBy delimiter = foldr f [[]] 
+splitBy delimiter = foldr f [[]]
   where f c l@(x:xs) | c == delimiter = []:l
                      | otherwise = (c:x):xs
 
