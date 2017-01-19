@@ -39,7 +39,8 @@ to add or fix a couple issues.
 
 ## Usage
 
-* `remarks summary <depth> [<file>]` checks and summarizes the points.
+* `remarks summary <depth> [<file>]` checks and summarizes the points. Depth 0
+  lists just the top-level judgements.
 
 ## Installation
 
