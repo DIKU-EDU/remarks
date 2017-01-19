@@ -1,11 +1,12 @@
 module Main where
 
 import Ast
+import Export
+import Invalid
 import Parser
 import PointsChecker
 import PropertyInterp
 import PrettyPrinter
-import Export
 
 import Control.Monad ( liftM, (<=<) )
 import Data.List ( sort )
@@ -126,9 +127,12 @@ parsePath path = do
 parsePaths :: [FilePath] -> IO [[Judgement]]
 parsePaths = mapM parsePath
 
+marshall :: [Judgement] -> Either Invalid [Judgement]
+marshall = mapM (interpProps <=< checkPoints)
+
 check :: [Judgement] -> IO ()
 check js = do
-  case mapM (interpProps <=< checkPoints) js of
+  case marshall js of
     Right newJs -> printJs newJs
     Left e -> putStrLn $ show e
 
@@ -137,7 +141,7 @@ printJs = putStrLn . ppJs
 
 export :: [String] -> [Judgement] -> IO ()
 export format js = do
-  case (exportCSV ";" format =<< (mapM (interpProps <=< checkPoints) js)) of
+  case (exportCSV ";" format =<< (marshall js)) of
     Right docs -> putStrLn docs
     Left e -> putStrLn $ show e
 

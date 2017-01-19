@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-
 module PointsChecker ( checkPoints ) where
 
 import Ast
