@@ -12,9 +12,8 @@ type PendingTree = Tree String
 linebreak :: Doc
 linebreak = text "\n"
 
-formatTree :: PendingTree -> String
-formatTree t = render $ formatSubTree 0 0 t $+$ text ""
-  -- render $ text s $+$ (vcat $ map (formatSubTree 0 0) l) $+$ text ""
+formatTree :: PendingTree -> Doc
+formatTree t = formatSubTree 0 0 t
 
 formatSubTrees :: Int -> Int -> [PendingTree] -> Doc
 formatSubTrees _ _ [] = empty
@@ -69,6 +68,5 @@ findPending detailLevel js =
     [] -> Nothing
     t  ->
       case detailLevel of
-        Nothing  -> Just $ concatMap formatTree t
-        (Just i) -> Just $ concatMap (drawTree . (limitPendingTree i)) t
-
+        Nothing  -> Just $ render $ vcat $ map formatTree t
+        (Just i) -> Just $ render $ vcat $ map (formatTree . (limitPendingTree i)) t
