@@ -133,7 +133,7 @@ marshall = mapM (interpProps <=< checkPoints)
 check :: [Judgement] -> IO ()
 check js = do
   case marshall js of
-    Right newJs -> printJs newJs
+    Right _ -> pure ()
     Left e -> putStrLn $ show e
 
 printJs :: [Judgement] -> IO ()
