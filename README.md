@@ -59,7 +59,14 @@ Developer features:
 
 ## Installation
 
-There are 3 options:
+`remarks` is on [Hackage](http://hackage.haskell.org/package/remarks), so you
+can use [Cabal](https://www.haskell.org/cabal/):
+
+```
+$ cabal install remarks
+```
+
+If you clone the repository, you get two further options:
 
 * If you are using the purely functional package manager
   [Nix](https://nixos.org/nix/), you can do this:
@@ -68,15 +75,11 @@ There are 3 options:
   $ nix-build
   ```
 
-* `remarks` is also on [Hackage](http://hackage.haskell.org/package/remarks),
-  so you can just use [Cabal](https://www.haskell.org/cabal/):
+  This will create a symlink `result`, pointing to the directory in your Nix
+  store, containing the binary.
 
-  ```
-  $ cabal install remarks
-  ```
-
-* Finally, you can also clone this repository and use
-  [Stack](https://docs.haskellstack.org/en/stable/README/):
+* Or, if using [Stack](https://docs.haskellstack.org/en/stable/README/), you
+  can do this:
 
   ```
   $ stack build
