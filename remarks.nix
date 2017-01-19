@@ -1,5 +1,5 @@
 { mkDerivation, base, directory, filepath, GenericPretty, pretty
-, stdenv, tasty, tasty-golden, tasty-hunit
+, stdenv, tasty, tasty-golden, tasty-hunit, containers
 }:
 mkDerivation {
   pname = "remarks";
