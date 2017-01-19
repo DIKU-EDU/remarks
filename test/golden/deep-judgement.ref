@@ -1,4 +1,5 @@
 Right [Judgement (Header ("Test", 0.0, 0.0),
+                  [],
                   [Comment (Positive,
                             [CommentStr "Very good.",CommentStr "More text."]),
                    Comment (Negative,
