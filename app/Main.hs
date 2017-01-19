@@ -140,11 +140,14 @@ check js = do
 printJs :: [Judgement] -> IO ()
 printJs = putStrLn . ppJs
 
-export :: [String] -> [Judgement] -> IO ()
+export :: String -> [Judgement] -> IO ()
 export format js = do
-  case (exportCSV ";" format =<< (marshall js)) of
+  case (exportCSV [delimiter] formatList =<< (marshall js)) of
     Right docs -> putStrLn docs
     Left e -> putStrLn $ show e
+  where 
+    delimiter = findDelimiter format
+    formatList = splitBy delimiter format
 
 export_html :: [Judgement] -> IO ()
 export_html js = do
@@ -164,6 +167,13 @@ pending dl js = do
     Nothing  -> putStrLn "No pending corrections."
     (Just s) -> putStrLn "The following corrections are pending:" >> putStrLn s
 
+findDelimiter :: String -> Char
+findDelimiter [] = ';' -- There is no delimiter so it doesn't matter
+findDelimiter (s:ss) = 
+  if (elem s [',',';'])
+  then s
+  else findDelimiter ss
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -182,9 +192,9 @@ main = do
     ("summary" : depth : paths) ->
       with paths $ mapM_ $ showSummary (read depth)
     ("export" : "--format" : format : paths) ->
-      with paths $ mapM_ $ export (splitBy ';' format)
+      with paths $ mapM_ $ export format
     ("export" : paths) ->
-      with paths $ mapM_ $ export ["Title", "Total", "MaxPoints"]
+      with paths $ mapM_ $ export "Title;Total;MaxPoints"
     ("exportHTML" : paths) ->
       with paths $ mapM_ export_html
     (c:rest) -> invalidCommand c rest
