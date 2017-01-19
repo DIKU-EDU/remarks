@@ -18,14 +18,14 @@ formatTree t = formatSubTree 0 0 t
 formatSubTrees :: Int -> Int -> [PendingTree] -> Doc
 formatSubTrees _ _ [] = empty
 formatSubTrees eDep bDep [t @ (Node _ [])] =
-  treeNone eDep <> treeBranch bDep <> text " └> " <> formatSubTree eDep bDep t
+  treeNone eDep <> treeBranch bDep <> text " |> " <> formatSubTree eDep bDep t
 formatSubTrees eDep bDep [t] =
-  treeNone eDep <> treeBranch bDep <> text " └─ " <> formatSubTree (eDep + 1) bDep t
+  treeNone eDep <> treeBranch bDep <> text " |- " <> formatSubTree (eDep + 1) bDep t
 formatSubTrees eDep bDep ((Node s []):ts) =
-  (treeNone eDep <> treeBranch bDep <> text " ├> " <> formatSubTree eDep bDep (Node s [])) <> linebreak <>
+  (treeNone eDep <> treeBranch bDep <> text " |> " <> formatSubTree eDep bDep (Node s [])) <> linebreak <>
   (formatSubTrees eDep bDep ts)
 formatSubTrees eDep bDep (t:ts) =
-  (treeNone eDep <> treeBranch bDep <> text " ├─ " <> formatSubTree eDep (bDep + 1) t) <> linebreak <>
+  (treeNone eDep <> treeBranch bDep <> text " |- " <> formatSubTree eDep (bDep + 1) t) <> linebreak <>
   (formatSubTrees eDep bDep ts)
 
 formatSubTree :: Int -> Int -> PendingTree -> Doc
@@ -35,7 +35,7 @@ formatSubTree eDep bDep (Node s ts) =
   text s <> linebreak <> formatSubTrees eDep bDep ts
 
 treeBranch :: Int -> Doc
-treeBranch level = hcat $ replicate level (text " │ ")
+treeBranch level = hcat $ replicate level (text " | ")
 
 treeNone :: Int -> Doc
 treeNone level = hcat $ replicate level (text "   ")
