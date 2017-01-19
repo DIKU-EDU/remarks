@@ -141,6 +141,12 @@ export format js = do
     Right docs -> putStrLn docs
     Left e -> putStrLn $ show e
 
+export_html :: [Judgement] -> IO ()
+export_html js = do
+  case (mapM checkPoints js) of
+    Right newJs -> putStrLn $ exportHTML newJs
+    Left e -> putStrLn $ show e
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -156,6 +162,8 @@ main = do
       with paths $ mapM_ $ export (splitBy ';' format)
     ("export" : paths) ->
       with paths $ mapM_ $ export ["Title", "Total", "MaxPoints"]
+    ("exportHTML" : paths) ->
+      with paths $ mapM_ export_
     (c:rest) -> invalidCommand c rest
   where
     with :: [FilePath] -> ([[Judgement]] -> IO ()) -> IO ()
