@@ -48,7 +48,11 @@ User features:
   the overall judgement for each given argument.
 * `remarks summary <depth> [<file>]` checks and summarizes the points. Depth 0
   lists just the top-level judgements.
-
+* `remarks pending [--depth <depth>] [<file>]` shown the corrections that has not
+  been completed. Can be cut at a given depth; depth 0 lists just the top-level judgements.
+* `remarks export [--format "<format>"] [<file>]` exports corrections to a semicolon separated 
+  list. The format is a semicolon separated string of properties.
+* `remarks exportHTML [<file>]` exports all corrections to a dynamic html-table.
 Developer features:
 
 * `remarks parse [<file>]` parses the given files and shows their ASTs.
