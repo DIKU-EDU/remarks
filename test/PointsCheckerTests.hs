@@ -45,7 +45,7 @@ posUnitTests = testGroup "Positive Unit Tests"
   ]
 
 negUnitTests :: TestTree
-negUnitTests = testGroup "Positive Unit Tests"
+negUnitTests = testGroup "Negative Unit Tests"
   [ testCase "Points exceed max points" $
       checkPointsStr "# A: 1/0\n" @?=
         [Left $ PointsExceedMaxPoints (Header ("A", 1.0, 0.0))]
