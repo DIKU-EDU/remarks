@@ -39,8 +39,19 @@ to add or fix a couple issues.
 
 ## Usage
 
+User features:
+
+* `remarks check [<file>]` checks that the file system structure is
+  well-formed. For instance, checks that all explicitly stated point sums
+  are correct.
+* `remarks show [<file>]` checks the file system structure as above, and shows
+  the overall judgement for each given argument.
 * `remarks summary <depth> [<file>]` checks and summarizes the points. Depth 0
   lists just the top-level judgements.
+
+Developer features:
+
+* `remarks parse [<file>]` parses the given files and shows their ASTs.
 
 ## Installation
 
