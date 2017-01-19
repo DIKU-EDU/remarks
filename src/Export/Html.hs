@@ -12,13 +12,13 @@ htmlRemarks js =
     (body . table $ htmlTableHead (head js) $+$ vcat (map htmlJudgement js))
 
 tag :: String -> Doc -> Doc -> Doc
-tag tagStr attr doc = (text "<" <> text tagStr <+> attr <> text ">") $$ nest 2 doc $$ text ("</" ++ tagStr ++ ">")
+tag tagStr attr doc = (text "<" <> text tagStr <> attr <> text ">") $$ nest 2 doc $$ text ("</" ++ tagStr ++ ">")
 
 etag :: String -> Doc -> Doc
 etag tagStr = tag tagStr empty
 
 atag :: String -> String -> Doc -> Doc
-atag tagStr attrStr = tag tagStr (text attrStr)
+atag tagStr attrStr = tag tagStr (space <> text attrStr)
 
 doctype :: Doc -> Doc
 doctype = ($$) (text "<!DOCTYPE html>")
@@ -122,7 +122,7 @@ htmlDetailJudgement (Judgement (Header(title, points, maxPoint), _, comments, ju
     (htmlDetailComments comments $$ htmlDetailJudgements judgements)
 
 htmlDetailComments :: [Comment] -> Doc
-htmlDetailComments [] = text ""
+htmlDetailComments [] = empty
 htmlDetailComments comments =
   ul . vcat $ map htmlDetailComment comments
 
