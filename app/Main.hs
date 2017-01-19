@@ -158,11 +158,11 @@ showSummary depth js = do
     Right mJs -> printJs $ map (summary depth) mJs
     Left e -> putStrLn $ show e
 
-pending :: [Judgement] -> IO ()
-pending js = do
-  case findPending js of
+pending :: Maybe Int -> [Judgement] -> IO ()
+pending dl js = do
+  case findPending dl js of
     Nothing  -> putStrLn "No pending corrections."
-    (Just s) -> putStrLn s
+    (Just s) -> putStrLn "The following corrections are pending:" >> putStrLn s
 
 main :: IO ()
 main = do
@@ -175,8 +175,10 @@ main = do
       with paths $ mapM_ check
     ("show" : paths) ->
       with paths $ mapM_ printJs
+    ("pending" : "--level" : l : paths) ->
+      with paths $ mapM_ (pending (Just $ read l))
     ("pending" : paths) ->
-      with paths $ mapM_ pending
+      with paths $ mapM_ (pending Nothing)
     ("summary" : depth : paths) ->
       with paths $ mapM_ $ showSummary (read depth)
     ("export" : "--format" : format : paths) ->
