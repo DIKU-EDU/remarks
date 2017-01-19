@@ -5,8 +5,41 @@ module Pending ( findPending ) where
 import Ast
 
 import Data.Tree
+import Text.PrettyPrint
 
 type PendingTree = Tree String
+
+linebreak :: Doc
+linebreak = text "\n"
+
+formatTree :: PendingTree -> String
+formatTree t = render $ formatSubTree 0 0 t $+$ text ""
+  -- render $ text s $+$ (vcat $ map (formatSubTree 0 0) l) $+$ text ""
+
+formatSubTrees :: Int -> Int -> [PendingTree] -> Doc
+formatSubTrees _ _ [] = empty
+formatSubTrees eDep bDep [t @ (Node _ [])] =
+  treeNone eDep <> treeBranch bDep <> text " └> " <> formatSubTree eDep bDep t
+formatSubTrees eDep bDep [t] =
+  treeNone eDep <> treeBranch bDep <> text " └─ " <> formatSubTree (eDep + 1) bDep t
+formatSubTrees eDep bDep ((Node s []):ts) =
+  (treeNone eDep <> treeBranch bDep <> text " ├> " <> formatSubTree eDep bDep (Node s [])) <> linebreak <>
+  (formatSubTrees eDep bDep ts)
+formatSubTrees eDep bDep (t:ts) =
+  (treeNone eDep <> treeBranch bDep <> text " ├─ " <> formatSubTree eDep (bDep + 1) t) <> linebreak <>
+  (formatSubTrees eDep bDep ts)
+
+formatSubTree :: Int -> Int -> PendingTree -> Doc
+formatSubTree _ _ (Node s []) =
+  text s
+formatSubTree eDep bDep (Node s ts) =
+  text s <> linebreak <> formatSubTrees eDep bDep ts
+
+treeBranch :: Int -> Doc
+treeBranch level = hcat $ replicate level (text " │ ")
+
+treeNone :: Int -> Doc
+treeNone level = hcat $ replicate level (text "   ")
 
 size :: PendingTree -> Int
 size (Node _ []) = 1
@@ -34,8 +67,8 @@ findPending :: Maybe Int -> [Judgement] -> Maybe(String)
 findPending detailLevel js =
   case (concatMap pendingJudgement js) of
     [] -> Nothing
-    t  -> 
+    t  ->
       case detailLevel of
-        Nothing  -> Just $ concatMap drawTree t
+        Nothing  -> Just $ concatMap formatTree t
         (Just i) -> Just $ concatMap (drawTree . (limitPendingTree i)) t
 
