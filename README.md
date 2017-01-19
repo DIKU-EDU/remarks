@@ -46,8 +46,8 @@ User features:
   are correct.
 * `remarks show [<file>]` checks the file system structure as above, and shows
   the overall judgement for each given argument.
-* `remarks summary <depth> [<file>]` checks and summarizes the points. Depth 0
-  lists just the top-level judgements.
+* `remarks summary [--depth <depth>] [<file>]` checks and summarizes the points.
+  Depth 0 (default) lists just the top-level judgements.
 * `remarks pending [--depth <depth>] [<file>]` shown the corrections that has not
   been completed. Can be cut at a given depth; depth 0 lists just the top-level judgements.
 * `remarks export [--format "<format>"] [<file>]` exports corrections to a semicolon separated 

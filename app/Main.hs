@@ -189,8 +189,10 @@ main = do
       with paths $ mapM_ (pending (Just $ read d))
     ("pending" : paths) ->
       with paths $ mapM_ (pending Nothing)
-    ("summary" : depth : paths) ->
-      with paths $ mapM_ $ showSummary (read depth)
+    ("summary" : "--depth" : d : paths) ->
+      with paths $ mapM_ $ showSummary $ read d
+    ("summary" : paths) ->
+      with paths $ mapM_ $ showSummary 0
     ("export" : "--format" : format : paths) ->
       with paths $ mapM_ $ export format
     ("export" : paths) ->
