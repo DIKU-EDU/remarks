@@ -175,8 +175,8 @@ main = do
       with paths $ mapM_ check
     ("show" : paths) ->
       with paths $ mapM_ printJs
-    ("pending" : "--level" : l : paths) ->
-      with paths $ mapM_ (pending (Just $ read l))
+    ("pending" : "--depth" : d : paths) ->
+      with paths $ mapM_ (pending (Just $ read d))
     ("pending" : paths) ->
       with paths $ mapM_ (pending Nothing)
     ("summary" : depth : paths) ->
