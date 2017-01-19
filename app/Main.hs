@@ -167,7 +167,7 @@ main = do
     ("export" : paths) ->
       with paths $ mapM_ $ export ["Title", "Total", "MaxPoints"]
     ("exportHTML" : paths) ->
-      with paths $ mapM_ export_
+      with paths $ mapM_ export_html
     (c:rest) -> invalidCommand c rest
   where
     with :: [FilePath] -> ([[Judgement]] -> IO ()) -> IO ()
