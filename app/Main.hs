@@ -169,7 +169,7 @@ pending dl js = do
 
 findDelimiter :: String -> Char
 findDelimiter [] = ';' -- There is no delimiter so it doesn't matter
-findDelimiter (s:ss) = 
+findDelimiter (s:ss) =
   if (elem s [',',';'])
   then s
   else findDelimiter ss
