@@ -6,6 +6,7 @@ import Invalid
 import Parser
 import PointsChecker
 import PropertyInterp
+import Pending
 import PrettyPrinter
 
 import Control.Monad ( liftM, (<=<) )
@@ -133,7 +134,7 @@ marshall = mapM (interpProps <=< checkPoints)
 check :: [Judgement] -> IO ()
 check js = do
   case marshall js of
-    Right _ -> pure ()
+    Right newJs -> printJs newJs
     Left e -> putStrLn $ show e
 
 printJs :: [Judgement] -> IO ()
@@ -157,6 +158,12 @@ showSummary depth js = do
     Right mJs -> printJs $ map (summary depth) mJs
     Left e -> putStrLn $ show e
 
+pending :: [Judgement] -> IO ()
+pending js = do
+  case findPending js of
+    Nothing  -> putStrLn "No pending corrections."
+    (Just s) -> putStrLn s
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -168,6 +175,8 @@ main = do
       with paths $ mapM_ check
     ("show" : paths) ->
       with paths $ mapM_ printJs
+    ("pending" : paths) ->
+      with paths $ mapM_ pending
     ("summary" : depth : paths) ->
       with paths $ mapM_ $ showSummary (read depth)
     ("export" : "--format" : format : paths) ->
