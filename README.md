@@ -66,7 +66,9 @@ can use [Cabal](https://www.haskell.org/cabal/):
 $ cabal install remarks
 ```
 
-If you clone the repository, you get two further options:
+If you clone the repository, or [download the
+sources](https://github.com/oleks/remarks/releases), you get two further
+options:
 
 * If you are using the purely functional package manager
   [Nix](https://nixos.org/nix/), you can do this:
