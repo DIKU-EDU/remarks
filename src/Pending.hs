@@ -14,8 +14,12 @@ size (Node _ (t @ (_:_))) = sum $ map size t
 
 limitPendingTree :: Int -> PendingTree -> PendingTree
 limitPendingTree _ (Node t []) = (Node t [])
-limitPendingTree 0 (Node t sub) = (Node (t ++ " (" ++ (show $ sum $ map size sub) ++ " tasks)") [])
+limitPendingTree 0 (Node t sub) = (Node (t ++ showTasks (sum $ map size sub)) [])
 limitPendingTree n (Node t sub) = (Node t (map (limitPendingTree (n-1)) sub))
+
+showTasks :: Int -> String
+showTasks 1 = " (1 task)"
+showTasks n = " (" ++ (show n) ++ " tasks)"
 
 pendingJudgement :: Judgement -> [PendingTree]
 pendingJudgement (Bonus (_, _)) = []
