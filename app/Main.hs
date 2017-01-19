@@ -151,6 +151,12 @@ export_html js = do
     Right newJs -> putStrLn $ exportHTML newJs
     Left e -> putStrLn $ show e
 
+showSummary :: Word -> [Judgement] -> IO ()
+showSummary depth js = do
+  case marshall js of
+    Right mJs -> printJs $ map (summary depth) mJs
+    Left e -> putStrLn $ show e
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -162,6 +168,8 @@ main = do
       with paths $ mapM_ check
     ("show" : paths) ->
       with paths $ mapM_ printJs
+    ("summary" : depth : paths) ->
+      with paths $ mapM_ $ showSummary (read depth)
     ("export" : "--format" : format : paths) ->
       with paths $ mapM_ $ export (splitBy ';' format)
     ("export" : paths) ->

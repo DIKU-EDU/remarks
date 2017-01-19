@@ -37,6 +37,10 @@ show`, respectively.
 See [Issues](https://github.com/oleks/remarks/issues) for a roadmap. Feel free
 to add or fix a couple issues.
 
+## Usage
+
+* `remarks summary <depth> [<file>]` checks and summarizes the points.
+
 ## Installation
 
 [`remarks` is on Hackage](http://hackage.haskell.org/package/remarks), so you

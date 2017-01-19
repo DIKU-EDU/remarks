@@ -1,9 +1,10 @@
-module Export (exportHTML, exportCSV) where
+module Export (exportHTML, exportCSV, unify, summary) where
 
 import Ast
 import Invalid
 import Export.Html
 import Export.CSV
+import Export.Generic ( unify, summary )
 
 import Text.PrettyPrint
 
