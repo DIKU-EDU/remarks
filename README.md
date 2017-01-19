@@ -62,12 +62,19 @@ Developer features:
 There are 3 options:
 
 * If you are using the purely functional package manager
-  [Nix](https://nixos.org/nix/), you can just `nix-build` in this directory.
+  [Nix](https://nixos.org/nix/), you can do this:
+
+  ```
+  $ nix-build
+  ```
+
 * `remarks` is also on [Hackage](http://hackage.haskell.org/package/remarks),
   so you can just use [Cabal](https://www.haskell.org/cabal/):
+
   ```
   $ cabal install remarks
   ```
+
 * Finally, you can also clone this repository and use
   [Stack](https://docs.haskellstack.org/en/stable/README/):
 
