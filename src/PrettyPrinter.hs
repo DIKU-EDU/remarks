@@ -21,7 +21,7 @@ formatJudgement level (Judgement (header, properties, comments, judgements)) =
 
 formatHeader :: Int -> Header -> Doc
 formatHeader level (Header (title, point, maxPoints)) =
-  (text $ replicate level '#') <+> text title <> colon <>
+  (text $ replicate level '#') <+> text title <> colon <> space <>
     pointsDoc point <> text "/" <> pointsDoc maxPoints
 
 formatProperty :: Property -> Doc
