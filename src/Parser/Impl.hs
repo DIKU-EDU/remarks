@@ -38,7 +38,8 @@ parsePoints = do
 parseMaxPoints :: ReadP Double
 parseMaxPoints = do
   is <- parseIntegral
-  case (maybeRead is) of
+  fs <- (string ".5") +++ pure "0"
+  case (maybeRead (is ++ "." ++ fs)) of
     Just x -> pure x
     _ -> pfail
 
