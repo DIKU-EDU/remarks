@@ -9,37 +9,44 @@ import Text.PrettyPrint
 
 type PendingTree = Tree String
 
+data FormatTree
+  = TEmpty  FormatTree
+  | TSpace  FormatTree
+  | TBranch FormatTree
+  | TNode
+  | TLeaf
+
+showTree :: FormatTree -> Doc
+showTree (TEmpty t)  = showTree t
+showTree (TBranch t) = text " | " <> showTree t
+showTree (TSpace t)  = text "   " <> showTree t
+showTree TNode       = text " |- "
+showTree TLeaf       = text " |> "
+
 linebreak :: Doc
 linebreak = text "\n"
 
 formatTree :: PendingTree -> Doc
-formatTree t = formatSubTree [] t
+formatTree t = formatSubTree (TEmpty) t
 
-formatSubTrees :: [Bool] -> [PendingTree] -> Doc
+formatSubTrees :: (FormatTree -> FormatTree) -> [PendingTree] -> Doc
 formatSubTrees _ [] = empty
-formatSubTrees depth [t @ (Node _ [])] =
-  mapTreeBranch depth <> text " |> " <> formatSubTree depth t
-formatSubTrees depth [t] =
-  mapTreeBranch depth <> text " |- " <> formatSubTree (depth ++ [False]) t
-formatSubTrees depth ((Node s []):ts) =
-  (mapTreeBranch depth <> text " |> " <> formatSubTree depth (Node s [])) <> linebreak <>
-  (formatSubTrees depth ts)
-formatSubTrees depth (t:ts) =
-  (mapTreeBranch depth <> text " |- " <> formatSubTree (depth ++ [True]) t) <> linebreak <>
-  (formatSubTrees depth ts)
+formatSubTrees ft [(Node s [])] =
+  showTree (ft TLeaf) <> text s
+formatSubTrees ft [t] =
+  showTree (ft TNode) <> formatSubTree (ft . TSpace) t
+formatSubTrees ft ((Node s []):ts) =
+  showTree (ft TLeaf) <> text s <> linebreak <>
+  (formatSubTrees ft ts)
+formatSubTrees ft (t:ts) =
+  showTree (ft TNode) <> formatSubTree (ft . TBranch) t <> linebreak <>
+  (formatSubTrees ft ts)
 
-formatSubTree :: [Bool] -> PendingTree -> Doc
+formatSubTree :: (FormatTree -> FormatTree) -> PendingTree -> Doc
 formatSubTree _ (Node s []) =
   text s
-formatSubTree depth (Node s ts) =
-  text s <> linebreak <> formatSubTrees depth ts
-
-mapTreeBranch :: [Bool] -> Doc
-mapTreeBranch = hcat . (map treeBranch)
-
-treeBranch :: Bool -> Doc
-treeBranch True  = text " | "
-treeBranch False = text "   "
+formatSubTree tree (Node s ts) =
+  text s <> linebreak <> formatSubTrees tree ts
 
 size :: PendingTree -> Int
 size (Node _ []) = 1
