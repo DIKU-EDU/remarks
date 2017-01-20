@@ -13,32 +13,33 @@ linebreak :: Doc
 linebreak = text "\n"
 
 formatTree :: PendingTree -> Doc
-formatTree t = formatSubTree 0 0 t
+formatTree t = formatSubTree [] t
 
-formatSubTrees :: Int -> Int -> [PendingTree] -> Doc
-formatSubTrees _ _ [] = empty
-formatSubTrees eDep bDep [t @ (Node _ [])] =
-  treeNone eDep <> treeBranch bDep <> text " |> " <> formatSubTree eDep bDep t
-formatSubTrees eDep bDep [t] =
-  treeNone eDep <> treeBranch bDep <> text " |- " <> formatSubTree (eDep + 1) bDep t
-formatSubTrees eDep bDep ((Node s []):ts) =
-  (treeNone eDep <> treeBranch bDep <> text " |> " <> formatSubTree eDep bDep (Node s [])) <> linebreak <>
-  (formatSubTrees eDep bDep ts)
-formatSubTrees eDep bDep (t:ts) =
-  (treeNone eDep <> treeBranch bDep <> text " |- " <> formatSubTree eDep (bDep + 1) t) <> linebreak <>
-  (formatSubTrees eDep bDep ts)
+formatSubTrees :: [Bool] -> [PendingTree] -> Doc
+formatSubTrees _ [] = empty
+formatSubTrees depth [t @ (Node _ [])] =
+  mapTreeBranch depth <> text " |> " <> formatSubTree depth t
+formatSubTrees depth [t] =
+  mapTreeBranch depth <> text " |- " <> formatSubTree (depth ++ [False]) t
+formatSubTrees depth ((Node s []):ts) =
+  (mapTreeBranch depth <> text " |> " <> formatSubTree depth (Node s [])) <> linebreak <>
+  (formatSubTrees depth ts)
+formatSubTrees depth (t:ts) =
+  (mapTreeBranch depth <> text " |- " <> formatSubTree (depth ++ [True]) t) <> linebreak <>
+  (formatSubTrees depth ts)
 
-formatSubTree :: Int -> Int -> PendingTree -> Doc
-formatSubTree _ _ (Node s []) =
+formatSubTree :: [Bool] -> PendingTree -> Doc
+formatSubTree _ (Node s []) =
   text s
-formatSubTree eDep bDep (Node s ts) =
-  text s <> linebreak <> formatSubTrees eDep bDep ts
+formatSubTree depth (Node s ts) =
+  text s <> linebreak <> formatSubTrees depth ts
 
-treeBranch :: Int -> Doc
-treeBranch level = hcat $ replicate level (text " | ")
+mapTreeBranch :: [Bool] -> Doc
+mapTreeBranch = hcat . (map treeBranch)
 
-treeNone :: Int -> Doc
-treeNone level = hcat $ replicate level (text "   ")
+treeBranch :: Bool -> Doc
+treeBranch True  = text " | "
+treeBranch False = text "   "
 
 size :: PendingTree -> Int
 size (Node _ []) = 1
