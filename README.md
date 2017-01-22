@@ -1,8 +1,8 @@
 # `remarks` — A DSL for marking student work
 
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
-[![Travis CI (Linux + macOS) Status](https://travis-ci.org/oleks/remarks.svg)](https://travis-ci.org/oleks/remarks)
-[![AppVeyor (Windows) Status"](https://ci.appveyor.com/api/projects/status/g0hviw442o2bl8yi?svg=true)](https://ci.appveyor.com/project/oleks/remarks)
+[![Travis CI (Linux + macOS) Status](https://travis-ci.org/DIKU-EDU/remarks.svg)](https://travis-ci.org/DIKU-EDU/remarks)
+[![AppVeyor (Windows) Status"](https://ci.appveyor.com/api/projects/status/g0hviw442o2bl8yi?svg=true)](https://ci.appveyor.com/project/DIKU-EDU/remarks)
 
 When judging student performance, it is useful to have both small, composable,
 quantitative judgements, and qualitative remarks. This makes both spreadsheets
@@ -34,7 +34,7 @@ There is:
 These can be invoked using `remarks parse`, `remarks check`, and `remarks
 show`, respectively.
 
-See [Issues](https://github.com/oleks/remarks/issues) for a roadmap. Feel free
+See [Issues](https://github.com/DIKU-EDU/remarks/issues) for a roadmap. Feel free
 to add or fix a couple issues.
 
 ## Usage
@@ -67,7 +67,7 @@ $ cabal install remarks
 ```
 
 If you clone the repository, or [download the
-sources](https://github.com/oleks/remarks/releases), you get two further
+sources](https://github.com/DIKU-EDU/remarks/releases), you get two further
 options:
 
 * If you are using the purely functional package manager
