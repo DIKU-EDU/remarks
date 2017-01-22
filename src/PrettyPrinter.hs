@@ -1,4 +1,4 @@
-module PrettyPrinter (ppJs) where
+module PrettyPrinter (ppJ_d, ppJs, ppPoints) where
 
 import Ast
 import Export.Generic
@@ -6,22 +6,28 @@ import Export.Generic
 import Text.PrettyPrint
 import Data.List (intersperse)
 
+ppJ_d :: Int -> Judgement -> String
+ppJ_d d = render . (formatJudgement (d + 1))
+
 ppJs :: [Judgement] -> String
 ppJs = render . vcat . intersperse (text "") . map (formatJudgement 1)
 
+ppPoints :: Double -> String
+ppPoints = render . pointsDoc
+
 formatJudgement :: Int -> Judgement -> Doc
-formatJudgement level (Bonus (points, _)) =
-  (text $ replicate level '#') <+> text "Bonus" <> colon <+> text "+" <>
+formatJudgement depth (Bonus (points, _)) =
+  (text $ replicate depth '#') <+> text "Bonus" <> colon <+> text "+" <>
     pointsDoc points
-formatJudgement level (Judgement (header, properties, comments, judgements)) =
-  formatHeader level header $+$
+formatJudgement depth (Judgement (header, properties, comments, judgements)) =
+  formatHeader depth header $+$
   (nest 2 $ vcat $ map formatProperty properties) $+$
   (nest 2 $ vcat $ map formatComment comments) $+$
-  (vcat $ map (formatJudgement (level + 1)) judgements)
+  (vcat $ map (formatJudgement (depth + 1)) judgements)
 
 formatHeader :: Int -> Header -> Doc
-formatHeader level (Header (title, point, maxPoints)) =
-  (text $ replicate level '#') <+> text title <> colon <> space <>
+formatHeader depth (Header (title, point, maxPoints)) =
+  (text $ replicate depth '#') <+> text title <> colon <> space <>
     pointsDoc point <> text "/" <> pointsDoc maxPoints
 
 formatProperty :: Property -> Doc

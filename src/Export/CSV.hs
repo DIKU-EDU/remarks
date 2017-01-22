@@ -21,12 +21,12 @@ formatJudgement delimiter properties judgement = do
     mapfun = flip lookupProperty
 
 lookupProperty :: String -> Judgement -> Either Invalid Doc
-lookupProperty name (Judgement (_, properties, _, _)) =
+lookupProperty name (j @ (Judgement (_, properties, _, _))) =
   case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
-    Nothing -> Left $ PropertyNotFound name
+    Nothing -> Left $ PropertyNotFound name j
     Just(value) -> pure $ formatPropertyExp value
-lookupProperty name _ =
-  Left $ PropertyNotFound name
+lookupProperty name j =
+  Left $ PropertyNotFound name j
 
 formatPropertyExp :: PropertyExp -> Doc
 formatPropertyExp (Lookup (index, name)) =

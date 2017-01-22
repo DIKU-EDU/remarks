@@ -25,9 +25,9 @@ checkPoints j @ (Judgement (Header (_, p, maxP), _, _, subJs @ (_:_))) | isInfin
   try ((sum $ map maxPoints subJs) ~= maxP)
     (BadSubJudgementMaxPointsSum j)
   checkPointsSubJs j
-checkPoints j @ (Judgement (h @ (Header (_, p, maxP)), _, _, subJs)) = do
+checkPoints j @ (Judgement (Header (_, p, maxP), _, _, subJs)) = do
   try (p <= maxP)
-    (PointsExceedMaxPoints h)
+    (PointsExceedMaxPoints j)
   case subJs of
     [] -> pure j
     _ -> do
@@ -40,7 +40,7 @@ checkPoints j @ (Bonus _) = pure j
 
 points :: Judgement -> Double
 points (Bonus (v, _)) = v
-points (Judgement (Header (_, v, _), _, _, [])) | isInfinite v = 0 
+points (Judgement (Header (_, v, _), _, _, [])) | isInfinite v = 0
 points (Judgement (Header (_, v, _), _, _, _)) = v
 
 maxPoints :: Judgement -> Double
