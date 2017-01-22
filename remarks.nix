@@ -14,7 +14,7 @@ mkDerivation {
   testHaskellDepends = [
     base GenericPretty tasty tasty-golden tasty-hunit
   ];
-  homepage = "https://github.com/oleks/remarks#readme";
+  homepage = "https://github.com/DIKU-EDU/remarks#readme";
   description = "A DSL for marking student work";
   license = stdenv.lib.licenses.bsd3;
 }

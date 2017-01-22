@@ -2,7 +2,7 @@ name:                remarks
 version:             0.1.10
 synopsis:            A DSL for marking student work
 description:         A DSL for marking student work; see README.md for further details.
-homepage:            https://github.com/oleks/remarks#readme
+homepage:            https://github.com/DIKU-EDU/remarks#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Oleks Shturmov <oleks@oleks.info>, Michael Kirkedal
@@ -63,4 +63,4 @@ test-suite remarks-test
 
 source-repository head
   type:     git
-  location: https://github.com/oleks/remarks
+  location: https://github.com/DIKU-EDU/remarks
