@@ -34,12 +34,6 @@ formatProperty :: Property -> Doc
 formatProperty (Property (name, value)) =
   colon <> text name <> colon <+> formatPropertyExp value
 
-formatPropertyExp :: PropertyExp -> Doc
-formatPropertyExp (Lookup (index, name)) =
-  brackets $ int index <> text "." <> text name
-formatPropertyExp (Value v) = text v
-formatPropertyExp (Num v) = pointsDoc v
-
 formatComment :: Comment -> Doc
 formatComment (Comment (mood, commentParts)) =
   formatMood mood <+> (vcat $ map formatCommentPart commentParts)

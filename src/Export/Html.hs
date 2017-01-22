@@ -115,10 +115,10 @@ htmlDetailJudgements = vcat . (map htmlDetailJudgement)
 
 htmlDetailJudgement :: Judgement -> Doc
 htmlDetailJudgement (Bonus (points, comments)) =
-  details (pointsDoc points) (htmlDetailComments comments)
+  details (text "Bonus" <+> parens (pointsDoc points)) (htmlDetailComments comments)
 htmlDetailJudgement (Judgement (Header(title, points, maxPoint), _, comments, judgements)) =
   details
-    (text title <> parens (pointsDoc points <> text "/" <> pointsDoc maxPoint))
+    (text title <+> parens (pointsDoc points <> text "/" <> pointsDoc maxPoint))
     (htmlDetailComments comments $$ htmlDetailJudgements judgements)
 
 htmlDetailComments :: [Comment] -> Doc

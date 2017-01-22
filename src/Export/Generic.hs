@@ -12,6 +12,19 @@ pointsDoc v | isNaN v = empty
 pointsDoc v | isIntegral v = integer (round v)
 pointsDoc v = double v
 
+lookupProperty :: String -> Judgement -> Maybe Doc
+lookupProperty name (Judgement (_, properties, _, _)) =
+  case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
+    Nothing -> Nothing
+    Just(value) -> pure $ formatPropertyExp value
+lookupProperty name j = Nothing -- Bonus does not have properties
+
+formatPropertyExp :: PropertyExp -> Doc
+formatPropertyExp (Lookup (index, name)) =
+  brackets $ int index <> text "." <> text name
+formatPropertyExp (Value value) = text value
+formatPropertyExp (Num value) = pointsDoc value
+
 unify :: Judgement -> Judgement -> Maybe Judgement
 unify
   (Judgement (lh, _, lcs, []))

@@ -18,18 +18,7 @@ formatJudgement delimiter properties judgement = do
   doc <- mapM (mapfun judgement) properties
   pure $ hcat $ (intersperse (text delimiter)) doc
   where
-    mapfun = flip lookupProperty
-
-lookupProperty :: String -> Judgement -> Either Invalid Doc
-lookupProperty name (j @ (Judgement (_, properties, _, _))) =
-  case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
-    Nothing -> Left $ PropertyNotFound name j
-    Just(value) -> pure $ formatPropertyExp value
-lookupProperty name j =
-  Left $ PropertyNotFound name j
-
-formatPropertyExp :: PropertyExp -> Doc
-formatPropertyExp (Lookup (index, name)) =
-  brackets $ int index <> text "." <> text name
-formatPropertyExp (Value value) = text value
-formatPropertyExp (Num value) = pointsDoc value
+    mapfun j p = 
+      case lookupProperty p j of
+        Nothing  -> Left $ PropertyNotFound p j
+        (Just v) -> pure v

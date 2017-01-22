@@ -151,7 +151,7 @@ export format js = do
 
 export_html :: [Judgement] -> IO ()
 export_html js = do
-  case (mapM checkPoints js) of
+  case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportHTML newJs
     Left e -> putStrLn $ show e
 

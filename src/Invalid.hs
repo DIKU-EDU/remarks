@@ -34,7 +34,6 @@ reportInvalid (PropertyNotFound s j) =
   "Property " ++ s ++ " not found in judgement\n" ++ reportJudgement 0 j
 reportInvalid m = "Cannot parse error message\n" ++ show m ++ "\nPlease report this message to someone!"
 
--- The Bool indicates of sub-judgements should be included
 reportJudgement :: Int -> Judgement -> String
 reportJudgement d j | isLeafJ j = ppJ_d d (stripJ j)
 reportJudgement 1 j | isNodeJ j = (ppJ_d 1 $ stripJ j) ++ "\n  ..."
