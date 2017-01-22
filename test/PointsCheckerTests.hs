@@ -48,7 +48,8 @@ negUnitTests :: TestTree
 negUnitTests = testGroup "Negative Unit Tests"
   [ testCase "Points exceed max points" $
       checkPointsStr "# A: 1/0\n" @?=
-        [Left $ PointsExceedMaxPoints (Header ("A", 1.0, 0.0))]
+        [Left $ PointsExceedMaxPoints $
+          (Judgement (Header ("A", 1.0, 0.0), [], [], []))]
   , testCase "Sub-judgement points don't sum up to points" $
       checkPointsStr "# A: 0/0\n## B: 1/0\n" @?=
         [Left $ BadSubJudgementPointsSum
