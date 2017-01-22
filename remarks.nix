@@ -3,7 +3,7 @@
 }:
 mkDerivation {
   pname = "remarks";
-  version = "0.1.9";
+  version = "0.1.10";
   src = ./.;
   isLibrary = true;
   isExecutable = true;
