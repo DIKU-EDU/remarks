@@ -16,8 +16,6 @@ data FormatTree
   | TNode
   | TLeaf
   | TQuest
-  | TQFollow
-  | TQNone
 
 showTree :: FormatTree -> Doc
 showTree (TEmpty t)  = showTree t
@@ -26,8 +24,6 @@ showTree (TSpace t)  = text "   " <> showTree t
 showTree TNode       = text " |- "
 showTree TLeaf       = text " |> "
 showTree TQuest      = text " |? "
-showTree TQFollow    = text " |  "
-showTree TQNone      = text "    "
 
 linebreak :: Doc
 linebreak = text "\n"
@@ -53,7 +49,6 @@ formatSubTrees ft (t:ts) =
   formatSubTrees ft ts
 
 formatSubTree :: (FormatTree -> FormatTree) -> PendingTree -> Doc
--- formatSubTree ft (Node s cs []) = text s <> formatTreeComments ft cs
 formatSubTree ft (Node s cs ts) = text s <> formatTreeComments ft cs <> formatSubTrees ft ts
 
 formatTreeComments :: (FormatTree -> FormatTree) -> Int -> Doc
@@ -64,11 +59,11 @@ formatTreeComments ft cs =
 size :: PendingTree -> (Int, Int)
 size (Node _ 0 []) = (1, 0)
 size (Node _ cs []) = (1, cs)
-size (Node _ cs (t @ (_:_))) = (sum $ fst sizes, cs + (sum $ snd sizes))
-  where sizes = unzip $ map size t
+size (Node _ cs pt) = foldl tupAdd (0, cs) $ map size pt
+  where tupAdd a b = (fst a + fst b, snd a + snd b)
 
 limitPendingTree :: Int -> PendingTree -> PendingTree
-limitPendingTree _    (Node s 0 []) = Node s 0 []
+limitPendingTree _    (Node s 0 [])  = Node s 0 []
 limitPendingTree 0 (t@(Node s _ _))  = Node (s ++ showTasks (size t)) 0 []
 limitPendingTree n    (Node s cs ts) = Node s cs (map (limitPendingTree (n-1)) ts)
 
@@ -87,15 +82,11 @@ pendingJudgement (Bonus (_, cs)) =
   case countImpartials cs of
     0 -> []
     n -> [Node "Bonus" n []]
-pendingJudgement (Judgement (Header (t, p, _), _, cs, [])) | isInfinite p = 
+pendingJudgement (Judgement (Header (t, p, _), _, cs, [])) | isInfinite p =
   [Node t (countImpartials cs) []]
-pendingJudgement (Judgement (Header (t, _, _), _, cs, [])) = -- Not infinite
-  case countImpartials cs of
-    0 -> []
-    n -> [Node t n []]
-pendingJudgement (Judgement (Header (t, _, _), _, cs, subJs @ (_:_))) =
+pendingJudgement (Judgement (Header (t, _, _), _, cs, subJs)) =
   case (concatMap pendingJudgement subJs) of
-    [] -> 
+    [] ->
       case countImpartials cs of
         0 -> []
         n -> [Node t n []]
