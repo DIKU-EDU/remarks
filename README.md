@@ -24,19 +24,6 @@ Goal 4 is not necessarily related to `remarks`, but is related to marking
 student work with external examiners, who are not always willing to use more
 explicit version-control systems, such as git.
 
-## Status
-
-There is:
-* a [parser](src/Parser/Impl.hs);
-* a (basic) [validator](src/Validator.hs); and
-* a [pretty printer](src/PrettyPrinter.hs).
-
-These can be invoked using `remarks parse`, `remarks check`, and `remarks
-show`, respectively.
-
-See [Issues](https://github.com/DIKU-EDU/remarks/issues) for a roadmap. Feel free
-to add or fix a couple issues.
-
 ## Usage
 
 User features:
