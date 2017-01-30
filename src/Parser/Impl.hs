@@ -11,8 +11,8 @@ import Control.Monad ( void )
 import Data.Maybe ( listToMaybe )
 
 data ParseErrorImpl a
-  = NoParse
-  | AmbiguousGrammar [a]
+  = NoParse FilePath
+  | AmbiguousGrammar [a] FilePath
   | NotImplemented
   deriving (Eq, Show, Generic)
 
@@ -153,21 +153,21 @@ parse = readP_to_S
 fullParse :: ReadP a -> String -> [a]
 fullParse p s = fmap fst $ parse (p <* (skipSpaces >> eof)) s
 
-parseString' :: ReadP a -> String -> Either (ParseErrorImpl a) a
-parseString' p s =
+parseString' :: ReadP a -> FilePath -> String -> Either (ParseErrorImpl a) a
+parseString' p path s =
   case fullParse p s of
-    [] -> Left NoParse
+    [] -> Left $ NoParse path
     [a] -> Right a
-    as -> Left $ AmbiguousGrammar as
+    as -> Left $ AmbiguousGrammar as path
 
 parseEntry :: ReadP [Judgement]
 parseEntry = parseJudgements 1 <* skipSpaces
 
 parseString :: String -> Either ParseError [Judgement]
-parseString = parseString' parseEntry
+parseString = parseString' parseEntry "String"
 
 parseFile' :: ReadP a -> FilePath -> IO (Either (ParseErrorImpl a) a)
-parseFile' p path = fmap (parseString' p) $ readFile path
+parseFile' p path = fmap (parseString' p path) $ readFile path
 
 parseFile :: FilePath -> IO (Either ParseError [Judgement])
 parseFile = parseFile' parseEntry
