@@ -7,7 +7,7 @@ import Ast
 import Text.PrettyPrint
 
 data PendingTree
-  = Node String Int [PendingTree]
+  = Node String Int Bool [PendingTree]
   deriving (Eq, Show)
 
 data FormatTree
@@ -31,8 +31,8 @@ linebreak :: Doc
 linebreak = text "\n"
 
 isLeaf :: PendingTree -> Bool
-isLeaf (Node _ _ [])    = True
-isLeaf (Node _ _ (_:_)) = False
+isLeaf (Node _ _ _ [])    = True
+isLeaf (Node _ _ _ (_:_)) = False
 
 formatTree :: PendingTree -> Doc
 formatTree t = formatSubTree (TEmpty) t
@@ -51,7 +51,7 @@ formatSubTrees ft (t:ts) =
   formatSubTrees ft ts
 
 formatSubTree :: (FormatTree -> FormatTree) -> PendingTree -> Doc
-formatSubTree ft (Node s cs ts) = text s <> formatTreeComments ft cs <> formatSubTrees ft ts
+formatSubTree ft (Node s cs _ ts) = text s <> formatTreeComments ft cs <> formatSubTrees ft ts
 
 formatTreeComments :: (FormatTree -> FormatTree) -> Int -> Doc
 formatTreeComments _ 0 = empty
@@ -59,15 +59,15 @@ formatTreeComments ft cs =
   linebreak <> showTree (ft TQuest) <> text (makePlural cs "impartial comment")
 
 size :: PendingTree -> (Int, Int)
-size (Node _ 0 []) = (1, 0)
-size (Node _ cs []) = (0, cs)
-size (Node _ cs pt) = foldl tupAdd (0, cs) $ map size pt
+size (Node _ cs True []) = (1, cs)
+size (Node _ cs False []) = (0, cs)
+size (Node _ cs _ pt) = foldl tupAdd (0, cs) $ map size pt
   where tupAdd a b = (fst a + fst b, snd a + snd b)
 
 limitPendingTree :: Int -> PendingTree -> PendingTree
-limitPendingTree _    (Node s 0 [])  = Node s 0 []
-limitPendingTree 0 (t@(Node s _ _))  = Node (s ++ showTasks (size t)) 0 []
-limitPendingTree n    (Node s cs ts) = Node s cs (map (limitPendingTree (n-1)) ts)
+limitPendingTree _    (Node s 0 b [])  = Node s 0 b []
+limitPendingTree 0 (t@(Node s _ b _))  = Node (s ++ showTasks (size t)) 0 b []
+limitPendingTree n    (Node s cs b ts) = Node s cs b (map (limitPendingTree (n-1)) ts)
 
 showTasks :: (Int, Int) -> String
 showTasks (n, 0) = " (" ++ makePlural n "task" ++ ")"
@@ -83,16 +83,16 @@ pendingJudgement :: Judgement -> [PendingTree]
 pendingJudgement (Bonus (_, cs)) =
   case countImpartials cs of
     0 -> []
-    n -> [Node "Bonus" n []]
+    n -> [Node "Bonus" n False []]
 pendingJudgement (Judgement (Header (t, p, _), _, cs, [])) | isInfinite p =
-  [Node t (countImpartials cs) []]
+  [Node t (countImpartials cs) True []]
 pendingJudgement (Judgement (Header (t, _, _), _, cs, subJs)) =
   case (concatMap pendingJudgement subJs) of
     [] ->
       case countImpartials cs of
         0 -> []
-        n -> [Node t n []]
-    sub  -> [Node t (countImpartials cs) sub]
+        n -> [Node t n False []]
+    sub  -> [Node t (countImpartials cs) False sub]
 
 countImpartials :: [Comment] -> Int
 countImpartials = sum . (map countImpartial)
