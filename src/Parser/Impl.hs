@@ -28,20 +28,26 @@ maybeRead :: Read a => String -> Maybe a
 maybeRead = fmap fst . listToMaybe . reads
 
 parsePoints :: ReadP Double
-parsePoints = do
-  is <- parseIntegral
-  fs <- (string ".5") +++ pure "0"
-  case (maybeRead (is ++ "." ++ fs)) of
-    Just x -> pure x
-    _ -> pfail
-
-parseMaxPoints :: ReadP Double
-parseMaxPoints = do
-  is <- parseIntegral
-  fs <- (string ".5") +++ pure "0"
-  case (maybeRead (is ++ "." ++ fs)) of
-    Just x -> pure x
-    _ -> pfail
+parsePoints = choice [p3, p2, p1]
+  where
+    p1 = do
+      is <- parseIntegral
+      case (maybeRead is) of
+        Just x -> pure x
+        _ -> pfail
+    p2 = do
+      is <- parseIntegral
+      void $ char '.'
+      fs <- parseIntegral
+      case (maybeRead (is ++ "." ++ fs)) of
+        Just x -> pure x
+        _ -> pfail
+    p3 = do
+      void $ char '.'
+      fs <- parseIntegral
+      case (maybeRead ("0." ++ fs)) of
+        Just x -> pure x
+        _ -> pfail
 
 lineToken :: ReadP a -> ReadP a
 lineToken p = munch (`elem` [' ', '\t', '\r', '\v', '\f']) *> p
@@ -90,7 +96,7 @@ parseRegularJudgement :: Int -> String -> ReadP Judgement
 parseRegularJudgement depth title = do
   points <- (lineToken $ parsePoints) +++ (return $ 1/0)
   void $ lineToken $ char '/'
-  maxPoints <- lineToken $ parseMaxPoints
+  maxPoints <- lineToken $ parsePoints
   void $ lineBreak
 
   let header = Header (title, points, maxPoints)
