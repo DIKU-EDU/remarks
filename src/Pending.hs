@@ -8,6 +8,7 @@ import Text.PrettyPrint
 
 data PendingTree
   = Node String Int [PendingTree]
+  deriving (Eq, Show)
 
 data FormatTree
   = TEmpty  FormatTree
@@ -16,6 +17,7 @@ data FormatTree
   | TNode
   | TLeaf
   | TQuest
+  deriving (Eq, Show)
 
 showTree :: FormatTree -> Doc
 showTree (TEmpty t)  = showTree t
@@ -58,7 +60,7 @@ formatTreeComments ft cs =
 
 size :: PendingTree -> (Int, Int)
 size (Node _ 0 []) = (1, 0)
-size (Node _ cs []) = (1, cs)
+size (Node _ cs []) = (0, cs)
 size (Node _ cs pt) = foldl tupAdd (0, cs) $ map size pt
   where tupAdd a b = (fst a + fst b, snd a + snd b)
 
