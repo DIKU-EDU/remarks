@@ -11,32 +11,36 @@ infix 4 ~=
 (~=) :: Double -> Double -> Bool
 x ~= y = abs (x - y) <= 0.01
 
-checkPointsSubJs :: Judgement -> Either Invalid Judgement
-checkPointsSubJs (Judgement (Header (t, _, maxP), prop, cs, subJs)) = do
-  newSubJs <- mapM checkPoints subJs
+checkPoints :: Judgement -> Either Invalid Judgement
+checkPoints (j@(Judgement (Header (t, _, _), _, _, _))) = checkPointsJ t j
+checkPoints b = pure b
+
+checkPointsSubJs :: String -> Judgement -> Either Invalid Judgement
+checkPointsSubJs s (Judgement (Header (t, _, maxP), prop, cs, subJs)) = do
+  newSubJs <- mapM (checkPointsJ s) subJs
   let newP = sum $ map points newSubJs
   pure $ Judgement (Header (t, newP, maxP), prop, cs, newSubJs)
-checkPointsSubJs j = pure j
+checkPointsSubJs _ j = pure j
 
-checkPoints :: Judgement -> Either Invalid Judgement
-checkPoints j @ (Judgement ((Header (_, p, _)), _, _, [])) | isInfinite p =
-  Left $ NoPointsInBottomJudgement j
-checkPoints j @ (Judgement (Header (_, p, maxP), _, _, subJs @ (_:_))) | isInfinite p = do
+checkPointsJ :: String ->  Judgement -> Either Invalid Judgement
+checkPointsJ s (j @ (Judgement ((Header (_, p, _)), _, _, []))) | isInfinite p =
+  Left $ NoPointsInBottomJudgement s j
+checkPointsJ s (j @ (Judgement (Header (_, p, maxP), _, _, subJs @ (_:_)))) | isInfinite p = do
   try ((sum $ map maxPoints subJs) ~= maxP)
-    (BadSubJudgementMaxPointsSum j)
-  checkPointsSubJs j
-checkPoints j @ (Judgement (Header (_, p, maxP), _, _, subJs)) = do
+    (BadSubJudgementMaxPointsSum s j)
+  checkPointsSubJs s j
+checkPointsJ s (j @ (Judgement (Header (_, p, maxP), _, _, subJs))) = do
   try (p <= maxP)
-    (PointsExceedMaxPoints j)
+    (PointsExceedMaxPoints s j)
   case subJs of
     [] -> pure j
     _ -> do
       try ((sum $ map points subJs) ~= p)
-        (BadSubJudgementPointsSum j)
+        (BadSubJudgementPointsSum s j)
       try ((sum $ map maxPoints subJs) ~= maxP)
-        (BadSubJudgementMaxPointsSum j)
-      checkPointsSubJs j
-checkPoints j @ (Bonus _) = pure j
+        (BadSubJudgementMaxPointsSum s j)
+      checkPointsSubJs s j
+checkPointsJ _ j @ (Bonus _) = pure j
 
 points :: Judgement -> Double
 points (Bonus (v, _)) = v

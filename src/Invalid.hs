@@ -9,27 +9,27 @@ import Data.List (intersperse)
 import Text.PrettyPrint.GenericPretty
 
 data Invalid
-  = PointsExceedMaxPoints Judgement
-  | BadSubJudgementPointsSum Judgement
-  | BadSubJudgementMaxPointsSum Judgement
-  | NoPointsInBottomJudgement Judgement
+  = PointsExceedMaxPoints String Judgement
+  | BadSubJudgementPointsSum String Judgement
+  | BadSubJudgementMaxPointsSum String Judgement
+  | NoPointsInBottomJudgement String Judgement
   | PropertyNotFound String Judgement
   deriving (Eq, Show, Generic)
 
 instance Out Invalid
 
 reportInvalid :: Invalid -> String
-reportInvalid (PointsExceedMaxPoints (j @ (Judgement ((Header (_, p, m)), _, _, _)))) =
-    "The total points (" ++ ppPoints p ++ ") exceeded maximum (" ++ ppPoints m ++ ") in the judgement\n" ++
+reportInvalid (PointsExceedMaxPoints s (j @ (Judgement ((Header (_, p, m)), _, _, _)))) =
+    "In " ++ s ++ " the total points (" ++ ppPoints p ++ ") exceeded maximum (" ++ ppPoints m ++ ") in the judgement\n" ++
     reportStrippedJudgement j
-reportInvalid (BadSubJudgementPointsSum (j @ (Judgement (Header (_, p, _), _, _, _)))) =
-    "The sum of points (" ++ ppPoints p ++ ") in judgement is not the sum of sub-judgements\n" ++
+reportInvalid (BadSubJudgementPointsSum s (j @ (Judgement (Header (_, p, _), _, _, _)))) =
+    "In " ++ s ++ " the sum of points (" ++ ppPoints p ++ ") in judgement is not the sum of sub-judgements\n" ++
     reportJudgement 0 j
-reportInvalid (BadSubJudgementMaxPointsSum (j @ (Judgement (Header (_, _, m), _, _, _)))) =
-    "The maximum points (" ++ ppPoints m ++ ") in judgement is not the sum of sub-judgements\n" ++
+reportInvalid (BadSubJudgementMaxPointsSum s (j @ (Judgement (Header (_, _, m), _, _, _)))) =
+    "In " ++ s ++ " the maximum points (" ++ ppPoints m ++ ") in judgement is not the sum of sub-judgements\n" ++
     reportJudgement 0 j
-reportInvalid (NoPointsInBottomJudgement j) = 
-  "No points reported in leaf-judgement\n" ++ reportStrippedJudgement j
+reportInvalid (NoPointsInBottomJudgement s j) = 
+  "In " ++ s ++ " no points reported in leaf-judgement\n" ++ reportStrippedJudgement j
 reportInvalid (PropertyNotFound s j) = 
   "Property " ++ s ++ " not found in judgement\n" ++ reportJudgement 0 j
 reportInvalid m = "Cannot parse error message\n" ++ show m ++ "\nPlease report this message to someone!"
