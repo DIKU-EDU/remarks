@@ -75,6 +75,7 @@ documentStyle = style_ $
   text "li.plus:before {content: \"+\"; margin-right: 4px;}" $$
   text "li.minus:before {content: \"-\"; margin-right: 4px;}" $$
   text "li.quest:before {content: \"?\"; margin-right: 4px;}" $$
+  text "li.excl:before {content: \"!\"; margin-right: 4px;}" $$
   text "li.star:before {content: \"*\"; margin-right: 4px;}"
 
 documentScript :: Doc
@@ -135,6 +136,7 @@ htmlDetailMood Positive  = "plus"
 htmlDetailMood Negative  = "minus"
 htmlDetailMood Neutral   = "star"
 htmlDetailMood Impartial = "quest"
+htmlDetailMood Warning   = "excl"
 
 htmlDetailCommentPart :: CommentPart -> Doc
 htmlDetailCommentPart (CommentStr string) = text string

@@ -123,6 +123,7 @@ parseMood = choice
   , char '-' *> pure Negative
   , char '*' *> pure Neutral
   , char '?' *> pure Impartial
+  , char '!' *> pure Warning
   ]
 
 parseLine :: ReadP String

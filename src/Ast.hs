@@ -24,6 +24,7 @@ data Mood
   | Negative
   | Neutral
   | Impartial
+  | Warning
   deriving (Eq, Show, Generic)
 
 instance Out Mood

@@ -24,6 +24,7 @@ formatPropertyExp (Lookup (index, name)) =
   brackets $ int index <> text "." <> text name
 formatPropertyExp (Value value) = text value
 formatPropertyExp (Num value) = pointsDoc value
+formatPropertyExp (Sum str) = text "sum" <> (parens $ text str)
 
 unify :: Judgement -> Judgement -> Maybe Judgement
 unify

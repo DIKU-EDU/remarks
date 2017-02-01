@@ -43,6 +43,7 @@ formatMood Positive  = text "+"
 formatMood Negative  = text "-"
 formatMood Neutral   = text "*"
 formatMood Impartial = text "?"
+formatMood Warning   = text "!"
 
 formatCommentPart :: CommentPart -> Doc
 formatCommentPart (CommentStr string)  = text string
