@@ -21,8 +21,8 @@ formatJudgement depth (j @ (Judgement (_, _, comments, judgements))) =
 
 formatHeader :: Int -> Judgement -> Doc
 formatHeader depth j =
-  (text $ replicate depth '#') <+> getTitle j <> colon <> space <>
-    getTotal j <> text "/" <> getMax j
+  (text $ replicate depth '#') <+> lookupTitle j <> colon <> space <>
+    lookupTotal j <> text "/" <> lookupMaxPoints j
 
 formatComment :: Comment -> Doc
 formatComment (Comment (mood, commentParts)) =
@@ -33,26 +33,8 @@ formatMood Positive  = text "(+)"
 formatMood Negative  = text "(-)"
 formatMood Neutral   = text ""
 formatMood Impartial = text "(?)"
+formatMood Warning = text "(!)"
 
 formatCommentPart :: CommentPart -> Doc
 formatCommentPart (CommentStr string)  = text string
 formatCommentPart (CommentCmt comment) = nest 2 $ formatComment comment
-
-getTotal :: Judgement -> Doc
-getTotal j =
-  case lookupProperty "Total" j of
-    Nothing -> error "This should not occur. Please report!"
-    Just d  -> d
-
-getMax :: Judgement -> Doc
-getMax j =
-  case lookupProperty "MaxPoints" j of
-    Nothing -> error "This should not occur. Please report!"
-    Just d  -> d
-
-getTitle :: Judgement -> Doc
-getTitle j =
-  case lookupProperty "Title" j of
-    Nothing -> error "This should not occur. Please report!"
-    Just d  -> d
-
