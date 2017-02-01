@@ -40,8 +40,8 @@ propValToProperties (str, DoubVal double) = Property (str, Num double)
 addPredifinedProps :: [Property] -> [Property]
 addPredifinedProps p =
   Property("Title", Lookup (0, "Title")) :
-  Property("Total", Lookup (0, "Total")) :
-  Property("MaxPoints", Lookup (0, "MaxPoints")) : p
+  Property("Total", Sum "Total") :
+  Property("MaxPoints", Sum "MaxPoints") : p
 
 generatePredefinedValues :: Header -> Either Invalid [(String, PropertyValue)]
 generatePredefinedValues (Header (t, p, maxP)) =
@@ -62,3 +62,22 @@ evalPropExp rj (Lookup (i, p)) propEnv =
   case (lookup p (propEnv !! (i))) of
     Nothing -> Left $ PropertyNotFound p rj
     (Just s) -> pure s
+evalPropExp rj (Sum pname) propEnv | isLeafJ rj =
+    evalPropExp rj (Lookup (0, pname)) propEnv
+evalPropExp _ (Sum pname) propEnv =
+    pure $ sumPV vals
+  where
+    vals = map snd $ concatMap (filter (\x -> (fst x) == pname)) (tail propEnv)
+
+sumPV :: [PropertyValue] -> PropertyValue
+sumPV [] = DoubVal 0
+sumPV ((DoubVal v):vals) =
+  case sumPV vals of
+    DoubVal vs -> DoubVal $ vs + v
+    StrVal _ -> error "I cannot sum a string. Please report this error!"
+sumPV _ = error "I cannot sum a string. Please report this error!"
+
+isLeafJ :: Judgement -> Bool
+isLeafJ (Judgement (_, _, _, []))    = True
+isLeafJ (Judgement (_, _, _, (_:_))) = False
+isLeafJ (Bonus _)                    = False
