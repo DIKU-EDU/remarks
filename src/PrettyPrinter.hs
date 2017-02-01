@@ -1,4 +1,4 @@
-module PrettyPrinter (ppJ_d, ppJs, ppPoints) where
+module PrettyPrinter (ppJ_d, ppJs, ppPoints, ppComments) where
 
 import Ast
 import Export.Generic
@@ -14,6 +14,9 @@ ppJs = render . vcat . intersperse (text "") . map (formatJudgement 1)
 
 ppPoints :: Double -> String
 ppPoints = render . pointsDoc
+
+ppComments :: [Comment] -> String
+ppComments = render . vcat . (map formatComment)
 
 formatJudgement :: Int -> Judgement -> Doc
 formatJudgement depth (Bonus (points, _)) =

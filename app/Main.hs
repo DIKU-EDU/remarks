@@ -155,6 +155,12 @@ export_html js = do
     Right newJs -> putStrLn $ exportHTML newJs
     Left e -> putStrLn $ show e
 
+export_md :: [Judgement] -> IO ()
+export_md js = do
+  case (mapM interpProps js) of
+    Right newJs -> putStrLn $ exportMD newJs
+    Left e -> putStrLn $ show e
+
 showSummary :: Word -> [Judgement] -> IO ()
 showSummary depth js = do
   case marshall js of
@@ -197,6 +203,8 @@ main = do
       with paths $ mapM_ $ export format
     ("export" : paths) ->
       with paths $ mapM_ $ export "Title;Total;MaxPoints"
+    ("exportMD" : paths) ->
+      with paths $ mapM_ export_md
     ("exportHTML" : paths) ->
       with paths $ mapM_ export_html
     (c:rest) -> invalidCommand c rest
