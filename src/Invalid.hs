@@ -38,7 +38,7 @@ reportJudgement :: Int -> Judgement -> String
 reportJudgement d j | isLeafJ j = ppJ_d d (stripJ j)
 reportJudgement 1 j | isNodeJ j = (ppJ_d 1 $ stripJ j) ++ "\n  ..."
 reportJudgement 0 j | isNodeJ j = 
-  (ppJ_d 0 $ stripJ j) ++ (concat $ intersperse "\n" (map (reportJudgement 1) (subJs j)))
+  (ppJ_d 0 $ stripJ j) ++ "\n" ++ (concat $ intersperse "\n" (map (reportJudgement 1) (subJs j)))
 reportJudgement _ _ = ""
 
 reportStrippedJudgement :: Judgement -> String
