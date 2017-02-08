@@ -53,13 +53,3 @@ subJs _ = [] -- Bunus
 stripJ :: Judgement -> Judgement
 stripJ (Judgement (h, _, _, _)) = Judgement (h, [], [], [])
 stripJ b = b -- Bunus
-
-isLeafJ :: Judgement -> Bool
-isLeafJ (Judgement (_, _, _, []))    = True
-isLeafJ (Judgement (_, _, _, (_:_))) = False
-isLeafJ (Bonus _)                    = False
-
-isNodeJ :: Judgement -> Bool
-isNodeJ (Judgement (_, _, _, []))    = False
-isNodeJ (Judgement (_, _, _, (_:_))) = True
-isNodeJ (Bonus _)                    = False

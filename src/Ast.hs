@@ -59,7 +59,22 @@ instance Out PropertyExp
 
 data Judgement
   = Judgement (Header, [Property], [Comment], [Judgement])
-  | Bonus (Double, [Comment])
+  | Bonus (Double, [Property], [Comment])
   deriving (Eq, Show, Generic)
 
 instance Out Judgement
+
+
+isLeafJ :: Judgement -> Bool
+isLeafJ (Judgement (_, _, _, []))    = True
+isLeafJ (Judgement (_, _, _, (_:_))) = False
+isLeafJ (Bonus _)                    = False
+
+isNodeJ :: Judgement -> Bool
+isNodeJ (Judgement (_, _, _, []))    = False
+isNodeJ (Judgement (_, _, _, (_:_))) = True
+isNodeJ (Bonus _)                    = False
+
+isBonus :: Judgement -> Bool
+isBonus (Bonus _)     = True
+isBonus (Judgement _) = False

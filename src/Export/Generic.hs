@@ -45,12 +45,12 @@ pointsDoc v | isNaN v = empty
 pointsDoc v | isIntegral v = integer (round v)
 pointsDoc v = double v
 
-formatPropertyExp :: PropertyExp -> Doc
-formatPropertyExp (Lookup (index, name)) =
+propertyExpDoc :: PropertyExp -> Doc
+propertyExpDoc (Lookup (index, name)) =
   brackets $ int index <> text "." <> text name
-formatPropertyExp (Value value) = text value
-formatPropertyExp (Num value) = pointsDoc value
-formatPropertyExp (Sum str) = text "sum" <> (parens $ text str)
+propertyExpDoc (Value value) = text value
+propertyExpDoc (Num value) = pointsDoc value
+propertyExpDoc (Sum str) = text "sum" <> (parens $ text str)
 
 unify :: Judgement -> Judgement -> Maybe Judgement
 unify
@@ -69,10 +69,10 @@ unify (Bonus l) (Bonus r) | l == r =
 unify _ _ = Nothing
 
 summary :: Word -> Judgement -> Judgement
-summary _ (Bonus (p, _)) =
-  (Bonus (p, []))
-summary 0 (Judgement (h, _, _, _)) =
-  Judgement (h, [], [], [])
+summary _ (Bonus (h, prop, _)) =
+  (Bonus (h, prop, []))
+summary 0 (Judgement (h, _, p, _)) =
+  Judgement (h, [], p, [])
 summary depth (Judgement (h, _, _, js)) =
   Judgement (h, [], [], map (summary $ depth - 1) js)
 
@@ -82,25 +82,28 @@ lookupProperty :: String -> Judgement -> Maybe Doc
 lookupProperty name (Judgement (_, properties, _, _)) =
   case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
     Nothing -> Nothing
-    Just(value) -> pure $ formatPropertyExp value
-lookupProperty _ _ = Nothing -- Bonus does not have properties
+    Just(value) -> pure $ propertyExpDoc value
+lookupProperty name (Bonus (_, properties, _)) =
+  case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
+    Nothing -> Nothing
+    Just(value) -> pure $ propertyExpDoc value
 
 lookupTotal :: Judgement -> Doc
 lookupTotal j =
   case lookupProperty "Total" j of
-    Nothing -> error "This should not occur. Please report!"
+    Nothing -> error $ "Total not found. Please report!"
     Just d  -> d
 
 lookupMaxPoints :: Judgement -> Doc
 lookupMaxPoints j =
   case lookupProperty "MaxPoints" j of
-    Nothing -> error "This should not occur. Please report!"
+    Nothing -> error "MaxPoint not found. Please report!"
     Just d  -> d
 
 lookupTitle :: Judgement -> Doc
 lookupTitle j =
   case lookupProperty "Title" j of
-    Nothing -> error "This should not occur. Please report!"
+    Nothing -> error "Title not found. Please report!"
     Just d  -> d
 
 getTotal :: Judgement -> String

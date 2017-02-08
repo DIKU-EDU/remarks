@@ -89,37 +89,34 @@ htmlTableHead :: Judgement -> Doc
 htmlTableHead (Bonus _) =
   tr $ th (text "Bonus")
 htmlTableHead (Judgement (_, _, _, js)) =
-  tr $ th (text "Title") $$ (vcat $ map maketd js) $$ th (text "Total")
+  tr $ th (text "Title") $$ (vcat $ map maketh js) $$ th (text "Total")
   where
-    maketd (Judgement (Header(title, _, maxPoint), _, _, _)) =
+    maketh (Judgement (Header(title, _, maxPoint), _, _, _)) =
       th $ text (title ++ "/") <> pointsDoc maxPoint
-    maketd (Bonus _) =
+    maketh (Bonus _) =
       th $ text "Bonus"
 
 htmlJudgement :: Judgement -> Doc
-htmlJudgement (Bonus (points, comments)) =
-  (tr $ td $ pointsDoc points) $$ (trhidden $ htmlDetailComments comments)
-htmlJudgement (Judgement (Header(title, points, _), _, comments, judgements)) =
-  (tr $ (td . toggle $ text title) $$
+htmlJudgement (j @ (Bonus (_, _, comments))) =
+  (tr $ td $ lookupTotal j) $$ (trhidden $ htmlDetailComments comments)
+htmlJudgement (j @ (Judgement (_, _, comments, judgements))) =
+  (tr $ (td . toggle $ lookupTitle j) $$
     vcat (map htmlSubJudgement judgements) $$
-    (td $ pointsDoc points)) $$
+    (td $ lookupTotal j)) $$
   (trhidden $ tdspan (length judgements+2) $ (htmlDetailComments comments $$ htmlDetailJudgements judgements))
 
 htmlSubJudgement :: Judgement -> Doc
-htmlSubJudgement (Bonus (points, _)) =
-  (td $ pointsDoc points)
-htmlSubJudgement (Judgement (Header(_, points, _), _, _, _)) =
-  (td $ pointsDoc points)
+htmlSubJudgement j = td $ lookupTotal j
 
 htmlDetailJudgements :: [Judgement] -> Doc
 htmlDetailJudgements = vcat . (map htmlDetailJudgement)
 
 htmlDetailJudgement :: Judgement -> Doc
-htmlDetailJudgement (Bonus (points, comments)) =
-  details (text "Bonus" <+> parens (pointsDoc points)) (htmlDetailComments comments)
-htmlDetailJudgement (Judgement (Header(title, points, maxPoint), _, comments, judgements)) =
+htmlDetailJudgement (j @ (Bonus (_, _, comments))) =
+  details (text "Bonus" <+> parens (lookupTotal j)) (htmlDetailComments comments)
+htmlDetailJudgement (j @ (Judgement (_, _, comments, judgements))) =
   details
-    (text title <+> parens (pointsDoc points <> text "/" <> pointsDoc maxPoint))
+    (lookupTitle j <+> parens (lookupTotal j <> text "/" <> lookupMaxPoints j))
     (htmlDetailComments comments $$ htmlDetailJudgements judgements)
 
 htmlDetailComments :: [Comment] -> Doc

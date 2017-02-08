@@ -1,7 +1,7 @@
 module PrettyPrinter (ppJ_d, ppJs, ppPoints, ppComments) where
 
 import Ast
-import Export.Generic
+import Export.Generic (pointsDoc, propertyExpDoc)
 
 import Text.PrettyPrint
 import Data.List (intersperse)
@@ -19,9 +19,11 @@ ppComments :: [Comment] -> String
 ppComments = render . vcat . (map formatComment)
 
 formatJudgement :: Int -> Judgement -> Doc
-formatJudgement depth (Bonus (points, _)) =
+formatJudgement depth (Bonus (p, properties, comments)) =
   (text $ replicate depth '#') <+> text "Bonus" <> colon <+> text "+" <>
-    pointsDoc points
+  pointsDoc p $+$
+  (nest 2 $ vcat $ map formatProperty properties) $+$
+  (nest 2 $ vcat $ map formatComment comments)
 formatJudgement depth (Judgement (header, properties, comments, judgements)) =
   formatHeader depth header $+$
   (nest 2 $ vcat $ map formatProperty properties) $+$
@@ -35,7 +37,7 @@ formatHeader depth (Header (title, point, maxPoints)) =
 
 formatProperty :: Property -> Doc
 formatProperty (Property (name, value)) =
-  colon <> text name <> colon <+> formatPropertyExp value
+  colon <> text name <> colon <+> propertyExpDoc value
 
 formatComment :: Comment -> Doc
 formatComment (Comment (mood, commentParts)) =

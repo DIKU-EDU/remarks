@@ -10,9 +10,9 @@ mdRemarks :: [Judgement] -> String
 mdRemarks = render . vcat . intersperse (text "") . map (formatJudgement 1)
 
 formatJudgement :: Int -> Judgement -> Doc
-formatJudgement depth (Bonus (p, _)) =
+formatJudgement depth (j @ (Bonus (_, _, _))) =
   (text $ replicate depth '#') <+> text "Bonus" <> colon <+> text "+" <>
-    pointsDoc p
+    lookupTotal j
 formatJudgement depth (j @ (Judgement (_, _, comments, judgements))) =
   formatHeader depth j $+$
   (nest 2 $ vcat $ map formatComment comments) $+$

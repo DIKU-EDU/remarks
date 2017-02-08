@@ -43,7 +43,7 @@ checkPointsJ s (j @ (Judgement (Header (_, p, maxP), _, _, subJs))) = do
 checkPointsJ _ j @ (Bonus _) = pure j
 
 points :: Judgement -> Double
-points (Bonus (v, _)) = v
+points (Bonus (v, _, _)) = v
 points (Judgement (Header (_, v, _), _, _, [])) | isInfinite v = 0
 points (Judgement (Header (_, v, _), _, _, _)) = v
 

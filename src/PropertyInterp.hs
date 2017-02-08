@@ -31,7 +31,10 @@ interpJudgement (j @ (Judgement (h, prop, cs, js))) = do
   propVals <- mapM (bindProp j (predef:jsPropVals)) (addPredifinedProps prop)
   let newProps = map propValToProperties propVals
   pure (Judgement (h, newProps, cs, jupdates), propVals)
-interpJudgement j @ (Bonus (v, _)) = pure (j, [("Bonus", DoubVal v)])
+interpJudgement (Bonus (v, _, c)) = pure (Bonus (v, preProps, c), newProps)
+  where
+    newProps = [("Title", StrVal "Bonus"), ("Total", DoubVal v)]
+    preProps = [Property ("Title", Value "Bonus"), Property ("Total", Num v)]
 
 propValToProperties :: (String, PropertyValue) -> Property
 propValToProperties (str, StrVal string) = Property (str, Value string)
@@ -76,8 +79,3 @@ sumPV ((DoubVal v):vals) =
     DoubVal vs -> DoubVal $ vs + v
     StrVal _ -> error "I cannot sum a string. Please report this error!"
 sumPV _ = error "I cannot sum a string. Please report this error!"
-
-isLeafJ :: Judgement -> Bool
-isLeafJ (Judgement (_, _, _, []))    = True
-isLeafJ (Judgement (_, _, _, (_:_))) = False
-isLeafJ (Bonus _)                    = False

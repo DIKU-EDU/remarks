@@ -64,7 +64,7 @@ parseBonus = do
   points <- parsePoints
   void $ lineBreak
   comments <- many parseComment'
-  pure $ Bonus (points, comments)
+  pure $ Bonus (points, [], comments)
 
 parsePropertyExp :: ReadP PropertyExp
 parsePropertyExp = choice [lookupProp, value]

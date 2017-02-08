@@ -80,7 +80,7 @@ makePlural 1 s = "1 " ++ s
 makePlural n s = show n ++ " " ++ s ++ "s"
 
 pendingJudgement :: Judgement -> [PendingTree]
-pendingJudgement (Bonus (_, cs)) =
+pendingJudgement (Bonus (_, _, cs)) =
   case countImpartials cs of
     0 -> []
     n -> [Node "Bonus" n False []]
