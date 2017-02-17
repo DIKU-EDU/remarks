@@ -1,5 +1,5 @@
 name:                remarks
-version:             0.1.12
+version:             0.1.13
 synopsis:            A DSL for marking student work
 description:         A DSL for marking student work; see README.md for further details.
 homepage:            https://github.com/DIKU-EDU/remarks#readme
@@ -19,8 +19,10 @@ library
                      , Config
                      , Export
                      , Export.Html
+                     , Export.HtmlTable
                      , Export.Generic
                      , Export.CSV
+                     , Export.MD
                      , Invalid
                      , Parser
                      , Parser.Impl
