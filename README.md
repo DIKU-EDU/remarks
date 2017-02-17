@@ -46,6 +46,11 @@ Developer features:
 
 ## Installation
 
+`remarks` is written in Haskell. If you are new to Haskell, we can recommend
+installing either [Haskell Platform](https://www.haskell.org/platform/) or [The
+Haskell Tool Stack](https://docs.haskellstack.org/en/stable/README/). Follow
+the instructions below to then install `remarks`.
+
 `remarks` is on [Hackage](http://hackage.haskell.org/package/remarks), so you
 can use [Cabal](https://www.haskell.org/cabal/):
 
