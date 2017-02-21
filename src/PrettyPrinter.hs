@@ -52,4 +52,4 @@ formatMood Warning   = text "!"
 
 formatCommentPart :: CommentPart -> Doc
 formatCommentPart (CommentStr string)  = text string
-formatCommentPart (CommentCmt comment) = nest 2 $ formatComment comment
+formatCommentPart (CommentCmt comment) = formatComment comment
