@@ -38,7 +38,10 @@ parseString input = return $ parse (parseJudgements 1) "String" input
 -------------------------------------------------------------------------------
 
 parseLine :: MrkParser String
-parseLine = manyTill anyChar newline
+parseLine = manyTill anyChar (many1 newline)
+
+endline :: MrkParser ()
+endline = void $ many1 newline
 
 integral :: MrkParser String
 integral = many1 digit
@@ -76,7 +79,7 @@ parseBonus :: Int -> MrkParser Judgement
 parseBonus _ = do
   void $ char '+'
   total <- parsePoints
-  void $ newline
+  endline
   properties <- many parseProperty
   comments <- many $ parseComment 1
   pure $ Bonus (total, properties, comments)
@@ -87,7 +90,7 @@ parseRegularJudgement depth title = do
   total <- optionMaybe parsePoints
   void $ char '/'
   maxPoints <- parsePoints
-  void $ newline
+  endline
   properties <- many parseProperty
   comments <- many $ parseComment 1
   js <- many (parseJudgement (depth + 1))
