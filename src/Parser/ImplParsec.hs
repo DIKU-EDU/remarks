@@ -27,11 +27,11 @@ parse p = runP p initialState
 parseFile :: String -> IO (Either ParseError [Judgement])
 parseFile fname
     = do input <- readFile fname
-         return (parse (parseJudgements 1) fname input)
+         return (parse parseRemarks fname input)
 
 -- |Parse a Remarks Judgement from a string
 parseString :: String -> IO (Either ParseError [Judgement])
-parseString input = return $ parse (parseJudgements 1) "String" input
+parseString input = return $ parse parseRemarks "String" input
 
 -------------------------------------------------------------------------------
 -- * Implementation of the parser
@@ -62,8 +62,12 @@ parsePoints = (try float <|> intAsFloat)
   where
     intAsFloat = (pure . fromInteger . ((*) 100)) =<< integer
 
-parseJudgements :: Int -> MrkParser [Judgement]
-parseJudgements depth = many1 (parseJudgement depth)
+parseRemarks :: MrkParser [Judgement]
+parseRemarks = do
+  js <- many1 (parseJudgement 1)
+  void spaces
+  eof
+  pure js
 
 parseJudgement :: Int -> MrkParser Judgement
 parseJudgement depth = do
