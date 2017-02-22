@@ -92,7 +92,7 @@ htmlTableHead (Judgement (_, _, _, js)) =
   tr $ th (text "Title") $$ (vcat $ map maketh js) $$ th (text "Total")
   where
     maketh (Judgement (Header(title, _, maxPoint), _, _, _)) =
-      th $ text (title ++ "/") <> pointsDoc maxPoint
+      th $ text (title ++ "/") <> pointsDoc (Just maxPoint)
     maketh (Bonus _) =
       th $ text "Bonus"
 

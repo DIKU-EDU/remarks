@@ -36,20 +36,23 @@ toHTML (Rows rs) = "<table>" ++ (concatMap formatRow rs) ++ "</table>"
     formatRow r  = "<tr>" ++ (concatMap formatElem r) ++ "</tr>"
     formatElem e = "<td>" ++ e ++ "</td>"
 
-isIntegral :: Double -> Bool
-isIntegral x = x == fromInteger (round x)
+isIntegral :: Int -> Bool
+isIntegral x = 0 == x `mod` 100
 
-pointsDoc :: Double -> Doc
-pointsDoc v | isInfinite v = text "*"
-pointsDoc v | isNaN v = empty
-pointsDoc v | isIntegral v = integer (round v)
-pointsDoc v = double v
+pointsDoc :: Maybe Int -> Doc
+pointsDoc Nothing = text "*"
+pointsDoc (Just v) | isIntegral v = int (v `div` 100)
+pointsDoc (Just v) = int (v `div` 100) <> text "." <> int ((v `mod` 100) `div` 10) <> ppCent (v `mod` 10)
+  where
+    ppCent 0 = empty
+    ppCent n = int n
+
 
 propertyExpDoc :: PropertyExp -> Doc
 propertyExpDoc (Lookup (index, name)) =
   brackets $ int index <> text "." <> text name
 propertyExpDoc (Value value) = text value
-propertyExpDoc (Num value) = pointsDoc value
+propertyExpDoc (Num value) = pointsDoc $ Just value
 propertyExpDoc (Sum str) = text "sum" <> (parens $ text str)
 
 unify :: Judgement -> Judgement -> Maybe Judgement

@@ -12,7 +12,7 @@ import Text.PrettyPrint.GenericPretty
 
 data PropertyValue
   = StrVal String
-  | DoubVal Double
+  | DoubVal Int
   deriving (Eq, Show, Generic)
 
 instance Out PropertyValue
@@ -47,7 +47,9 @@ addPredifinedProps p =
   Property("MaxPoints", Sum "MaxPoints") : p
 
 generatePredefinedValues :: Header -> Either Invalid [(String, PropertyValue)]
-generatePredefinedValues (Header (t, p, maxP)) =
+generatePredefinedValues (Header (t, Nothing, maxP)) =
+  pure [("Title", StrVal t), ("Total", DoubVal 0), ("MaxPoints", DoubVal maxP)]
+generatePredefinedValues (Header (t, (Just p), maxP)) =
   pure [("Title", StrVal t), ("Total", DoubVal p), ("MaxPoints", DoubVal maxP)]
 
 bindProp :: Judgement -> [[(String, PropertyValue)]] -> Property ->

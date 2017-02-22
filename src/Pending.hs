@@ -84,7 +84,7 @@ pendingJudgement (Bonus (_, _, cs)) =
   case countImpartials cs of
     0 -> []
     n -> [Node "Bonus" n False []]
-pendingJudgement (Judgement (Header (t, p, _), _, cs, [])) | isInfinite p =
+pendingJudgement (Judgement (Header (t, Nothing, _), _, cs, [])) =
   [Node t (countImpartials cs) True []]
 pendingJudgement (Judgement (Header (t, _, _), _, cs, subJs)) =
   case (concatMap pendingJudgement subJs) of

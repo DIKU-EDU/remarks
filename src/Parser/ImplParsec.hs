@@ -43,20 +43,21 @@ parseLine = manyTill anyChar newline
 integral :: MrkParser String
 integral = many1 digit
 
-float :: MrkParser Double
+float :: MrkParser Int
 float = do
   i <- option "0" integral
   void $ char '.'
-  d <- integral
-  pure $ read (i ++ "." ++ d)
+  d1 <- digit
+  d2 <- option '0' digit
+  pure $ read (i ++ [d1, d2])
 
 integer :: MrkParser Integer
 integer = (pure . read) =<< integral
 
-parsePoints :: MrkParser Double
-parsePoints = try float <|> intAsFloat
+parsePoints :: MrkParser Int
+parsePoints = (try float <|> intAsFloat)
   where
-    intAsFloat = (pure . fromInteger) =<< integer
+    intAsFloat = (pure . fromInteger . ((*) 100)) =<< integer
 
 parseJudgements :: Int -> MrkParser [Judgement]
 parseJudgements depth = many1 (parseJudgement depth)
@@ -83,7 +84,7 @@ parseBonus _ = do
 
 parseRegularJudgement :: Int -> String -> MrkParser Judgement
 parseRegularJudgement depth title = do
-  total <- option (1/0) parsePoints
+  total <- optionMaybe parsePoints
   void $ char '/'
   maxPoints <- parsePoints
   void $ newline

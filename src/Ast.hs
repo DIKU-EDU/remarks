@@ -14,7 +14,7 @@ module Ast where
 import Text.PrettyPrint.GenericPretty
 
 newtype Header
-  = Header (String, Double, Double)
+  = Header (String, Maybe Int, Int)
   deriving (Eq, Show, Generic)
 
 instance Out Header
@@ -52,14 +52,14 @@ data PropertyExp
   = Lookup (Int, String)
   | Sum String
   | Value  String
-  | Num  Double
+  | Num  Int
   deriving (Eq, Show, Generic)
 
 instance Out PropertyExp
 
 data Judgement
   = Judgement (Header, [Property], [Comment], [Judgement])
-  | Bonus (Double, [Property], [Comment])
+  | Bonus (Int, [Property], [Comment])
   deriving (Eq, Show, Generic)
 
 instance Out Judgement
