@@ -6,13 +6,14 @@ import Ast
 import Invalid
 
 import Text.PrettyPrint.GenericPretty
+import Control.Monad (liftM)
 
 -- In the lists index 0 is used for predifined variables: Title, Total, MaxPoints
 -- This should refactored to real monadic programming
 
 data PropertyValue
   = StrVal String
-  | DoubVal Int
+  | IntVal Int
   deriving (Eq, Show, Generic)
 
 instance Out PropertyValue
@@ -33,24 +34,24 @@ interpJudgement (j @ (Judgement (h, prop, cs, js))) = do
   pure (Judgement (h, newProps, cs, jupdates), propVals)
 interpJudgement (Bonus (v, _, c)) = pure (Bonus (v, preProps, c), newProps)
   where
-    newProps = [("Title", StrVal "Bonus"), ("Total", DoubVal v)]
+    newProps = [("Title", StrVal "Bonus"), ("Total", IntVal v)]
     preProps = [Property ("Title", Value "Bonus"), Property ("Total", Num v)]
 
 propValToProperties :: (String, PropertyValue) -> Property
 propValToProperties (str, StrVal string) = Property (str, Value string)
-propValToProperties (str, DoubVal double) = Property (str, Num double)
+propValToProperties (str, IntVal double) = Property (str, Num double)
 
 addPredifinedProps :: [Property] -> [Property]
 addPredifinedProps p =
   Property("Title", Lookup (0, "Title")) :
-  Property("Total", Sum "Total") :
-  Property("MaxPoints", Sum "MaxPoints") : p
+  Property("Total", ArithFun Sum "Total") :
+  Property("MaxPoints", ArithFun Sum "MaxPoints") : p
 
 generatePredefinedValues :: Header -> Either Invalid [(String, PropertyValue)]
 generatePredefinedValues (Header (t, Nothing, maxP)) =
-  pure [("Title", StrVal t), ("Total", DoubVal 0), ("MaxPoints", DoubVal maxP)]
+  pure [("Title", StrVal t), ("Total", IntVal 0), ("MaxPoints", IntVal maxP)]
 generatePredefinedValues (Header (t, (Just p), maxP)) =
-  pure [("Title", StrVal t), ("Total", DoubVal p), ("MaxPoints", DoubVal maxP)]
+  pure [("Title", StrVal t), ("Total", IntVal p), ("MaxPoints", IntVal maxP)]
 
 bindProp :: Judgement -> [[(String, PropertyValue)]] -> Property ->
   Either Invalid (String, PropertyValue)
@@ -62,22 +63,29 @@ bindProp rj propEnv (Property (name, propExp)) =
 evalPropExp :: Judgement -> PropertyExp -> [[(String, PropertyValue)]] ->
   Either Invalid PropertyValue
 evalPropExp _ (Value s) _ = pure $ StrVal s
-evalPropExp _ (Num n) _ = pure $ DoubVal n
+evalPropExp _ (Num n) _ = pure $ IntVal n
 evalPropExp rj (Lookup (i, p)) propEnv =
   case (lookup p (propEnv !! (i))) of
     Nothing -> Left $ PropertyNotFound p rj
     (Just s) -> pure s
-evalPropExp rj (Sum pname) propEnv | isLeafJ rj =
-    evalPropExp rj (Lookup (0, pname)) propEnv
-evalPropExp _ (Sum pname) propEnv =
-    pure $ sumPV vals
-  where
-    vals = map snd $ concatMap (filter (\x -> (fst x) == pname)) (tail propEnv)
+evalPropExp rj (ArithFun _ pname) propEnv | isLeafJ rj =
+  evalPropExp rj (Lookup (0, pname)) propEnv
+evalPropExp rj (ArithFun fun pname) propEnv =
+  case appFun (arithListFun fun) $ getVals pname propEnv of
+    Nothing -> Left $ StringInputToArithFun pname rj
+    Just pv -> Right $ pv
 
-sumPV :: [PropertyValue] -> PropertyValue
-sumPV [] = DoubVal 0
-sumPV ((DoubVal v):vals) =
-  case sumPV vals of
-    DoubVal vs -> DoubVal $ vs + v
-    StrVal _ -> error "I cannot sum a string. Please report this error!"
-sumPV _ = error "I cannot sum a string. Please report this error!"
+arithListFun :: PropertyArithFun -> [Int] -> Int
+arithListFun Sum = sum
+arithListFun Min = minimum
+arithListFun Max = maximum
+
+getVals :: String -> [[(String, PropertyValue)]] -> [PropertyValue]
+getVals pname propEnv = map snd $ concatMap (filter (\x -> (fst x) == pname)) (tail propEnv)
+
+appFun :: ([Int] -> Int) -> [PropertyValue] -> Maybe PropertyValue
+appFun fun ps = liftM (IntVal . fun) $ sequence $ map propToInt ps
+
+propToInt :: PropertyValue -> Maybe Int
+propToInt (IntVal v) = Just v
+propToInt (StrVal _) = Nothing

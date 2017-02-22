@@ -14,6 +14,7 @@ data Invalid
   | BadSubJudgementMaxPointsSum String Judgement
   | NoPointsInBottomJudgement String Judgement
   | PropertyNotFound String Judgement
+  | StringInputToArithFun String Judgement
   deriving (Eq, Show, Generic)
 
 instance Out Invalid
@@ -32,6 +33,8 @@ reportInvalid (NoPointsInBottomJudgement s j) =
   "In " ++ s ++ " no points reported in leaf-judgement\n" ++ reportStrippedJudgement j
 reportInvalid (PropertyNotFound s j) = 
   "Property " ++ s ++ " not found in judgement\n" ++ reportJudgement 0 j
+reportInvalid (StringInputToArithFun s j) = 
+  "Property " ++ s ++ " contains a string value in judgement\n" ++ reportJudgement 0 j
 reportInvalid m = "Cannot parse error message\n" ++ show m ++ "\nPlease report this message to someone!"
 
 reportJudgement :: Int -> Judgement -> String

@@ -50,12 +50,20 @@ instance Out Property
 
 data PropertyExp
   = Lookup (Int, String)
-  | Sum String
+  | ArithFun PropertyArithFun String
   | Value  String
   | Num  Int
   deriving (Eq, Show, Generic)
 
 instance Out PropertyExp
+
+data PropertyArithFun
+  = Sum
+  | Min
+  | Max
+  deriving (Eq, Show, Generic)
+
+instance Out PropertyArithFun
 
 data Judgement
   = Judgement (Header, [Property], [Comment], [Judgement])

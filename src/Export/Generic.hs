@@ -53,7 +53,12 @@ propertyExpDoc (Lookup (index, name)) =
   brackets $ int index <> text "." <> text name
 propertyExpDoc (Value value) = text value
 propertyExpDoc (Num value) = pointsDoc $ Just value
-propertyExpDoc (Sum str) = text "sum" <> (parens $ text str)
+propertyExpDoc (ArithFun fun str) = propertyArithFunDoc fun <> (parens $ text str)
+
+propertyArithFunDoc :: PropertyArithFun -> Doc
+propertyArithFunDoc Sum = text "sum"
+propertyArithFunDoc Min = text "min"
+propertyArithFunDoc Max = text "max"
 
 unify :: Judgement -> Judgement -> Maybe Judgement
 unify

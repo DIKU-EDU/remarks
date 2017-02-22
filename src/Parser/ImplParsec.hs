@@ -102,13 +102,14 @@ parseProperty = do
       pure $ Property (name, value)
 
 parsePropertyExp :: MrkParser PropertyExp
-parsePropertyExp = choice [sumProp, lookupProp, number, value]
+parsePropertyExp = choice [try funProp, lookupProp, try number, value]
   where
-    sumProp = do
-      void $ try $ string "sum("
+    funProp = do
+      fun <- parsePropertyArithFun
+      void $ char '('
       name <- manyTill anyChar $ char ')'
       void $ newline
-      pure $ Sum name
+      pure $ ArithFun fun name
     lookupProp = do
       void $ char '['
       index <- integer
@@ -117,7 +118,7 @@ parsePropertyExp = choice [sumProp, lookupProp, number, value]
       void $ newline
       pure $ Lookup (fromInteger index, name)
     number = do
-      p <- try parsePoints
+      p <- parsePoints
       void $ newline
       pure $ Num p
     value = do
@@ -125,6 +126,13 @@ parsePropertyExp = choice [sumProp, lookupProp, number, value]
       case c of
        '\n' -> pure $ Value ""
        _    -> (\cs -> pure $ Value (c:cs)) =<< parseLine
+
+parsePropertyArithFun :: MrkParser PropertyArithFun
+parsePropertyArithFun = choice
+  [ string "sum" *> pure Sum
+  , string "min" *> pure Min
+  , string "max" *> pure Max
+  ]
 
 parseComment :: Int -> MrkParser Comment
 parseComment depth = do
