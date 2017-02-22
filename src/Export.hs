@@ -1,12 +1,13 @@
-module Export (exportHTML, exportCSV, exportHTMLTable, exportMD, unify, summary) where
+module Export (exportHTML, exportCSV, exportHTMLTable, exportResultsTable, exportMD, unify, summary) where
 
 import Ast
 import Invalid
 import Export.Html
 import Export.CSV
 import Export.HtmlTable
+import Export.ResultsTable
 import Export.MD
-import Export.Generic ( unify, summary, toHTML, transp )
+import Export.Generic ( unify, summary, toHTML, toCSV, transp )
 
 import Text.PrettyPrint
 
@@ -21,3 +22,8 @@ exportHTMLTable js = toHTML $ transp $ htmlTableRemarks js
 
 exportMD :: [Judgement] -> String
 exportMD js = mdRemarks js
+
+exportResultsTable :: [Judgement] -> String
+exportResultsTable js = toCSV ";" $ transp $ resultsTableRemarks js
+-- exportResultsTable js = toHTML $ resultsTableRemarks js
+

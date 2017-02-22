@@ -161,6 +161,12 @@ export_table js = do
     Right newJs -> putStrLn $ exportHTMLTable newJs
     Left e -> putStrLn $ show e
 
+export_results :: [Judgement] -> IO ()
+export_results js = do
+  case (mapM interpProps js) of
+    Right newJs -> putStrLn $ exportResultsTable newJs
+    Left e -> putStrLn $ show e
+
 export_md :: [Judgement] -> IO ()
 export_md js = do
   case (mapM interpProps js) of
@@ -211,6 +217,8 @@ main = do
       with paths $ mapM_ $ export "Title;Total;MaxPoints"
     ("exportTable" : paths) ->
       with paths $ mapM_ export_table
+    ("exportResults" : paths) ->
+      with paths $ mapM_ export_results
     ("exportMD" : paths) ->
       with paths $ mapM_ export_md
     ("exportHTML" : paths) ->
