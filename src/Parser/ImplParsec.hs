@@ -102,14 +102,24 @@ parseProperty = do
       pure $ Property (name, value)
 
 parsePropertyExp :: MrkParser PropertyExp
-parsePropertyExp = choice [lookupProp, value]
+parsePropertyExp = choice [sumProp, lookupProp, number, value]
   where
+    sumProp = do
+      void $ try $ string "sum("
+      name <- manyTill anyChar $ char ')'
+      void $ newline
+      pure $ Sum name
     lookupProp = do
       void $ char '['
       index <- integer
       void $ char '.'
       name <- manyTill anyChar $ char ']'
+      void $ newline
       pure $ Lookup (fromInteger index, name)
+    number = do
+      p <- try parsePoints
+      void $ newline
+      pure $ Num p
     value = do
       c <- satisfy (/='[')
       case c of
