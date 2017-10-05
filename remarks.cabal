@@ -23,9 +23,10 @@ library
                      , Export.Generic
                      , Export.CSV
                      , Export.MD
+                     , Export.ResultsTable
                      , Invalid
                      , Parser
-                     , Parser.Impl
+                     , Parser.ImplParsec
                      , Pending
                      , PointsChecker
                      , PrettyPrinter
@@ -35,6 +36,8 @@ library
                      , GenericPretty >= 1.2.1
                      , pretty >= 1.1.3.3
                      , containers >= 0.5.7.1
+                     , parsec >= 3.1.11
+                     , mtl >= 2.2.1
   default-language:    Haskell2010
 
 executable remarks
