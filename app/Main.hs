@@ -142,7 +142,7 @@ printJs = putStrLn . ppJs
 
 export :: String -> [Judgement] -> IO ()
 export format js = do
-  case (exportCSV [delimiter] formatList =<< (marshall js)) of
+  case (exportCSV [delimiter] formatList =<< (mapM interpProps js)) of
     Right docs -> putStrLn docs
     Left e -> putStrLn $ reportInvalid e
   where
