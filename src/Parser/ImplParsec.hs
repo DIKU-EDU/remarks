@@ -58,9 +58,10 @@ integer :: MrkParser Integer
 integer = (pure . read) =<< integral
 
 parsePoints :: MrkParser Int
-parsePoints = (try float <|> intAsFloat)
+parsePoints = try noAnswer <|> try float <|> intAsFloat
   where
     intAsFloat = (pure . fromInteger . ((*) 100)) =<< integer
+    noAnswer = char '-' >> return 0
 
 parseRemarks :: MrkParser [Judgement]
 parseRemarks = do
