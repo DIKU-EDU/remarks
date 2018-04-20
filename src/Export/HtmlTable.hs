@@ -5,6 +5,9 @@ import Ast
 import Export.Generic
 import PrettyPrinter
 
+import Data.List (intersperse)
+
+
 htmlTableRemarks :: [Judgement] -> Table 
 htmlTableRemarks js = Rows $ tblHead:(concatMap formatStart js)
   where
@@ -19,6 +22,7 @@ formatStart :: Judgement -> [Row]
 formatStart (Bonus _) = []
 formatStart (j @ (Judgement (_, _, cs, js))) =
   [(getTitle j):(getTotal j):r1,"":(formatComments cs):r2]
+  -- [(getTitle j):(getTotal j):r1]
   where
     (r1, r2) = concatUnzipMap formatJudgement js
 
@@ -35,4 +39,6 @@ concatUnzipMap f l =
   where (c1, c2) = unzip $ map f l
 
 formatComments :: [Comment] -> String
-formatComments cs = ppComments cs
+formatComments cs = concat $ intersperse "<br>" $ map (\x -> "" ++ ppComment x) cs
+
+

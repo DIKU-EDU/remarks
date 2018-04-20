@@ -54,7 +54,7 @@ td :: Doc -> Doc
 td     = etag "td"
 
 toggle :: Doc -> Doc
-toggle = atag "a" "href=\"#\" onclick=\"toggleRow(this);\""
+toggle = atag "span" "href=\"#\" onclick=\"toggleRow(this);\" style=\"text-decoration: underline;color: blue;\" "
 
 ul :: Doc -> Doc
 ul     = etag "ul"
@@ -75,6 +75,7 @@ documentStyle = style_ $
   text "li.plus:before {content: \"+\"; margin-right: 4px;}" $$
   text "li.minus:before {content: \"-\"; margin-right: 4px;}" $$
   text "li.quest:before {content: \"?\"; margin-right: 4px;}" $$
+  text "li.excl:before {content: \"!\"; margin-right: 4px;}" $$
   text "li.excl:before {content: \"!\"; margin-right: 4px;}" $$
   text "li.star:before {content: \"*\"; margin-right: 4px;}"
 
