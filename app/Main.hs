@@ -145,7 +145,7 @@ export format js = do
   case (exportCSV [delimiter] formatList =<< (marshall js)) of
     Right docs -> putStrLn docs
     Left e -> putStrLn $ reportInvalid e
-  where 
+  where
     delimiter = findDelimiter format
     formatList = splitBy delimiter format
 
@@ -188,7 +188,7 @@ pending dl js = do
 findDelimiter :: String -> Char
 findDelimiter [] = ';' -- There is no delimiter so it doesn't matter
 findDelimiter (s:ss) =
-  if (elem s [',',';'])
+  if (elem s [',',';','\t'])
   then s
   else findDelimiter ss
 
@@ -214,7 +214,7 @@ main = do
     ("export" : "--format" : format : paths) ->
       with paths $ mapM_ $ export format
     ("export" : paths) ->
-      with paths $ mapM_ $ export "Title;Total;MaxPoints"
+      with paths $ mapM_ $ export "Title\tTotal\tMaxPoints"
     ("exportTable" : paths) ->
       with paths $ mapM_ export_table
     ("exportResults" : paths) ->
