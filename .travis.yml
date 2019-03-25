@@ -15,12 +15,12 @@ addons:
 
 matrix:
   include:
-  - env: BUILD=stack ARGS="--resolver lts-7"
-    compiler: ": #stack 8.0.1"
+  - env: BUILD=stack ARGS="--resolver lts-13"
+    compiler: ": #stack 8.6.3"
     addons: {apt: {packages: [libgmp-dev]}}
 
-  - env: BUILD=stack ARGS="--resolver lts-7"
-    compiler: ": #stack 8.0.1 osx"
+  - env: BUILD=stack ARGS="--resolver lts-13"
+    compiler: ": #stack 8.6.3 osx"
     os: osx
 
 # https://raw.githubusercontent.com/commercialhaskell/stack/master/doc/travis-complex.yml
