@@ -21,26 +21,26 @@ posUnitTests = testGroup "Positive Unit Tests"
   [ testCase "Lone header line" $
       checkPointsStr "# A: 0/0\n" @?=
         [ Right $
-          Judgement (Header ("A", 0.0, 0.0), [], [], [])]
+          Judgement (Header ("A", Just 0, 0), [], [], [])]
   , testCase "A couple same-depth header lines" $
       checkPointsStr "# A: 0/0\n# B: 0/0\n" @?=
         [ Right $
-          Judgement (Header ("A", 0.0, 0.0), [], [], [])
+          Judgement (Header ("A", Just 0, 0), [], [], [])
         , Right $
-          Judgement (Header ("B", 0.0, 0.0), [], [], [])
+          Judgement (Header ("B", Just 0, 0), [], [], [])
         ]
   , testCase "A simple hierarchy of headers" $
       checkPointsStr "# A: 0/0\n## B: 0/0\n" @?=
         [ Right $
-          Judgement (Header ("A", 0.0, 0.0), [], [],
-            [Judgement (Header ("B", 0.0, 0.0), [], [], [])])]
+          Judgement (Header ("A", Just 0, 0), [], [],
+            [Judgement (Header ("B", Just 0, 0), [], [], [])])]
   , testCase "A couple simple hierarchies" $
       checkPointsStr "# A: 0/0\n## B: 0/0\n# C: 0/0\n" @?=
         [ Right $
-          Judgement (Header ("A", 0.0, 0.0), [], [],
-            [Judgement (Header ("B", 0.0, 0.0), [], [], [])])
+          Judgement (Header ("A", Just 0, 0), [], [],
+            [Judgement (Header ("B", Just 0, 0), [], [], [])])
         , Right $
-          Judgement (Header ("C", 0.0, 0.0), [], [], [])
+          Judgement (Header ("C", Just 0, 0), [], [], [])
         ]
   ]
 
@@ -48,22 +48,22 @@ negUnitTests :: TestTree
 negUnitTests = testGroup "Negative Unit Tests"
   [ testCase "Points exceed max points" $
       checkPointsStr "# A: 1/0\n" @?=
-        [Left $ PointsExceedMaxPoints $
-          (Judgement (Header ("A", 1.0, 0.0), [], [], []))]
+        [Left $ PointsExceedMaxPoints "A"
+          (Judgement (Header ("A", Just 100, 0), [], [], []))]
   , testCase "Sub-judgement points don't sum up to points" $
       checkPointsStr "# A: 0/0\n## B: 1/0\n" @?=
-        [Left $ BadSubJudgementPointsSum
-          (Judgement (Header ("A", 0.0, 0.0), [], [],
-            [Judgement (Header ("B", 1.0, 0.0), [], [], [])]))]
+        [Left $ BadSubJudgementPointsSum "A"
+          (Judgement (Header ("A", Just 0, 0), [], [],
+            [Judgement (Header ("B", Just 100, 0), [], [], [])]))]
   , testCase "Sub-judgement max-points don't sum up to max-points" $
       checkPointsStr "# A: 0/0\n## B: 0/1\n" @?=
-        [Left $ BadSubJudgementMaxPointsSum
-          (Judgement (Header ("A", 0.0, 0.0), [], [],
-            [Judgement (Header ("B", 0.0, 1.0), [], [], [])]))]
+        [Left $ BadSubJudgementMaxPointsSum "A"
+          (Judgement (Header ("A", Just 0, 0), [], [],
+            [Judgement (Header ("B", Just 0, 100), [], [], [])]))]
   , testCase "Single judgement with no points" $
       checkPointsStr "# A: /0\n" @?=
-        [Left $ NoPointsInBottomJudgement
-          (Judgement (Header ("A", 1/0, 0.0), [], [], []))]
+        [Left $ NoPointsInBottomJudgement "A"
+          (Judgement (Header ("A", Nothing, 0), [], [], []))]
   ]
 
 allTests :: TestTree
