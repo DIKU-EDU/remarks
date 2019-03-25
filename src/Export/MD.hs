@@ -3,6 +3,7 @@ module Export.MD (mdRemarks) where
 import Ast
 import Export.Generic
 
+import Prelude hiding ((<>)) -- use (<>) from Text.PrettyPrint
 import Text.PrettyPrint
 import Data.List (intersperse)
 

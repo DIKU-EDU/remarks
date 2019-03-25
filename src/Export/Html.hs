@@ -3,6 +3,7 @@ module Export.Html (htmlRemarks) where
 import Ast
 
 import Export.Generic
+import Prelude hiding ((<>)) -- use (<>) from Text.PrettyPrint
 import Text.PrettyPrint
 
 htmlRemarks :: [Judgement] -> Doc
