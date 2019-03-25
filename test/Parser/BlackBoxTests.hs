@@ -49,7 +49,10 @@ golden' :: String -> TestTree
 golden' basename =
   goldenVsFile name fref fout $ do
     p <- parseFile fin
-    writeFile fout $ (pretty p) ++ "\n"
+    let ps = case p of
+              Left e -> show e
+              Right p' -> pretty p'
+    writeFile fout $ ps ++ "\n"
   where
     prefix = "test/golden/"
     name = basename ++ ".mrk"
