@@ -30,8 +30,8 @@ parseFile fname
          return (parse parseRemarks fname input)
 
 -- |Parse a Remarks Judgement from a string
-parseString :: String -> IO (Either ParseError [Judgement])
-parseString input = return $ parse parseRemarks "String" input
+parseString :: String -> Either ParseError [Judgement]
+parseString input = parse parseRemarks "String" input
 
 -------------------------------------------------------------------------------
 -- * Implementation of the parser
