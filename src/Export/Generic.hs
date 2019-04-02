@@ -1,6 +1,8 @@
 module Export.Generic where
 
 import Ast
+
+import Prelude hiding ((<>)) -- use (<>) from Text.PrettyPrint
 import Text.PrettyPrint
 
 import Data.List (intersperse, transpose)
