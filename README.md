@@ -101,6 +101,15 @@ containing only quantitative remarks:
 ## Task 2: 15/25
 ```
 
+It is possible to indicate that a student did not submit an answer with writing `-` instead of a number points. This will be treated like 0 points. For instance:
+
+```
+# Theory: 17/50
+## Question 1: 10/10
+## Question 2: -/20
+## Question 3: 7/20
+```
+
 The header of a judgement may be followed by qualitative remarks. Remarks begin
 with an indent (two spaces), and a mood mark:
 

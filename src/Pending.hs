@@ -84,7 +84,8 @@ pendingJudgement (Bonus (_, _, cs)) =
   case countImpartials cs of
     0 -> []
     n -> [Node "Bonus" n False []]
-pendingJudgement (Judgement (Header (t, Nothing, _), _, cs, [])) =
+pendingJudgement (Feedback ( _, _)) = []
+pendingJudgement (Judgement (Header (t, NotGiven, _), _, cs, [])) =
   [Node t (countImpartials cs) True []]
 pendingJudgement (Judgement (Header (t, _, _), _, cs, subJs)) =
   case (concatMap pendingJudgement subJs) of

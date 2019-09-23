@@ -12,7 +12,7 @@ ppJ_d d = render . (formatJudgement (d + 1))
 ppJs :: [Judgement] -> String
 ppJs = render . vcat . intersperse (text "") . map (formatJudgement 1)
 
-ppPoints :: Maybe Int -> String
+ppPoints :: Points -> String
 ppPoints = render . pointsDoc
 
 ppComments :: [Comment] -> String
@@ -24,7 +24,7 @@ ppComment = render . formatComment
 formatJudgement :: Int -> Judgement -> Doc
 formatJudgement depth (Bonus (p, properties, comments)) =
   (text $ replicate depth '#') <+> text "Bonus" <> colon <+> text "+" <>
-  pointsDoc (Just p) $+$
+  pointsDoc (Given p) $+$
   (nest 2 $ vcat $ map formatProperty properties) $+$
   (nest 2 $ vcat $ map formatComment comments)
 formatJudgement depth (Judgement (header, properties, comments, judgements)) =
@@ -36,7 +36,7 @@ formatJudgement depth (Judgement (header, properties, comments, judgements)) =
 formatHeader :: Int -> Header -> Doc
 formatHeader depth (Header (title, point, maxPoints)) =
   (text $ replicate depth '#') <+> text title <> colon <> space <>
-    pointsDoc point <> text "/" <> pointsDoc (Just maxPoints)
+    pointsDoc point <> text "/" <> pointsDoc (Given maxPoints)
 
 formatProperty :: Property -> Doc
 formatProperty (Property (name, value)) =

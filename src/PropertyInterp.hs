@@ -48,10 +48,10 @@ addPredifinedProps p =
   Property("MaxPoints", ArithFun Sum "MaxPoints") : p
 
 generatePredefinedValues :: Header -> Either Invalid [(String, PropertyValue)]
-generatePredefinedValues (Header (t, Nothing, maxP)) =
-  pure [("Title", StrVal t), ("Total", IntVal 0), ("MaxPoints", IntVal maxP)]
-generatePredefinedValues (Header (t, (Just p), maxP)) =
+generatePredefinedValues (Header (t, (Given p), maxP)) =
   pure [("Title", StrVal t), ("Total", IntVal p), ("MaxPoints", IntVal maxP)]
+generatePredefinedValues (Header (t, _, maxP)) =
+  pure [("Title", StrVal t), ("Total", IntVal 0), ("MaxPoints", IntVal maxP)]
 
 bindProp :: Judgement -> [[(String, PropertyValue)]] -> Property ->
   Either Invalid (String, PropertyValue)
@@ -63,7 +63,7 @@ bindProp rj propEnv (Property (name, propExp)) =
 evalPropExp :: Judgement -> PropertyExp -> [[(String, PropertyValue)]] ->
   Either Invalid PropertyValue
 evalPropExp _ (Value s) _ = pure $ StrVal s
-evalPropExp _ (Num n) _ = pure $ IntVal n
+evalPropExp _ (Num n)   _ = pure $ IntVal n
 evalPropExp rj (Lookup (i, p)) propEnv =
   case (lookup p (propEnv !! (i))) of
     Nothing -> Left $ PropertyNotFound p rj

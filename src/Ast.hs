@@ -14,10 +14,18 @@ module Ast where
 import Text.PrettyPrint.GenericPretty
 
 newtype Header
-  = Header (String, Maybe Int, Int)
+  = Header (String, Points, Int)
   deriving (Eq, Show, Generic)
 
 instance Out Header
+
+data Points
+  = NotGiven
+  | NotMade
+  | Given Int
+  deriving (Eq, Show, Generic)
+
+instance Out Points
 
 data Mood
   = Positive
@@ -51,7 +59,7 @@ instance Out Property
 data PropertyExp
   = Lookup (Int, String)
   | ArithFun PropertyArithFun String
-  | Value  String
+  | Value String
   | Num  Int
   deriving (Eq, Show, Generic)
 

@@ -57,11 +57,18 @@ float = do
 integer :: MrkParser Integer
 integer = (pure . read) =<< integral
 
-parsePoints :: MrkParser Int
-parsePoints = try noAnswer <|> try float <|> intAsFloat
+parsePointsNum :: MrkParser Int
+parsePointsNum = try float <|> intAsFloat
   where
     intAsFloat = (pure . fromInteger . ((*) 100)) =<< integer
-    noAnswer = char '-' >> return 0
+
+parsePoints :: MrkParser Points
+parsePoints = try noAnswer <|> try point <|> (return NotGiven)
+  where
+    point = do
+      p <- parsePointsNum
+      return $ Given p
+    noAnswer = char '-' >> return NotMade
 
 parseRemarks :: MrkParser [Judgement]
 parseRemarks = do
@@ -92,9 +99,10 @@ parseBonus _ = do
 
 parseRegularJudgement :: Int -> String -> MrkParser Judgement
 parseRegularJudgement depth title = do
-  total <- optionMaybe parsePoints
+  void $ space
+  total <- parsePoints
   void $ char '/'
-  maxPoints <- parsePoints
+  maxPoints <- parsePointsNum
   endline
   properties <- many parseProperty
   comments <- many $ parseComment 1
@@ -126,7 +134,7 @@ parsePropertyExp = choice [try funProp, lookupProp, try number, value]
       void $ newline
       pure $ Lookup (fromInteger index, name)
     number = do
-      p <- parsePoints
+      p <- parsePointsNum
       void $ newline
       pure $ Num p
     value = do

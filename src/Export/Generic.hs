@@ -39,10 +39,11 @@ toHTML (Rows rs) = "<table>" ++ (concatMap formatRow rs) ++ "</table>"
 isIntegral :: Int -> Bool
 isIntegral x = 0 == x `mod` 100
 
-pointsDoc :: Maybe Int -> Doc
-pointsDoc Nothing = text "*"
-pointsDoc (Just v) | isIntegral v = int (v `div` 100)
-pointsDoc (Just v) = int (v `div` 100) <> text "." <> int ((v `mod` 100) `div` 10) <> ppCent (v `mod` 10)
+pointsDoc :: Points -> Doc
+pointsDoc NotGiven = text "*"
+pointsDoc NotMade = text "-"
+pointsDoc (Given v) | isIntegral v = int (v `div` 100)
+pointsDoc (Given v) = int (v `div` 100) <> text "." <> int ((v `mod` 100) `div` 10) <> ppCent (v `mod` 10)
   where
     ppCent 0 = empty
     ppCent n = int n
@@ -52,7 +53,7 @@ propertyExpDoc :: PropertyExp -> Doc
 propertyExpDoc (Lookup (index, name)) =
   brackets $ int index <> text "." <> text name
 propertyExpDoc (Value value) = text value
-propertyExpDoc (Num value) = pointsDoc $ Just value
+propertyExpDoc (Num value) = pointsDoc $ Given value
 propertyExpDoc (ArithFun fun str) = propertyArithFunDoc fun <> (parens $ text str)
 
 propertyArithFunDoc :: PropertyArithFun -> Doc
