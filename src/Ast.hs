@@ -84,7 +84,8 @@ instance Out PropertyArithFun
 
 data Judgement
   = Judgement (Header, [Property], [Comment], [Judgement])
-  | Bonus (Int, [Property], [Comment])
+  | Bonus     (Int, [Property], [Comment])
+  | Feedback  ([Property], String)
   deriving (Eq, Show, Generic)
 
 instance Out Judgement

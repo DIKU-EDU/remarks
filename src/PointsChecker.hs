@@ -46,6 +46,7 @@ checkPointsJ s (j @ (Judgement (Header (_, (Given p), maxP), _, _, subJs))) = do
         (BadSubJudgementMaxPointsSum s j)
       checkPointsSubJs s j
 checkPointsJ _ j @ (Bonus _) = pure j
+checkPointsJ _ j @ (Feedback _) = pure j
 
 points :: Judgement -> Int
 points (Bonus (v, _, _)) = v
@@ -56,4 +57,5 @@ points (Judgement (Header (_, NotMade, _), _, _, _)) = 0
 
 maxPoints :: Judgement -> Int
 maxPoints (Bonus _) = 0
+maxPoints (Feedback _) = 0
 maxPoints (Judgement (Header (_, _, v), _, _, _)) = v

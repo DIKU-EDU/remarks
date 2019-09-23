@@ -30,8 +30,8 @@ parseFile fname
          return (parse parseRemarks fname input)
 
 -- |Parse a Remarks Judgement from a string
-parseString :: String -> IO (Either ParseError [Judgement])
-parseString input = return $ parse parseRemarks "String" input
+parseString :: String -> Either ParseError [Judgement]
+parseString input = parse parseRemarks "String" input
 
 -------------------------------------------------------------------------------
 -- * Implementation of the parser
@@ -88,9 +88,9 @@ parseJudgement depth = do
   void $ try $ spaces >> (string $ replicate depth judgementMarker)
   void $ space
   title <- manyTill anyChar $ char ':'
-  void $ space
   case title of
     "Bonus" -> parseBonus depth
+    "Feedback" -> parseFeedback depth
     _ -> parseRegularJudgement depth title
 
 parseBonus :: Int -> MrkParser Judgement
@@ -102,6 +102,13 @@ parseBonus _ = do
   properties <- many parseProperty
   comments <- many $ parseComment 1
   pure $ Bonus (total, properties, comments)
+
+parseFeedback :: Int -> MrkParser Judgement
+parseFeedback depth = do
+  endline
+  properties <- many parseProperty
+  text <- manyTill anyChar $ try (lookAhead ( parseJudgement 1))
+  pure $ Feedback (properties, text)
 
 
 parseRegularJudgement :: Int -> String -> MrkParser Judgement

@@ -187,6 +187,14 @@ export_pdfMark js = do
     -- Right newJs -> putStrLn $ show newJs
     Left e -> putStrLn $ show e
 
+export_feedback :: [Judgement] -> IO ()
+export_feedback js = do
+  case (mapM interpProps js) of
+    Right newJs -> putStrLn $ exportFeedback newJs
+    -- Right newJs -> putStrLn $ show newJs
+    Left e -> putStrLn $ show e
+
+
 showSummary :: Word -> [Judgement] -> IO ()
 showSummary depth js = do
   case marshall js of
@@ -213,6 +221,8 @@ main = do
     [] -> noCommand
     ("parse" : paths) ->
       with paths $ putStrLn . pretty
+    ("feedback" : paths) ->
+      with paths $ mapM_ export_feedback
     ("check" : paths) ->
       with paths $ mapM_ check
     ("show" : paths) ->

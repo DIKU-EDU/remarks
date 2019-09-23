@@ -7,6 +7,7 @@ import Invalid
 
 import Text.PrettyPrint.GenericPretty
 import Control.Monad (liftM)
+import Data.List (intersperse)
 
 -- In the lists index 0 is used for predifined variables: Title, Total, MaxPoints
 -- This should refactored to real monadic programming
@@ -37,6 +38,9 @@ interpJudgement (Bonus (v, _, c)) = pure (Bonus (v, preProps, c), newProps)
   where
     newProps = [("Title", StrVal "Bonus"), ("Total", IntVal v)]
     preProps = [Property ("Title", Value "Bonus"), Property ("Total", Num v)]
+interpJudgement (Feedback (p, t)) = pure (Feedback (p, t), newProps)
+  where
+    newProps = [("Title", StrVal "Feedback")]
 
 propValToProperties :: (String, PropertyValue) -> Property
 propValToProperties (str, ListVal string) = Property (str, List  string)

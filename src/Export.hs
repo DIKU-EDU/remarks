@@ -8,6 +8,7 @@ import Export.HtmlTable
 import Export.ResultsTable
 import Export.MD
 import Export.PdfMark
+import Export.Feedback
 import Export.Generic ( unify, summary, toHTML, toCSV, transp )
 
 import Text.PrettyPrint
@@ -24,7 +25,12 @@ exportHTMLTable js = toHTML $ transp $ htmlTableRemarks js
 exportMD :: [Judgement] -> String
 exportMD js = mdRemarks js
 
+exportFeedback :: [Judgement] -> String
+exportFeedback js = feedbackRemarks js
+
 exportResultsTable :: [Judgement] -> String
 exportResultsTable js = toCSV ";" $ transp $ resultsTableRemarks js
 -- exportResultsTable js = toHTML $ resultsTableRemarks js
 
+exportPdfMark :: [Judgement] -> String
+exportPdfMark js = genPdfMark js
