@@ -116,6 +116,7 @@ with an indent (two spaces), and a mood mark:
   * `*` for neutral/structural remarks;
   * `+` for positive remarks;
   * `-` for negative remarks;
+  * `~` for mixed remarks;
   * `?` for impartial remarks.
 
 Impartial remarks are good for judgements where the mood is left to be judged

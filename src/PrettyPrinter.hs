@@ -52,6 +52,7 @@ formatMood Negative  = text "-"
 formatMood Neutral   = text "*"
 formatMood Impartial = text "?"
 formatMood Warning   = text "!"
+formatMood Mixed     = text "~"
 
 formatCommentPart :: CommentPart -> Doc
 formatCommentPart (CommentStr string)  = text string

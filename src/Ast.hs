@@ -30,6 +30,7 @@ instance Out Points
 data Mood
   = Positive
   | Negative
+  | Mixed
   | Neutral
   | Impartial
   | Warning
