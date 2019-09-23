@@ -1,4 +1,4 @@
-module Export (exportHTML, exportCSV, exportHTMLTable, exportResultsTable, exportMD, unify, summary) where
+module Export (exportFeedback, exportHTML, exportCSV, exportHTMLTable, exportResultsTable, exportMD, unify, summary, exportPdfMark) where
 
 import Ast
 import Invalid
@@ -7,6 +7,7 @@ import Export.CSV
 import Export.HtmlTable
 import Export.ResultsTable
 import Export.MD
+import Export.PdfMark
 import Export.Generic ( unify, summary, toHTML, toCSV, transp )
 
 import Text.PrettyPrint

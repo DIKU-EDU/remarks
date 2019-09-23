@@ -67,6 +67,13 @@ data PropertyExp
 
 instance Out PropertyExp
 
+data PdfMarkType
+  = PMComment String String -- Page Location
+  | PMTickBox     (Maybe Bool) String String -- Correct/Wrong Page Location
+  deriving (Eq, Show, Generic)
+
+instance Out PdfMarkType
+
 data PropertyArithFun
   = Sum
   | Min

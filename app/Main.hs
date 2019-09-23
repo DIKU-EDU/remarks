@@ -8,6 +8,7 @@ import PointsChecker
 import PropertyInterp
 import Pending
 import PrettyPrinter
+import MergeAsts
 
 import Control.Monad ( liftM, (<=<) )
 import Data.List ( sort )
@@ -70,7 +71,15 @@ parseTopFile :: FilePath -> IO [Judgement]
 parseTopFile path = do
   p <- parseFile path
   case p of
-    Right js -> pure js
+    Right js -> do
+      hasPropFile <- doesFileExist (path ++ "-prop")
+      if hasPropFile
+      then do
+        p_p <- parseFile (path ++ "-prop")
+        case p_p of
+          Right js_p -> pure $ mergeProps js js_p
+          Left e -> parseError e
+      else pure js
     Left e -> parseError e
 
 parseFileInDir :: FilePath -> IO [Judgement]
@@ -82,13 +91,10 @@ parseFileInDir path = do
 
 parseFileWithDir :: FilePath -> IO ([Judgement], Judgement)
 parseFileWithDir path = do
-  p <- parseFile path
-  case p of
-    Right js ->
-      case length js of
-        0 -> mustHaveJudgement path
-        n -> pure $ (take (n - 1) js, last js)
-    Left e -> parseError e
+  js <- parseTopFile path
+  case length js of
+    0 -> mustHaveJudgement path
+    n -> pure $ (take (n - 1) js, last js)
 
 isMrkPath :: FilePath -> Bool
 isMrkPath = (== ".mrk") . takeExtension
@@ -134,7 +140,8 @@ marshall = mapM (interpProps <=< checkPoints)
 check :: [Judgement] -> IO ()
 check js = do
   case marshall js of
-    Right newJs -> printJs newJs
+    -- Right newJs -> printJs newJs
+    Right _ -> return ()
     Left e -> putStrLn $ reportInvalid e
 
 printJs :: [Judgement] -> IO ()
@@ -171,6 +178,13 @@ export_md :: [Judgement] -> IO ()
 export_md js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportMD newJs
+    Left e -> putStrLn $ show e
+
+export_pdfMark :: [Judgement] -> IO ()
+export_pdfMark js = do
+  case (marshall js) of
+    Right newJs -> putStrLn $ exportPdfMark newJs
+    -- Right newJs -> putStrLn $ show newJs
     Left e -> putStrLn $ show e
 
 showSummary :: Word -> [Judgement] -> IO ()
@@ -223,6 +237,8 @@ main = do
       with paths $ mapM_ export_md
     ("exportHTML" : paths) ->
       with paths $ mapM_ export_html
+    ("exportPdfMark" : paths) ->
+      with paths $ mapM_ export_pdfMark
     (c:rest) -> invalidCommand c rest
   where
     with :: [FilePath] -> ([[Judgement]] -> IO ()) -> IO ()

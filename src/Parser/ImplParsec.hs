@@ -95,8 +95,9 @@ parseJudgement depth = do
 
 parseBonus :: Int -> MrkParser Judgement
 parseBonus _ = do
+  void $ space
   void $ char '+'
-  total <- parsePoints
+  total <- parsePointsNum
   endline
   properties <- many parseProperty
   comments <- many $ parseComment 1
@@ -116,12 +117,42 @@ parseRegularJudgement depth title = do
   pure $ Judgement (Header (title, total, maxPoints), properties, comments, js)
 
 parseProperty :: MrkParser Property
-parseProperty = do
-      void $ try $ string $ indentation ++ ":"
+parseProperty = try property
+  where
+  --   pdfmark :: MrkParser Property
+  --   pdfmark = do
+  --     parseIndentation
+  --     char ':'
+  --     string "pdfmark"
+  --     char ':'
+  --     space
+  --     pmtype <- parsePdfMarkType
+  --     pure $ PdfMark pmtype
+    property = do
+      -- void $ try $ string $ indentation ++ ":"
+      parseIndentation
+      char ':'
       name <- manyTill anyChar $ char ':'
-      void $ space
+      space
       value <- parsePropertyExp
       pure $ Property (name, value)
+
+-- parsePdfMarkType :: MrkParser PdfMarkType
+-- parsePdfMarkType = try comment <|> try box
+--   where
+--     comment = do
+--       string "Comment"
+--       string ";"
+--       space
+--       page <- manyTill anyChar $ char ';'
+--       loc  <- manyTill anyChar endline
+--       pure $ PMComment page loc
+--     box = do
+--       string "Box"
+--       string ";"
+--       page <- manyTill anyChar $ char ';'
+--       loc  <- manyTill anyChar $ char ';'
+--       pure $ PMTickBox Nothing page loc
 
 parsePropertyExp :: MrkParser PropertyExp
 parsePropertyExp = choice [try funProp, lookupProp, try number, value]
