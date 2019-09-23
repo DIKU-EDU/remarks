@@ -4,6 +4,7 @@ module Pending ( findPending ) where
 
 import Ast
 
+import Prelude hiding ((<>)) -- use (<>) from Text.PrettyPrint
 import Text.PrettyPrint
 
 data PendingTree

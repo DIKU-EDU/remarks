@@ -3,6 +3,7 @@ module PrettyPrinter (ppJ_d, ppJs, ppPoints, ppComments, ppComment) where
 import Ast
 import Export.Generic (pointsDoc, propertyExpDoc)
 
+import Prelude hiding ((<>)) -- use (<>) from Text.PrettyPrint
 import Text.PrettyPrint
 import Data.List (intersperse)
 
