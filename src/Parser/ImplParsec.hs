@@ -40,8 +40,14 @@ parseString input = return $ parse parseRemarks "String" input
 parseLine :: MrkParser String
 parseLine = manyTill anyChar (many1 newline)
 
+parseIndentation :: MrkParser ()
+parseIndentation = string indentation >> pure ()
+
 endline :: MrkParser ()
 endline = void $ many1 newline
+
+-- string :: String -> MrkParser ()
+-- string s = sequence_ $ mapM char s
 
 integral :: MrkParser String
 integral = many1 digit
@@ -137,11 +143,35 @@ parsePropertyExp = choice [try funProp, lookupProp, try number, value]
       p <- parsePointsNum
       void $ newline
       pure $ Num p
+    -- value = do
+      -- c <- satisfy (/='[')
+      -- case c of
+      --  '\n' -> pure $ Value ""
+      --  _    -> do
+      --    s <- manyTill (sepBy ";") endline
+      --    (\cs -> pure $ Value (c:cs)) =<< 
     value = do
-      c <- satisfy (/='[')
-      case c of
-       '\n' -> pure $ Value ""
-       _    -> (\cs -> pure $ Value (c:cs)) =<< parseLine
+      s <- list
+      case s of
+       []  -> pure $ Value ""
+       [v] -> pure $ Value v
+       _   -> pure $ List s
+    list = try listH1 <|> listH2
+    listH1 = do
+      -- spaces
+      s  <- manyTill nolineBreak $ char ';'
+      ss <- list
+      pure (s:ss)
+    listH2 = do
+      -- spaces
+      s <- manyTill anyChar $ char '\n'
+      pure [s]
+    nolineBreak = do
+      c <- lookAhead anyChar
+      guard (c /= '\n')
+      anyChar
+
+
 
 parsePropertyArithFun :: MrkParser PropertyArithFun
 parsePropertyArithFun = choice
@@ -168,6 +198,7 @@ parseMood :: MrkParser Mood
 parseMood = choice
   [ char '+' *> pure Positive
   , char '-' *> pure Negative
+  , char '~' *> pure Mixed
   , char '*' *> pure Neutral
   , char '?' *> pure Impartial
   , char '!' *> pure Warning

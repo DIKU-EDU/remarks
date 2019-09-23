@@ -21,12 +21,19 @@ ppComments = render . vcat . (map formatComment)
 ppComment :: Comment -> String
 ppComment = render . formatComment
 
+semicolon :: Doc
+semicolon = text ";"
+
 formatJudgement :: Int -> Judgement -> Doc
 formatJudgement depth (Bonus (p, properties, comments)) =
   (text $ replicate depth '#') <+> text "Bonus" <> colon <+> text "+" <>
   pointsDoc (Given p) $+$
   (nest 2 $ vcat $ map formatProperty properties) $+$
   (nest 2 $ vcat $ map formatComment comments)
+formatJudgement depth (Feedback (properties, feedback)) =
+  (text $ replicate depth '#') <+> text "Feedback" <> colon $+$
+  (nest 2 $ vcat $ map formatProperty properties) $+$
+  (text feedback)
 formatJudgement depth (Judgement (header, properties, comments, judgements)) =
   formatHeader depth header $+$
   (nest 2 $ vcat $ map formatProperty properties) $+$
@@ -41,6 +48,14 @@ formatHeader depth (Header (title, point, maxPoints)) =
 formatProperty :: Property -> Doc
 formatProperty (Property (name, value)) =
   colon <> text name <> colon <+> propertyExpDoc value
+-- formatProperty (PdfMark pmType) =
+--   colon <> text "pdfmark" <> colon <+> (formatPMType pmType)
+
+-- formatPMType :: PdfMarkType -> Doc
+-- formatPMType (PMComment page loc) =
+--   text "Comment" <> semicolon <+> text page <> semicolon <+> text loc
+-- formatPMType (PMTickBox _ page loc) =
+--   text "TickBox" <> semicolon <+> text page <> semicolon <+> text loc
 
 formatComment :: Comment -> Doc
 formatComment (Comment (mood, commentParts)) =

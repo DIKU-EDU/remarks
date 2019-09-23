@@ -12,8 +12,9 @@ import Control.Monad (liftM)
 -- This should refactored to real monadic programming
 
 data PropertyValue
-  = StrVal String
-  | IntVal Int
+  = ListVal [String]
+  | StrVal   String
+  | IntVal   Int
   deriving (Eq, Show, Generic)
 
 instance Out PropertyValue
@@ -22,7 +23,7 @@ interpProps :: Judgement -> Either Invalid Judgement
 interpProps j =
   case (interpJudgement j) of
     Right (jnew, _) -> Right jnew
-    Left invalid -> Left invalid
+    Left   invalid  -> Left invalid
 
 interpJudgement :: Judgement -> Either Invalid (Judgement, [(String, PropertyValue)])
 interpJudgement (j @ (Judgement (h, prop, cs, js))) = do
@@ -38,8 +39,9 @@ interpJudgement (Bonus (v, _, c)) = pure (Bonus (v, preProps, c), newProps)
     preProps = [Property ("Title", Value "Bonus"), Property ("Total", Num v)]
 
 propValToProperties :: (String, PropertyValue) -> Property
-propValToProperties (str, StrVal string) = Property (str, Value string)
-propValToProperties (str, IntVal double) = Property (str, Num double)
+propValToProperties (str, ListVal string) = Property (str, List  string)
+propValToProperties (str, StrVal  string) = Property (str, Value string)
+propValToProperties (str, IntVal  double) = Property (str, Num   double)
 
 addPredifinedProps :: [Property] -> [Property]
 addPredifinedProps p =
@@ -62,6 +64,7 @@ bindProp rj propEnv (Property (name, propExp)) =
 
 evalPropExp :: Judgement -> PropertyExp -> [[(String, PropertyValue)]] ->
   Either Invalid PropertyValue
+evalPropExp _ (List s)  _ = pure $ ListVal s
 evalPropExp _ (Value s) _ = pure $ StrVal s
 evalPropExp _ (Num n)   _ = pure $ IntVal n
 evalPropExp rj (Lookup (i, p)) propEnv =
@@ -87,5 +90,6 @@ appFun :: ([Int] -> Int) -> [PropertyValue] -> Maybe PropertyValue
 appFun fun ps = liftM (IntVal . fun) $ sequence $ map propToInt ps
 
 propToInt :: PropertyValue -> Maybe Int
-propToInt (IntVal v) = Just v
-propToInt (StrVal _) = Nothing
+propToInt (IntVal  v) = Just v
+propToInt (StrVal  _) = Nothing
+propToInt (ListVal _) = Nothing

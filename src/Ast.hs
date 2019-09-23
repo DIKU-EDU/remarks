@@ -61,6 +61,7 @@ data PropertyExp
   = Lookup (Int, String)
   | ArithFun PropertyArithFun String
   | Value String
+  | List [String]
   | Num  Int
   deriving (Eq, Show, Generic)
 
