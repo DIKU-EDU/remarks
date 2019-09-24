@@ -33,13 +33,19 @@ User features:
   are correct.
 * `remarks show [<file>]` checks the file system structure as above, and shows
   the overall judgement for each given argument.
+* `remarks feedback [<file>]` prints the accumulated feedback.
 * `remarks summary [--depth <depth>] [<file>]` checks and summarizes the points.
   Depth 0 (default) lists just the top-level judgements.
 * `remarks pending [--depth <depth>] [<file>]` shown the corrections that has not
   been completed. Can be cut at a given depth; depth 0 lists just the top-level judgements.
-* `remarks export [--format "<format>"] [<file>]` exports corrections to a semicolon separated 
+* Exporting remarks files:
+  * `remarks export [--format "<format>"] [<file>]` exports corrections to a semicolon separated
   list. The format is a semicolon separated string of properties.
-* `remarks exportHTML [<file>]` exports all corrections to a dynamic html-table.
+  * `remarks exportHTML [<file>]` exports all corrections to a dynamic html-table.
+  * `remarks exportResults [<file>]` export results to a table with result of each sub question.
+  * `remarks exportMD [<file>]` exports remarks to a MarkDown file
+  * `remarks exportPdfMark [<file>]` export remarks to format that can be inserted as comments in PDf with GhostScript.
+
 Developer features:
 
 * `remarks parse [<file>]` parses the given files and shows their ASTs.
@@ -88,15 +94,15 @@ A judgement starts with a header mark (a sequence of `#`), a title (followed by
 a `:`), given points (followed by `/`), and maximum points (followed by a line
 break). The number of `#` determines the _depth_ of the header, and every file
 _must_ start at depth 1, but may have multiple depth 1 judgements. Headings may
-be arbitrarily nested, but must sum up correctly. For instance, here is a file
-containing only quantitative remarks:
+be arbitrarily nested, but must sum up correctly; the summing can be omitted in the nodes of the trees, as the tool will calculate this.
+For instance, here is a file containing only quantitative remarks, the top-level `Practice` has not been inserted:
 
 ```
 # Theory: 27/50
 ## Question 1: 10/10
 ## Question 2: 10/20
 ## Question 3: 7/20
-# Practice: 35/50
+# Practice: /50
 ## Task 1: 20/25
 ## Task 2: 15/25
 ```
