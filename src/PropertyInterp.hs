@@ -34,13 +34,14 @@ interpJudgement (j @ (Judgement (h, prop, cs, js))) = do
   propVals <- mapM (bindProp j (predef:jsPropVals)) (addPredifinedProps prop)
   let newProps = map propValToProperties propVals
   pure (Judgement (h, newProps, cs, jupdates), propVals)
-interpJudgement (Bonus (v, _, c)) = pure (Bonus (v, preProps, c), newProps)
+interpJudgement (Bonus (v, prop, c)) = pure (Bonus (v, preProps, c), newProps)
   where
     newProps = [("Title", StrVal "Bonus"), ("Total", IntVal v)]
-    preProps = [Property ("Title", Value "Bonus"), Property ("Total", Num v)]
-interpJudgement (Feedback (p, t)) = pure (Feedback (p, t), newProps)
+    preProps = [Property ("Title", Value "Bonus"), Property ("Total", Num v)] ++ prop
+interpJudgement (Feedback (prop, t)) = pure (Feedback (preProps, t), newProps)
   where
-    newProps = [("Title", StrVal "Feedback")]
+    newProps = [("Title", StrVal "Feedback"), ("Total", IntVal 0)]
+    preProps = [Property ("Title", Value "Feedback"), Property ("Total", Num 0)] ++ prop
 
 propValToProperties :: (String, PropertyValue) -> Property
 propValToProperties (str, ListVal string) = Property (str, List  string)

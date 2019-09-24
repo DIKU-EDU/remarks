@@ -11,9 +11,12 @@ mdRemarks :: [Judgement] -> String
 mdRemarks = render . vcat . intersperse (text "") . map (formatJudgement 1)
 
 formatJudgement :: Int -> Judgement -> Doc
-formatJudgement depth (j @ (Bonus (_, _, _))) =
+formatJudgement depth (j @ (Bonus _)) =
   (text $ replicate depth '#') <+> text "Bonus" <> colon <+> text "+" <>
     lookupTotal j
+formatJudgement depth (j @ (Feedback (_, t))) =
+  (text $ replicate depth '#') <+> text "Feedback" <> colon $+$ text "+" <>
+    text t
 formatJudgement depth (j @ (Judgement (_, _, comments, judgements))) =
   formatHeader depth j $+$
   (nest 2 $ vcat $ map formatComment comments) $+$
@@ -33,6 +36,7 @@ formatMood :: Mood -> Doc
 formatMood Positive  = text "(+)"
 formatMood Negative  = text "(-)"
 formatMood Neutral   = text ""
+formatMood Mixed   = text "(~)"
 formatMood Impartial = text "(?)"
 formatMood Warning = text "(!)"
 

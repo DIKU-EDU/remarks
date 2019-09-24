@@ -83,6 +83,8 @@ unify _ _ = Nothing
 summary :: Word -> Judgement -> Judgement
 summary _ (Bonus (h, prop, _)) =
   (Bonus (h, prop, []))
+summary _ (Feedback (prop, _)) =
+  (Feedback (prop, []))
 summary 0 (Judgement (h, _, p, _)) =
   Judgement (h, [], p, [])
 summary depth (Judgement (h, _, _, js)) =
@@ -96,6 +98,10 @@ lookupProperty name (Judgement (_, properties, _, _)) =
     Nothing -> Nothing
     Just(value) -> pure $ propertyExpDoc value
 lookupProperty name (Bonus (_, properties, _)) =
+  case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
+    Nothing -> Nothing
+    Just(value) -> pure $ propertyExpDoc value
+lookupProperty name (Feedback (properties, _)) =
   case (lookup name (map (\(Property (n,v)) -> (n,v)) properties)) of
     Nothing -> Nothing
     Just(value) -> pure $ propertyExpDoc value
