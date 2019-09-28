@@ -86,7 +86,7 @@ parseRemarks = do
 parseJudgement :: Int -> MrkParser Judgement
 parseJudgement depth = do
   void $ try $ spaces >> (string $ replicate depth judgementMarker)
-  void $ space
+  void $ spaces
   title <- manyTill anyChar $ char ':'
   case title of
     "Bonus" -> parseBonus depth
@@ -95,7 +95,7 @@ parseJudgement depth = do
 
 parseBonus :: Int -> MrkParser Judgement
 parseBonus _ = do
-  void $ space
+  void $ spaces
   void $ char '+'
   total <- parsePointsNum
   endline
@@ -107,13 +107,17 @@ parseFeedback :: Int -> MrkParser Judgement
 parseFeedback depth = do
   endline
   properties <- many parseProperty
-  text <- manyTill anyChar $ try (lookAhead ( parseJudgement 1))
+  text <- manyTill anyChar $ try (lookAhead parseJudgementStart)
   pure $ Feedback (properties, text)
-
+  where
+    parseJudgementStart = do
+      char judgementMarker
+      void $ spaces
+      void $ manyTill anyChar $ char ':'
 
 parseRegularJudgement :: Int -> String -> MrkParser Judgement
 parseRegularJudgement depth title = do
-  void $ space
+  void $ spaces
   total <- parsePoints
   void $ char '/'
   maxPoints <- parsePointsNum
@@ -140,7 +144,7 @@ parseProperty = try property
       parseIndentation
       char ':'
       name <- manyTill anyChar $ char ':'
-      space
+      spaces
       value <- parsePropertyExp
       pure $ Property (name, value)
 
@@ -222,7 +226,7 @@ parseComment :: Int -> MrkParser Comment
 parseComment depth = do
   void $ try $ string $ concat $ replicate depth indentation
   mood <- parseMood
-  void $ space
+  void $ spaces
   comment <- parseLine
   morecmt <- many contStr
   comments <- many (parseComment $ depth + 1)
