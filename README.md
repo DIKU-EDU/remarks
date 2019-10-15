@@ -28,9 +28,10 @@ explicit version-control systems, such as git.
 
 User features:
 
-* `remarks check [<file>]` checks that the file system structure is
-  well-formed. For instance, checks that all explicitly stated point sums
+* `remarks valid [<file>]` checks that the file system structure is
+  well-formed. For instance, checks that all total point sums
   are correct.
+* `remarks check [<file>]` like `valid` but also ensures that all points have been given and sums correctly.
 * `remarks show [<file>]` checks the file system structure as above, and shows
   the overall judgement for each given argument.
 * `remarks feedback [<file>]` prints the accumulated feedback.
