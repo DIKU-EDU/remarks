@@ -1,11 +1,11 @@
 name:                remarks
-version:             0.1.13
+version:             0.1.14
 synopsis:            A DSL for marking student work
 description:         A DSL for marking student work; see README.md for further details.
 homepage:            https://github.com/DIKU-EDU/remarks#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Oleks Shturmov <oleks@oleks.info>, Michael Kirkedal
+author:              Oleks Shturmov <oleks@oleks.info>, Michael Kirkedal Thomsen <kirkedal@acm.org>
 maintainer:          oleks@oleks.info
 copyright:           2017 DIKU
 category:            Web
