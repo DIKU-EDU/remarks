@@ -51,7 +51,6 @@ formatPdfMarkType (("Comment"):rest) header points _ comms =
   where
     page = head rest
     loc  = head $ tail rest
-  -- | PMTickBox     (Maybe Bool) String String -- Correct/Wrong Page Location
 formatPdfMarkType _ _ _ _ _ = empty
 
 formatComments :: [Comment] -> String

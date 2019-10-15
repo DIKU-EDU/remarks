@@ -18,15 +18,16 @@ library
   exposed-modules:     Ast
                      , Config
                      , Export
+                     , Export.CSV
+                     , Export.Feedback
+                     , Export.Generic
                      , Export.Html
                      , Export.HtmlTable
-                     , Export.Generic
-                     , Export.CSV
                      , Export.MD
-                     , Export.ResultsTable
-                     , Export.Feedback
                      , Export.PdfMark
+                     , Export.ResultsTable
                      , Invalid
+                     , MergeAsts
                      , Parser
                      , Parser.ImplParsec
                      , Pending
