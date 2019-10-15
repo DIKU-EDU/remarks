@@ -89,6 +89,7 @@ documentScript = script $
    (text "}"))
 
 htmlTableHead :: Judgement -> Doc
+htmlTableHead (Feedback _) = empty
 htmlTableHead (Bonus _) =
   tr $ th (text "Bonus")
 htmlTableHead (Judgement (_, _, _, js)) =
@@ -98,8 +99,10 @@ htmlTableHead (Judgement (_, _, _, js)) =
       th $ text (title ++ "/") <> pointsDoc (Given maxPoint)
     maketh (Bonus _) =
       th $ text "Bonus"
+    maketh (Feedback _) = empty
 
 htmlJudgement :: Judgement -> Doc
+htmlJudgement (Feedback _) = empty
 htmlJudgement (j @ (Bonus (_, _, comments))) =
   (tr $ td $ lookupTotal j) $$ (trhidden $ htmlDetailComments comments)
 htmlJudgement (j @ (Judgement (_, _, comments, judgements))) =
@@ -115,6 +118,7 @@ htmlDetailJudgements :: [Judgement] -> Doc
 htmlDetailJudgements = vcat . (map htmlDetailJudgement)
 
 htmlDetailJudgement :: Judgement -> Doc
+htmlDetailJudgement (Feedback _) = empty
 htmlDetailJudgement (j @ (Bonus (_, _, comments))) =
   details (text "Bonus" <+> parens (lookupTotal j)) (htmlDetailComments comments)
 htmlDetailJudgement (j @ (Judgement (_, _, comments, judgements))) =
@@ -133,6 +137,7 @@ htmlDetailComment (Comment (mood, commentParts)) =
 
 htmlDetailMood :: Mood -> String
 htmlDetailMood Positive  = "plus"
+htmlDetailMood Mixed     = "tilde"
 htmlDetailMood Negative  = "minus"
 htmlDetailMood Neutral   = "star"
 htmlDetailMood Impartial = "quest"

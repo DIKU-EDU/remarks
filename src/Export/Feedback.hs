@@ -5,7 +5,6 @@ import Export.Generic
 
 import Prelude hiding ((<>))
 import Text.PrettyPrint
-import Data.List (intersperse)
 
 feedbackRemarks :: [Judgement] -> String
 feedbackRemarks = render . hcat . map (formatJudgement 1)

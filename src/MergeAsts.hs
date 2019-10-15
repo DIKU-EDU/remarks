@@ -13,8 +13,8 @@ mergeProps js jsp =
 
 findJudgement :: Header -> [Judgement] -> Maybe Judgement
 findJudgement _ [] = Nothing
-findJudgement (Header (h, _, _)) ((j@(Judgement (Header (hp,_,_), _, _, _))):js) | h == hp = Just j
-findJudgement h (j:js) = findJudgement h js
+findJudgement (Header (h, _, _)) ((j@(Judgement (Header (hp,_,_), _, _, _))):_) | h == hp = Just j
+findJudgement h (_:js) = findJudgement h js
 
 mergeMaybeJudgement :: Judgement -> (Maybe Judgement) -> Judgement
 mergeMaybeJudgement j Nothing   = j

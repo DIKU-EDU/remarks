@@ -22,8 +22,8 @@ ppComments = render . vcat . (map formatComment)
 ppComment :: Comment -> String
 ppComment = render . formatComment
 
-semicolon :: Doc
-semicolon = text ";"
+-- semicolon :: Doc
+-- semicolon = text ";"
 
 formatJudgement :: Int -> Judgement -> Doc
 formatJudgement depth (Bonus (p, properties, comments)) =

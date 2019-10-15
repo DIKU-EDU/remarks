@@ -95,12 +95,20 @@ isLeafJ :: Judgement -> Bool
 isLeafJ (Judgement (_, _, _, []))    = True
 isLeafJ (Judgement (_, _, _, (_:_))) = False
 isLeafJ (Bonus _)                    = False
+isLeafJ (Feedback _)                 = False
 
 isNodeJ :: Judgement -> Bool
 isNodeJ (Judgement (_, _, _, []))    = False
 isNodeJ (Judgement (_, _, _, (_:_))) = True
 isNodeJ (Bonus _)                    = False
+isNodeJ (Feedback _)                 = False
 
 isBonus :: Judgement -> Bool
 isBonus (Bonus _)     = True
+isBonus (Feedback _)  = False
 isBonus (Judgement _) = False
+
+isFeedback :: Judgement -> Bool
+isFeedback (Feedback _)  = True
+isFeedback (Bonus _)     = False
+isFeedback (Judgement _) = False

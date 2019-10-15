@@ -7,7 +7,6 @@ import Invalid
 
 import Text.PrettyPrint.GenericPretty
 import Control.Monad (liftM)
-import Data.List (intersperse)
 
 -- In the lists index 0 is used for predifined variables: Title, Total, MaxPoints
 -- This should refactored to real monadic programming

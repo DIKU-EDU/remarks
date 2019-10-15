@@ -24,11 +24,13 @@ genPdfMark js = render $ (header $+$ text "" $+$ jmts)
 
 
 formatJudgement :: Judgement -> Doc
-formatJudgement j@(Judgement (header, properties, comments, judgements)) =
+formatJudgement j@(Judgement (_, properties, comments, judgements)) =
   (vcat $ map (formatPdfMark (formatHeader j) (formatPoints j) properties comments) properties) $+$
   (vcat $ map formatJudgement judgements)
-formatJudgement j@(Bonus (point, properties, comments)) =
+formatJudgement j@(Bonus (_, properties, comments)) =
   (vcat $ map (formatPdfMark (text "Bonus") (formatPoints j) properties comments) properties)
+formatJudgement (Feedback (properties, txt)) =
+  (vcat $ map (formatPdfMark (text "Feedback") (text txt) properties []) properties)
 
 formatPdfMark :: Doc -> Doc -> [Property] -> [Comment] -> Property -> Doc
 formatPdfMark header points props comms (Property ("pdfmark", List pmtype)) =

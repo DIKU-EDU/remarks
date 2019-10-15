@@ -49,6 +49,12 @@ endline = void $ many1 newline
 -- string :: String -> MrkParser ()
 -- string s = sequence_ $ mapM char s
 
+anyCharNoLineBreak :: MrkParser Char
+anyCharNoLineBreak =
+  do
+    notFollowedBy newline
+    anyChar
+
 integral :: MrkParser String
 integral = many1 digit
 
@@ -87,7 +93,7 @@ parseJudgement :: Int -> MrkParser Judgement
 parseJudgement depth = do
   void $ try $ spaces >> (string $ replicate depth judgementMarker)
   void $ spaces
-  title <- manyTill anyChar $ char ':'
+  title <- manyTill anyCharNoLineBreak $ char ':'
   case title of
     "Bonus" -> parseBonus depth
     "Feedback" -> parseFeedback depth
@@ -107,13 +113,13 @@ parseFeedback :: Int -> MrkParser Judgement
 parseFeedback depth = do
   endline
   properties <- many parseProperty
-  text <- manyTill anyChar $ try (lookAhead parseJudgementStart)
+  text <- manyTill anyChar $ try (lookAhead (parseJudgement depth))
   pure $ Feedback (properties, text)
-  where
-    parseJudgementStart = do
-      char judgementMarker
-      void $ spaces
-      void $ manyTill anyChar $ char ':'
+  -- where
+  --   parseJudgementStart = do
+  --     _ <- char judgementMarker
+  --     void $ spaces
+  --     void $ manyTill (anyCharNoLineBreak) $ char ':'
 
 parseRegularJudgement :: Int -> String -> MrkParser Judgement
 parseRegularJudgement depth title = do
@@ -142,7 +148,7 @@ parseProperty = try property
     property = do
       -- void $ try $ string $ indentation ++ ":"
       parseIndentation
-      char ':'
+      _ <- char ':'
       name <- manyTill anyChar $ char ':'
       spaces
       value <- parsePropertyExp
@@ -241,6 +247,8 @@ parseMood = choice
   [ char '+' *> pure Positive
   , char '-' *> pure Negative
   , char '~' *> pure Mixed
+  , char '^' *> pure Positive
+  , char 'v' *> pure Negative
   , char '*' *> pure Neutral
   , char '?' *> pure Impartial
   , char '!' *> pure Warning

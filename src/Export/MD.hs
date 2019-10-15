@@ -14,7 +14,7 @@ formatJudgement :: Int -> Judgement -> Doc
 formatJudgement depth (j @ (Bonus _)) =
   (text $ replicate depth '#') <+> text "Bonus" <> colon <+> text "+" <>
     lookupTotal j
-formatJudgement depth (j @ (Feedback (_, t))) =
+formatJudgement depth (Feedback (_, t)) =
   (text $ replicate depth '#') <+> text "Feedback" <> colon $+$ text "+" <>
     text t
 formatJudgement depth (j @ (Judgement (_, _, comments, judgements))) =

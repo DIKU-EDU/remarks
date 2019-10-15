@@ -15,11 +15,13 @@ htmlTableRemarks js = Rows $ tblHead:(concatMap formatStart js)
 
 tableHead :: Judgement -> Row
 tableHead (j @ (Bonus _)) = [getTitle j]
+tableHead (Feedback _) = []
 tableHead (j @ (Judgement (_, _, _, js))) =
   ((getTitle j) ++ " / " ++ (getMaxPoints j)):(concatMap tableHead js)
 
 formatStart :: Judgement -> [Row]
 formatStart (Bonus _) = []
+formatStart (Feedback _) = []
 formatStart (j @ (Judgement (_, _, cs, js))) =
   [(getTitle j):(getTotal j):r1,"":(formatComments cs):r2]
   -- [(getTitle j):(getTotal j):r1]
@@ -28,6 +30,7 @@ formatStart (j @ (Judgement (_, _, cs, js))) =
 
 formatJudgement :: Judgement -> (Row, Row)
 formatJudgement (j @ (Bonus (_, _, cs))) = ([getTotal j], [formatComments cs])
+formatJudgement (Feedback _) = ([], [])
 formatJudgement (j @ (Judgement (_, _, cs, js))) =
   ((getTotal j):r1, (formatComments cs):r2)
   where
