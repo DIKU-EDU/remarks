@@ -144,6 +144,15 @@ check js = do
     Right _ -> return ()
     Left e -> putStrLn $ reportInvalid e
 
+valid :: [Judgement] -> IO ()
+valid js = do
+  case v js of
+    -- Right newJs -> printJs newJs
+    Right _ -> return ()
+    Left e -> putStrLn $ reportInvalid e
+  where
+    v = mapM (interpProps <=< validPoints)
+
 printJs :: [Judgement] -> IO ()
 printJs = putStrLn . ppJs
 
@@ -225,6 +234,8 @@ main = do
       with paths $ mapM_ export_feedback
     ("check" : paths) ->
       with paths $ mapM_ check
+    ("valid" : paths) ->
+      with paths $ mapM_ valid
     ("show" : paths) ->
       with paths $ mapM_ printJs
     ("pending" : "--depth" : d : paths) ->
