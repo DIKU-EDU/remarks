@@ -59,7 +59,7 @@ instance Out Property
 
 data PropertyExp
   = Lookup (Int, String)
-  | ArithFun PropertyArithFun String
+  | ArithFun PropertyArithFun [PropertyExp]
   | Value String
   | List [String]
   | Num  Int

@@ -152,6 +152,7 @@ parseProperty = try property
       name <- manyTill anyChar $ char ':'
       spaces
       value <- parsePropertyExp
+      void $ newline
       pure $ Property (name, value)
 
 -- parsePdfMarkType :: MrkParser PdfMarkType
@@ -172,24 +173,22 @@ parseProperty = try property
 --       pure $ PMTickBox Nothing page loc
 
 parsePropertyExp :: MrkParser PropertyExp
-parsePropertyExp = choice [try funProp, lookupProp, try number, value]
+parsePropertyExp = choice [funProp, lookupProp, try number, value]
   where
     funProp = do
       fun <- parsePropertyArithFun
       void $ char '('
-      name <- manyTill anyChar $ char ')'
-      void $ newline
+      name <- sepBy1 parsePropertyExp (char ',')
+      void $ char ')'
       pure $ ArithFun fun name
     lookupProp = do
       void $ char '['
       index <- integer
       void $ char '.'
       name <- manyTill anyChar $ char ']'
-      void $ newline
       pure $ Lookup (fromInteger index, name)
     number = do
       p <- parsePointsNum
-      void $ newline
       pure $ Num p
     -- value = do
       -- c <- satisfy (/='[')

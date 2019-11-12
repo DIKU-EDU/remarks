@@ -56,7 +56,7 @@ propertyExpDoc (Lookup (index, name)) =
   brackets $ int index <> text "." <> text name
 propertyExpDoc (Value value) = text value
 propertyExpDoc (Num value) = pointsDoc $ Given value
-propertyExpDoc (ArithFun fun str) = propertyArithFunDoc fun <> (parens $ text str)
+propertyExpDoc (ArithFun fun str) = propertyArithFunDoc fun <> (parens $ vcat $ intersperse (text ", ") $ map propertyExpDoc str)
 propertyExpDoc (List strs) = text $ concat $ intersperse "; " $ strs
 
 propertyArithFunDoc :: PropertyArithFun -> Doc
