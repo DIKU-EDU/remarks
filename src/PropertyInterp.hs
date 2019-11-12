@@ -11,13 +11,13 @@ import Control.Monad (liftM)
 -- In the lists index 0 is used for predifined variables: Title, Total, MaxPoints
 -- This should refactored to real monadic programming
 
-data PropertyValue
-  = ListVal [String]
-  | StrVal   String
-  | IntVal   Int
-  deriving (Eq, Show, Generic)
+-- data PropertyValue
+--   = ListVal [String]
+--   | StrVal   String
+--   | IntVal   Int
+--   deriving (Eq, Show, Generic)
 
-instance Out PropertyValue
+-- instance Out PropertyValue
 
 interpProps :: Judgement -> Either Invalid Judgement
 interpProps j =
@@ -73,7 +73,7 @@ evalPropExp _ (Value s) _ = pure $ StrVal s
 evalPropExp _ (Num n)   _ = pure $ IntVal n
 evalPropExp rj (Lookup (i, p)) propEnv =
   case (lookup p (propEnv !! (i))) of
-    Nothing -> Left $ PropertyNotFound p rj
+    Nothing -> Left $ PropertyNotFound i p rj propEnv
     (Just s) -> pure s
 evalPropExp rj (ArithFun _ pname) propEnv | isLeafJ rj =
   evalPropExp rj (Lookup (0, pname)) propEnv

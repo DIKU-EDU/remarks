@@ -90,6 +90,14 @@ data Judgement
 
 instance Out Judgement
 
+data PropertyValue
+  = ListVal [String]
+  | StrVal   String
+  | IntVal   Int
+  deriving (Eq, Show, Generic)
+
+instance Out PropertyValue
+
 
 isLeafJ :: Judgement -> Bool
 isLeafJ (Judgement (_, _, _, []))    = True

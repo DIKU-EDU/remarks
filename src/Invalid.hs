@@ -13,7 +13,7 @@ data Invalid
   | BadSubJudgementPointsSum String Judgement
   | BadSubJudgementMaxPointsSum String Judgement
   | NoPointsInBottomJudgement String Judgement
-  | PropertyNotFound String Judgement
+  | PropertyNotFound Int String Judgement [[(String, PropertyValue)]]
   | StringInputToArithFun String Judgement
   deriving (Eq, Show, Generic)
 
@@ -31,8 +31,8 @@ reportInvalid (BadSubJudgementMaxPointsSum s (j @ (Judgement (Header (_, _, m), 
     reportJudgement 0 j
 reportInvalid (NoPointsInBottomJudgement s j) = 
   "In " ++ s ++ " no points reported in leaf-judgement\n" ++ reportStrippedJudgement j
-reportInvalid (PropertyNotFound s j) = 
-  "Property " ++ s ++ " not found in judgement\n" ++ reportJudgement 0 j
+reportInvalid (PropertyNotFound i s j env) = 
+  "Property " ++ show i ++ "." ++ s ++ " not found in judgement\n" ++ show env  --reportJudgement 0 j
 reportInvalid (StringInputToArithFun s j) = 
   "Property " ++ s ++ " contains a string value in judgement\n" ++ reportJudgement 0 j
 reportInvalid m = "Cannot parse error message\n" ++ show m ++ "\nPlease report this message to someone!"

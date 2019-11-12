@@ -169,46 +169,46 @@ export_html :: [Judgement] -> IO ()
 export_html js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportHTML newJs
-    Left e -> putStrLn $ show e
+    Left e -> putStrLn $ reportInvalid e
 
 export_table :: [Judgement] -> IO ()
 export_table js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportHTMLTable newJs
-    Left e -> putStrLn $ show e
+    Left e -> putStrLn $ reportInvalid e
 
 export_results :: [Judgement] -> IO ()
 export_results js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportResultsTable newJs
-    Left e -> putStrLn $ show e
+    Left e -> putStrLn $ reportInvalid e
 
 export_md :: [Judgement] -> IO ()
 export_md js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportMD newJs
-    Left e -> putStrLn $ show e
+    Left e -> putStrLn $ reportInvalid e
 
 export_pdfMark :: [Judgement] -> IO ()
 export_pdfMark js = do
   case (marshall js) of
     Right newJs -> putStrLn $ exportPdfMark newJs
     -- Right newJs -> putStrLn $ show newJs
-    Left e -> putStrLn $ show e
+    Left e -> putStrLn $ reportInvalid e
 
 export_feedback :: [Judgement] -> IO ()
 export_feedback js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportFeedback newJs
     -- Right newJs -> putStrLn $ show newJs
-    Left e -> putStrLn $ show e
+    Left e -> putStrLn $ reportInvalid e
 
 
 showSummary :: Word -> [Judgement] -> IO ()
 showSummary depth js = do
   case marshall js of
     Right mJs -> printJs $ map (summary depth) mJs
-    Left e -> putStrLn $ show e
+    Left e -> putStrLn $ reportInvalid e
 
 pending :: Maybe Int -> (String, [Judgement]) -> IO ()
 pending dl (fp,js) = do
