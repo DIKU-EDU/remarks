@@ -210,8 +210,9 @@ showSummary depth js = do
     Right mJs -> printJs $ map (summary depth) mJs
     Left e -> putStrLn $ show e
 
-pending :: Maybe Int -> [Judgement] -> IO ()
-pending dl js = do
+pending :: Maybe Int -> (String, [Judgement]) -> IO ()
+pending dl (fp,js) = do
+  putStr $ fp ++ ": "
   case findPending dl js of
     Nothing  -> putStrLn "No pending corrections."
     (Just s) -> putStrLn "The following corrections are pending:" >> putStrLn s
@@ -239,9 +240,9 @@ main = do
     ("show" : paths) ->
       with paths $ mapM_ printJs
     ("pending" : "--depth" : d : paths) ->
-      with paths $ mapM_ (pending (Just $ read d))
+      withpath paths $ mapM_ (pending (Just $ read d))
     ("pending" : paths) ->
-      with paths $ mapM_ (pending Nothing)
+      withpath paths $ mapM_ (pending Nothing)
     ("summary" : "--depth" : d : paths) ->
       with paths $ mapM_ $ showSummary $ read d
     ("summary" : paths) ->
@@ -264,3 +265,10 @@ main = do
   where
     with :: [FilePath] -> ([[Judgement]] -> IO ()) -> IO ()
     with paths f = parsePaths paths >>= f
+    withpath :: [FilePath] -> ([(String,[Judgement])] -> IO ()) -> IO ()
+    withpath paths f = 
+      do
+        js <- parsePaths paths
+        let fp = map (tail.init.show) paths
+            res = zip fp js
+        f res

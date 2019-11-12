@@ -36,7 +36,7 @@ isLeaf (Node _ _ _ [])    = True
 isLeaf (Node _ _ _ (_:_)) = False
 
 formatTree :: PendingTree -> Doc
-formatTree t = formatSubTree (TEmpty) t
+formatTree (Node s i b pt) = formatSubTree (TSpace) (Node ("  "++s) i b pt)
 
 formatSubTrees :: (FormatTree -> FormatTree) -> [PendingTree] -> Doc
 formatSubTrees _ [] = empty
