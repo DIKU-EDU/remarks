@@ -29,18 +29,18 @@ reportInvalid (BadSubJudgementPointsSum s (j @ (Judgement (Header (_, p, _), _, 
 reportInvalid (BadSubJudgementMaxPointsSum s (j @ (Judgement (Header (_, _, m), _, _, _)))) =
     "In " ++ s ++ " the maximum points (" ++ ppPoints (Given m) ++ ") in judgement is not the sum of sub-judgements\n" ++
     reportJudgement 0 j
-reportInvalid (NoPointsInBottomJudgement s j) = 
+reportInvalid (NoPointsInBottomJudgement s j) =
   "In " ++ s ++ " no points reported in leaf-judgement\n" ++ reportStrippedJudgement j
-reportInvalid (PropertyNotFound i s j env) = 
+reportInvalid (PropertyNotFound i s _ env) =
   "Property " ++ show i ++ "." ++ s ++ " not found in judgement\n" ++ show env  --reportJudgement 0 j
-reportInvalid (StringInputToArithFun s j) = 
+reportInvalid (StringInputToArithFun s j) =
   "Property " ++ s ++ " contains a string value in judgement\n" ++ reportJudgement 0 j
 reportInvalid m = "Cannot parse error message\n" ++ show m ++ "\nPlease report this message to someone!"
 
 reportJudgement :: Int -> Judgement -> String
 reportJudgement d j | isLeafJ j = ppJ_d d (stripJ j)
 reportJudgement 1 j | isNodeJ j = (ppJ_d 1 $ stripJ j) ++ "\n  ..."
-reportJudgement 0 j | isNodeJ j = 
+reportJudgement 0 j | isNodeJ j =
   (ppJ_d 0 $ stripJ j) ++ "\n" ++ (concat $ intersperse "\n" (map (reportJudgement 1) (subJs j)))
 reportJudgement _ _ = ""
 

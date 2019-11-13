@@ -5,7 +5,7 @@ module PropertyInterp ( interpProps ) where
 import Ast
 import Invalid
 
-import Text.PrettyPrint.GenericPretty
+import Text.PrettyPrint.GenericPretty()
 import Control.Monad (liftM)
 
 -- In the lists index 0 is used for predifined variables: Title, Total, MaxPoints
