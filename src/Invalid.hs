@@ -51,8 +51,8 @@ reportStrippedJudgement _ = "" -- Bonus
 
 subJs :: Judgement -> [Judgement]
 subJs (Judgement (_, _, _, js)) = js
-subJs _ = [] -- Bunus
+subJs _ = [] -- Bonus
 
 stripJ :: Judgement -> Judgement
 stripJ (Judgement (h, _, _, _)) = Judgement (h, [], [], [])
-stripJ b = b -- Bunus
+stripJ b = b -- Bonus
