@@ -3,6 +3,7 @@
 module MergeAsts ( mergeProps ) where
 
 import Ast
+import Text.Regex.Posix
 
 mergeProps :: [Judgement] -> [Judgement] -> [Judgement]
 mergeProps js jsp =
@@ -13,8 +14,10 @@ mergeProps js jsp =
 
 findJudgement :: Header -> [Judgement] -> Maybe Judgement
 findJudgement _ [] = Nothing
-findJudgement (Header (h, _, _)) ((j@(Judgement (Header (hp,_,_), _, _, _))):_) | h == hp = Just j
-findJudgement (Header (_, _, _)) ((j@(Judgement (Header (hp,_,_), _, _, _))):_) | "*" == hp = Just j
+findJudgement (Header (h, _, _)) ((j@(Judgement (Header (hp,_,_), _, _, _))):_) | satisfies = Just j
+  where
+    satisfies = length regexpMatch > 0
+    (_,_,_,regexpMatch) = (h =~ ("("++hp++")") :: (String,String,String,[String]))
 findJudgement h (_:js) = findJudgement h js
 
 mergeMaybeJudgement :: Judgement -> (Maybe Judgement) -> Judgement
