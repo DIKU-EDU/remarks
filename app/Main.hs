@@ -15,7 +15,7 @@ import Data.List ( sort )
 import System.Directory
   ( doesFileExist, doesDirectoryExist, listDirectory )
 import System.FilePath
-  ( (<.>), (</>), takeExtension, dropExtension )
+  ( (<.>), (</>), takeExtension, dropExtension, takeDirectory )
 import System.Environment( getArgs )
 import System.Exit ( exitWith, ExitCode ( ExitFailure ) )
 import System.IO ( hPutStrLn, stderr )
@@ -72,15 +72,21 @@ parseTopFile path = do
   p <- parseFile path
   case p of
     Right js -> do
-      hasPropFile <- doesFileExist (path ++ "-prop")
+      js_g <- extendWithProp globalProp js
+      extendWithProp localProp js_g
+    Left e -> parseError e
+  where
+    globalProp = (takeDirectory path) </> "global.mrk-prop"
+    localProp = (dropExtension path) <.> "mrk-prop"
+    extendWithProp proppath js_to_extend = do
+      hasPropFile <- doesFileExist proppath
       if hasPropFile
       then do
-        p_p <- parseFile (path ++ "-prop")
+        p_p <- parseFile proppath
         case p_p of
-          Right js_p -> pure $ mergeProps js js_p
+          Right js_p -> pure $ mergeProps js_to_extend js_p
           Left e -> parseError e
-      else pure js
-    Left e -> parseError e
+      else pure js_to_extend
 
 parseFileInDir :: FilePath -> IO [Judgement]
 parseFileInDir path = do
@@ -142,14 +148,14 @@ check js = do
   case marshall js of
     -- Right newJs -> printJs newJs
     Right _ -> return ()
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
 
 valid :: [Judgement] -> IO ()
 valid js = do
   case v js of
     -- Right newJs -> printJs newJs
     Right _ -> return ()
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
   where
     v = mapM (interpProps <=< validPoints)
 
@@ -160,7 +166,7 @@ export :: String -> [Judgement] -> IO ()
 export format js = do
   case (exportCSV [delimiter] formatList =<< (mapM interpProps js)) of
     Right docs -> putStrLn docs
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
   where
     delimiter = findDelimiter format
     formatList = splitBy delimiter format
@@ -169,46 +175,46 @@ export_html :: [Judgement] -> IO ()
 export_html js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportHTML newJs
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
 
 export_table :: [Judgement] -> IO ()
 export_table js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportHTMLTable newJs
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
 
 export_results :: [Judgement] -> IO ()
 export_results js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportResultsTable newJs
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
 
 export_md :: [Judgement] -> IO ()
 export_md js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportMD newJs
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
 
 export_pdfMark :: [Judgement] -> IO ()
 export_pdfMark js = do
   case (marshall js) of
     Right newJs -> putStrLn $ exportPdfMark newJs
     -- Right newJs -> putStrLn $ show newJs
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
 
 export_feedback :: [Judgement] -> IO ()
 export_feedback js = do
   case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportFeedback newJs
     -- Right newJs -> putStrLn $ show newJs
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
 
 
 showSummary :: Word -> [Judgement] -> IO ()
 showSummary depth js = do
   case marshall js of
     Right mJs -> printJs $ map (summary depth) mJs
-    Left e -> putStrLn $ reportInvalid e
+    Left e -> report $ reportInvalid e
 
 pending :: Maybe Int -> (String, [Judgement]) -> IO ()
 pending dl (fp,js) = do
@@ -266,7 +272,7 @@ main = do
     with :: [FilePath] -> ([[Judgement]] -> IO ()) -> IO ()
     with paths f = parsePaths paths >>= f
     withpath :: [FilePath] -> ([(String,[Judgement])] -> IO ()) -> IO ()
-    withpath paths f = 
+    withpath paths f =
       do
         js <- parsePaths paths
         let fp = map (tail.init.show) paths
