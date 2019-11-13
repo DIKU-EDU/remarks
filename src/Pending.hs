@@ -9,6 +9,7 @@ import Text.PrettyPrint
 
 data PendingTree
   = Node String Int Bool [PendingTree]
+  -- Name, Number of Comments, Is pending, Subtree
   deriving (Eq, Show)
 
 data FormatTree
@@ -59,26 +60,30 @@ formatTreeComments _ 0 = empty
 formatTreeComments ft cs =
   linebreak <> showTree (ft TQuest) <> text (makePlural cs "impartial comment")
 
-size :: PendingTree -> (Int, Int)
-size (Node _ cs True []) = (1, cs)
-size (Node _ cs False []) = (0, cs)
-size (Node _ cs _ pt) = foldl tupAdd (0, cs) $ map size pt
-  where tupAdd a b = (fst a + fst b, snd a + snd b)
+size :: PendingTree -> ((Int, Int), Int) -- (Pending, Total), Comments
+size (Node _ cs True []) = ((1, 1), cs)
+size (Node _ cs False []) = ((0, 1), cs)
+size (Node _ cs _ pt) = foldl tupAdd ((0, 0), cs) $ map size pt
+  where
+    tupAdd :: ((Int, Int), Int) -> ((Int, Int), Int) -> ((Int, Int), Int)
+    tupAdd a b = (( (fst.fst) a + (fst.fst) b, (snd.fst) a + (snd.fst) b), snd a + snd b)
 
 limitPendingTree :: Int -> PendingTree -> PendingTree
 limitPendingTree _    (Node s 0 b [])  = Node s 0 b []
 limitPendingTree 0 (t@(Node s _ b _))  = Node (s ++ showTasks (size t)) 0 b []
 limitPendingTree n    (Node s cs b ts) = Node s cs b (map (limitPendingTree (n-1)) ts)
 
-showTasks :: (Int, Int) -> String
-showTasks (n, 0) = " (" ++ makePlural n "task" ++ ")"
-showTasks (0, m) = " (" ++ makePlural m "comment" ++ ")"
-showTasks (n, m) = " (" ++ makePlural n "task" ++ " and " ++ makePlural m "comment" ++ ")"
+showTasks :: ((Int, Int), Int) -> String
+showTasks ((n, s), 0) = " : " ++ show n ++ " of " ++ show s ++ " " ++ makePlural n "task" ++ " (" ++ showPercentage n s ++ ")"
+showTasks ((0, _), m) = " : " ++ show m ++ " " ++ makePlural m "comment" ++ ")"
+showTasks ((n, s), m) = " : " ++ show n ++ " of " ++ show s ++ " " ++ makePlural n "task" ++ "(" ++ showPercentage n s ++ ")" ++ " and " ++ show m ++ " " ++ makePlural m "comment"
+
+showPercentage :: Int -> Int -> String
+showPercentage n s = show (div (n*100) (s)) ++ "%"
 
 makePlural :: Int -> String -> String
-makePlural 0 s = "0 " ++ s ++ "s"
-makePlural 1 s = "1 " ++ s
-makePlural n s = show n ++ " " ++ s ++ "s"
+makePlural 1 s = s
+makePlural _ s = s ++ "s"
 
 pendingJudgement :: Judgement -> [PendingTree]
 pendingJudgement (Bonus (_, _, cs)) =
@@ -89,12 +94,7 @@ pendingJudgement (Feedback ( _, _)) = []
 pendingJudgement (Judgement (Header (t, NotGiven, _), _, cs, [])) =
   [Node t (countImpartials cs) True []]
 pendingJudgement (Judgement (Header (t, _, _), _, cs, subJs)) =
-  case (concatMap pendingJudgement subJs) of
-    [] ->
-      case countImpartials cs of
-        0 -> []
-        n -> [Node t n False []]
-    sub  -> [Node t (countImpartials cs) False sub]
+  [Node t (countImpartials cs) False (concatMap pendingJudgement subJs)]
 
 countImpartials :: [Comment] -> Int
 countImpartials = sum . (map countImpartial)
