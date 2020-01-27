@@ -102,6 +102,18 @@ arithListFun :: PropertyArithFun -> [Int] -> Int
 arithListFun Sum = sum
 arithListFun Min = minimum
 arithListFun Max = maximum
+arithListFun PointMap = pointMap
+arithListFun Map = gradeMap
+
+pointMap :: [Int] -> Int
+pointMap [] = 0
+pointMap (p:ps) = sum $ map (\x -> if p>=x then 100 else 0) ps
+
+gradeMap :: [Int] -> Int
+gradeMap [] = 0
+gradeMap [p] = p
+gradeMap (p:ps) = ps !! (div p 100)
+
 
 -- getVals :: String -> [[(String, PropertyValue)]] -> [PropertyValue]
 -- getVals pname propEnv = map snd $ concatMap (filter (\x -> (fst x) == pname)) (tail propEnv)

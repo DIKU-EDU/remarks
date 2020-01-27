@@ -173,20 +173,25 @@ parseProperty = try property
 --       pure $ PMTickBox Nothing page loc
 
 parsePropertyExp :: MrkParser PropertyExp
-parsePropertyExp = choice [funProp, lookupProp, try number, value]
+parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParent, try number, stringVal, value]
   where
     funProp = do
       fun <- parsePropertyArithFun
       void $ char '('
       name <- sepBy1 parsePropertyExp (char ',')
       void $ char ')'
+      -- Check length of if
       pure $ ArithFun fun name
-    lookupProp = do
+    lookupPropChild = do
       void $ char '['
       index <- integer
       void $ char '.'
       name <- manyTill anyChar $ char ']'
       pure $ Lookup (fromInteger index, name)
+    lookupPropParent = do
+      void $ char '['
+      name <- manyTill anyChar $ char ']'
+      pure $ Lookup (0, name)
     number = do
       p <- parsePointsNum
       pure $ Num p
@@ -197,6 +202,10 @@ parsePropertyExp = choice [funProp, lookupProp, try number, value]
       --  _    -> do
       --    s <- manyTill (sepBy ";") endline
       --    (\cs -> pure $ Value (c:cs)) =<< 
+    stringVal = do
+      void $ char '"'
+      name <- manyTill anyChar $ char '"'
+      pure $ Value name
     value = do
       s <- list
       case s of
@@ -225,6 +234,8 @@ parsePropertyArithFun = choice
   [ string "sum" *> pure Sum
   , string "min" *> pure Min
   , string "max" *> pure Max
+  , string "points" *> pure PointMap
+  , string "index" *> pure Map
   ]
 
 parseComment :: Int -> MrkParser Comment

@@ -63,6 +63,8 @@ propertyArithFunDoc :: PropertyArithFun -> Doc
 propertyArithFunDoc Sum = text "sum"
 propertyArithFunDoc Min = text "min"
 propertyArithFunDoc Max = text "max"
+propertyArithFunDoc PointMap = text "points"
+propertyArithFunDoc Map = text "index"
 
 unify :: Judgement -> Judgement -> Maybe Judgement
 unify

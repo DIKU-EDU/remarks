@@ -78,6 +78,8 @@ data PropertyArithFun
   = Sum
   | Min
   | Max
+  | PointMap
+  | Map
   deriving (Eq, Show, Generic)
 
 instance Out PropertyArithFun
