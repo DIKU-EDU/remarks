@@ -30,23 +30,23 @@ interpJudgement (j @ (Judgement (h, prop, cs, []))) = do
   -- updlist <- mapM interpJudgement js
   -- let (jupdates, jsPropVals) = unzip updlist
   predef <- generatePredefinedValues h
-  propVals <- mapM (bindProp j [predef]) (addPredifinedPropsLeaf prop)
+  propVals <- bindProp j [predef] (addPredifinedPropsLeaf prop)
   let newProps = map propValToProperties propVals
   pure (Judgement (h, newProps, cs, []), propVals)
 interpJudgement (j @ (Judgement (h, prop, cs, js))) = do
   updlist <- mapM interpJudgement js
   let (jupdates, jsPropVals) = unzip updlist
   predef <- generatePredefinedValues h
-  propVals <- mapM (bindProp j (predef:jsPropVals)) (addPredifinedProps prop (length js))
+  propVals <- bindProp j (predef:jsPropVals) (addPredifinedProps prop (length js))
   let newProps = map propValToProperties propVals
   pure (Judgement (h, newProps, cs, jupdates), propVals)
 interpJudgement (Bonus (v, prop, c)) = pure (Bonus (v, preProps, c), newProps)
   where
-    newProps = [("Title", StrVal "Bonus"), ("Total", IntVal v), ("MaxPoints", IntVal 0)]
+    newProps = [("Title", StrVal "Bonus"), ("Total", IntVal v), ("MaxPoints", IntVal 0), ("MaxPointsGiven", IntVal 0)]
     preProps = [Property ("Title", Value "Bonus"), Property ("Total", Num v)] ++ prop
 interpJudgement (Feedback (prop, t)) = pure (Feedback (preProps, t), newProps)
   where
-    newProps = [("Title", StrVal "Feedback"), ("Total", IntVal 0), ("MaxPoints", IntVal 0)]
+    newProps = [("Title", StrVal "Feedback"), ("Total", IntVal 0), ("MaxPoints", IntVal 0), ("MaxPointsGiven", IntVal 0)]
     preProps = [Property ("Title", Value "Feedback"), Property ("Total", Num 0)] ++ prop
 
 propValToProperties :: (String, PropertyValue) -> Property
@@ -58,26 +58,36 @@ addPredifinedPropsLeaf :: [Property] -> [Property]
 addPredifinedPropsLeaf p =
   Property("Title", Lookup (0, "Title")) :
   Property("Total", ArithFun Sum [Lookup (0,"Total")]) :
-  Property("MaxPoints", ArithFun Sum [Lookup (0,"MaxPoints")]) : p
+  Property("MaxPoints", ArithFun Sum [Lookup (0,"MaxPoints")]) :
+  Property("MaxPointsGiven", ArithFun Sum [Lookup (0,"MaxPointsGiven")]) : p
 
 addPredifinedProps :: [Property] -> Int -> [Property]
 addPredifinedProps p sublen =
   Property("Title", Lookup (0, "Title")) :
   Property("Total", ArithFun Sum (map (\x -> Lookup (x,"Total")) [1 .. sublen])) :
-  Property("MaxPoints", ArithFun Sum (map (\x -> Lookup (x,"MaxPoints")) [1 .. sublen])) : p
+  Property("MaxPoints", ArithFun Sum (map (\x -> Lookup (x,"MaxPoints")) [1 .. sublen])) :
+  Property("MaxPointsGiven", ArithFun Sum (map (\x -> Lookup (x,"MaxPointsGiven")) [1 .. sublen])) : p
 
 generatePredefinedValues :: Header -> Either Invalid [(String, PropertyValue)]
 generatePredefinedValues (Header (t, (Given p), maxP)) =
-  pure [("Title", StrVal t), ("Total", IntVal p), ("MaxPoints", IntVal maxP)]
-generatePredefinedValues (Header (t, _, maxP)) =
-  pure [("Title", StrVal t), ("Total", IntVal 0), ("MaxPoints", IntVal maxP)]
+  pure [("Title", StrVal t), ("Total", IntVal p), ("MaxPoints", IntVal maxP), ("MaxPointsGiven", IntVal maxP)]
+generatePredefinedValues (Header (t, NotMade, maxP)) =
+  pure [("Title", StrVal t), ("Total", IntVal 0), ("MaxPoints", IntVal maxP), ("MaxPointsGiven", IntVal maxP)]
+generatePredefinedValues (Header (t, NotGiven, maxP)) =
+  pure [("Title", StrVal t), ("Total", IntVal 0), ("MaxPoints", IntVal maxP), ("MaxPointsGiven", IntVal 0)]
 
-bindProp :: Judgement -> [[(String, PropertyValue)]] -> Property ->
-  Either Invalid (String, PropertyValue)
-bindProp rj propEnv (Property (name, propExp)) =
+bindProp :: Judgement -> [[(String, PropertyValue)]] -> [Property] ->
+  Either Invalid [(String, PropertyValue)]
+bindProp _ _ [] = pure []
+bindProp rj propEnv ((Property (name, propExp)):ps) =
   case (evalPropExp rj propExp propEnv) of
-    Right (val)  -> pure (name, val)
+    Right (val)  -> do
+      vals <- bindProp rj (updPropEnv name val propEnv) ps
+      pure $ (name, val):vals
     Left invalid -> Left invalid
+  where
+    updPropEnv _ _ [] = []
+    updPropEnv n v (this:rest) = ((n, v):(filter (\x -> (fst x) /= n) this)):rest
 
 evalPropExp :: Judgement -> PropertyExp -> [[(String, PropertyValue)]] ->
   Either Invalid PropertyValue

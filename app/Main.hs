@@ -223,6 +223,13 @@ pending dl (fp,js) = do
     Nothing  -> putStrLn "No pending corrections."
     (Just s) -> putStrLn "The following corrections are pending:" >> putStrLn s
 
+status :: Maybe Int -> (String, [Judgement]) -> IO ()
+status dl (fp,js) = do
+  putStr $ fp ++ ": "
+  case findStatus dl js of
+    Nothing  -> putStrLn "No pending corrections."
+    (Just s) -> putStrLn "The following is the corrections status:" >> putStrLn s
+
 findDelimiter :: String -> Char
 findDelimiter [] = ';' -- There is no delimiter so it doesn't matter
 findDelimiter (s:ss) =
@@ -249,6 +256,10 @@ main = do
       withpath paths $ mapM_ (pending (Just $ read d))
     ("pending" : paths) ->
       withpath paths $ mapM_ (pending Nothing)
+    ("status" : "--depth" : d : paths) ->
+      withpath paths $ mapM_ (status (Just $ read d))
+    ("status" : paths) ->
+      withpath paths $ mapM_ (status Nothing)
     ("summary" : "--depth" : d : paths) ->
       with paths $ mapM_ $ showSummary $ read d
     ("summary" : paths) ->
