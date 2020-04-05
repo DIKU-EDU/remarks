@@ -4,13 +4,14 @@
 [![Travis CI (Linux + macOS) Status](https://travis-ci.org/DIKU-EDU/remarks.svg)](https://travis-ci.org/DIKU-EDU/remarks)
 [![AppVeyor (Windows) Status"](https://ci.appveyor.com/api/projects/status/g0hviw442o2bl8yi?svg=true)](https://ci.appveyor.com/project/DIKU-EDU/remarks)
 
-When judging student performance, it is useful to have both small, composable,
-quantitative judgements, and qualitative remarks. This makes both spreadsheets
-and mere text-files ill-suited for marking student work.  Although
-[org-mode](http://orgmode.org/) can solve this problem to a great extent, it
-becomes a heavy tool in the light of having to mark hundreds of students in a
-distributed fashion. With org-mode, everything is in one file, while global,
-intra-student statistics are not needed until all the students have been fully
+When judging student performance, it is useful to make both small,
+composable, quantitative judgements, and to collect qualitative
+remarks. This makes both spreadsheets and mere text-files ill-suited
+for marking student work. Although [org-mode](http://orgmode.org/) can
+solve this problem to a great extent, it becomes a heavy tool in the
+light of having to mark hundreds of students in a distributed fashion.
+With org-mode, everything is in one file, while global, intra-student
+statistics are not needed until all the students have been fully
 marked.
 
 ## Design Goals
