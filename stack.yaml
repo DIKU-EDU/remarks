@@ -2,4 +2,4 @@ extra-package-dbs: []
 flags: {}
 packages:
 - '.'
-resolver: lts-13.0
+resolver: lts-14.0
