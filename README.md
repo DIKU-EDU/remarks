@@ -97,18 +97,26 @@ A judgement starts with a header mark (a sequence of `#`), a title
 points (followed by a line break). The number of `#` determines the
 _depth_ of the header, and every file _must_ start at depth 1, but may
 have multiple depth 1 judgements. Headings may be arbitrarily nested,
-but must sum up correctly. Sums of given points can be omitted in
-higher-level judgements, and `remarks` will calculate these from
-points given to lower-level judgements.
+but must sum up correctly.
 
-For instance, here is a file containing only quantitative remarks, the
-top-level `Practice` has not been inserted:
+For instance, here is a file containing only quantitative remarks:
 
 ```
 # Theory: 27/50
 ## Question 1: 10/10
 ## Question 2: 10/20
 ## Question 3: 7/20
+# Practice: 35/50
+## Task 1: 20/25
+## Task 2: 15/25
+```
+
+Sums of given points can be omitted in higher-level judgements, and
+`remarks` will calculate these from points given to lower-level
+judgements. For instance, we could omit the given points from
+`Practice` above:
+
+```
 # Practice: /50
 ## Task 1: 20/25
 ## Task 2: 15/25
