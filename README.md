@@ -9,10 +9,10 @@ composable, quantitative judgements, and to collect qualitative
 remarks. This makes both spreadsheets and mere text-files ill-suited
 for marking student work. Although [org-mode](http://orgmode.org/) can
 solve this problem to a great extent, it becomes a heavy tool in the
-light of having to mark hundreds of students in a distributed fashion.
-With org-mode, everything is in one file, while global, intra-student
-statistics are not needed until all the students have been fully
-marked.
+light of having to mark hundreds of students in a distributed,
+decentralized fashion. With org-mode, everything is in one file, while
+global, intra-student statistics are not needed until all the students
+have been fully marked.
 
 ## Design Goals
 
