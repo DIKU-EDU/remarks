@@ -114,7 +114,9 @@ top-level `Practice` has not been inserted:
 ## Task 2: 15/25
 ```
 
-It is possible to indicate that a student did not submit an answer with writing `-` instead of a number points. This will be treated like 0 points. For instance:
+It is possible to indicate that a student did not submit an answer
+with writing `-` instead of a number points. This will be treated like
+0 points. For instance:
 
 ```
 # Theory: 17/50
