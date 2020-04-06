@@ -92,12 +92,17 @@ options:
 
 A `.mrk` file is a list of judgements.
 
-A judgement starts with a header mark (a sequence of `#`), a title (followed by
-a `:`), given points (followed by `/`), and maximum points (followed by a line
-break). The number of `#` determines the _depth_ of the header, and every file
-_must_ start at depth 1, but may have multiple depth 1 judgements. Headings may
-be arbitrarily nested, but must sum up correctly; the summing can be omitted in the nodes of the trees, as the tool will calculate this.
-For instance, here is a file containing only quantitative remarks, the top-level `Practice` has not been inserted:
+A judgement starts with a header mark (a sequence of `#`), a title
+(followed by a `:`), given points (followed by `/`), and maximum
+points (followed by a line break). The number of `#` determines the
+_depth_ of the header, and every file _must_ start at depth 1, but may
+have multiple depth 1 judgements. Headings may be arbitrarily nested,
+but must sum up correctly. Sums of given points can be omitted in
+higher-level judgements, and `remarks` will calculate these from
+points given to lower-level judgements.
+
+For instance, here is a file containing only quantitative remarks, the
+top-level `Practice` has not been inserted:
 
 ```
 # Theory: 27/50
