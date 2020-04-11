@@ -1,4 +1,4 @@
-module Export.Feedback (feedbackRemarks) where
+module Export.Feedback (FeedbackOpts(..), feedbackRemarks) where
 
 import Ast
 import Export.Generic
@@ -6,20 +6,29 @@ import Export.Generic
 import Prelude hiding ((<>))
 import Text.PrettyPrint
 
-feedbackRemarks :: [Judgement] -> String
-feedbackRemarks = render . vcat . map (formatJudgement 1)
+newtype FeedbackOpts
+  = FeedbackOpts {
+      withPoints :: Bool
+    }
 
-formatJudgement :: Int -> Judgement -> Doc
-formatJudgement _ (Feedback (_, t)) = text t
-formatJudgement _ (Bonus (_, _, _)) = empty
-formatJudgement depth (j @ (Judgement (_, _, _, judgements))) =
+feedbackRemarks :: FeedbackOpts -> [Judgement] -> String
+feedbackRemarks opts = render . vcat . map (formatJudgement opts 1)
+
+formatJudgement :: FeedbackOpts -> Int -> Judgement -> Doc
+formatJudgement _ _ (Feedback (_, t)) = text t
+formatJudgement _ _ (Bonus (_, _, _)) = empty
+formatJudgement opts depth (j @ (Judgement (_, _, _, judgements))) =
   case isEmpty subj of
     True -> empty
-    False -> formatHeader depth j $+$ text "" $+$ subj $+$ text ""
+    False -> formatHeader (withPoints opts) depth j
+              $+$ text "" $+$ subj $+$ text ""
   where
-    subj = vcat $ map (formatJudgement (depth + 1)) judgements
+    subj = vcat $ map (formatJudgement opts (depth + 1)) judgements
 
-formatHeader :: Int -> Judgement -> Doc
-formatHeader depth j =
-  (text $ replicate depth '#') <+> lookupTitle j
-
+formatHeader :: Bool -> Int -> Judgement -> Doc
+formatHeader showPoints depth j =
+  let points =  if showPoints
+              then colon <> space <>
+                lookupTotal j <> text "/" <> lookupMaxPoints j
+              else empty
+  in (text $ replicate depth '#') <+> lookupTitle j <> points

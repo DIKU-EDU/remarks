@@ -202,10 +202,10 @@ export_pdfMark js = do
     -- Right newJs -> putStrLn $ show newJs
     Left e -> report $ reportInvalid e
 
-export_feedback :: [Judgement] -> IO ()
-export_feedback js = do
+export_feedback :: FeedbackOpts -> [Judgement] -> IO ()
+export_feedback opts js = do
   case (mapM interpProps js) of
-    Right newJs -> putStrLn $ exportFeedback newJs
+    Right newJs -> putStrLn $ exportFeedback opts newJs
     -- Right newJs -> putStrLn $ show newJs
     Left e -> report $ reportInvalid e
 
@@ -244,8 +244,12 @@ main = do
     [] -> noCommand
     ("parse" : paths) ->
       with paths $ putStrLn . pretty
+    ("feedback" : "--with-points" : paths) ->
+      with paths $ mapM_ (export_feedback $
+        FeedbackOpts { withPoints = True })
     ("feedback" : paths) ->
-      with paths $ mapM_ export_feedback
+      with paths $ mapM_ (export_feedback $
+        FeedbackOpts { withPoints = False })
     ("check" : paths) ->
       with paths $ mapM_ check
     ("valid" : paths) ->
