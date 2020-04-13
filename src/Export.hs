@@ -1,4 +1,4 @@
-module Export (exportFeedback, exportHTML, exportCSV, exportHTMLTable, exportResultsTable, exportMD, unify, summary, exportPdfMark) where
+module Export (FeedbackOpts(..), exportFeedback, exportHTML, exportCSV, exportHTMLTable, exportResultsTable, exportMD, unify, summary, exportPdfMark) where
 
 import Ast
 import Invalid
@@ -25,8 +25,8 @@ exportHTMLTable js = toHTML $ transp $ htmlTableRemarks js
 exportMD :: [Judgement] -> String
 exportMD js = mdRemarks js
 
-exportFeedback :: [Judgement] -> String
-exportFeedback js = feedbackRemarks js
+exportFeedback :: FeedbackOpts -> [Judgement] -> String
+exportFeedback opts js = feedbackRemarks opts js
 
 exportResultsTable :: [Judgement] -> String
 exportResultsTable js = toCSV ";" $ transp $ resultsTableRemarks js
