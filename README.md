@@ -133,14 +133,19 @@ with writing `-` instead of a number points. This will be treated like
 ## Question 3: 7/20
 ```
 
+### Qualitative remarks
+
 The header of a judgement may be followed by qualitative remarks. Remarks begin
 with an indent (two spaces), and a mood mark:
 
   * `*` for neutral/structural remarks;
+  * `^` for very positive remarks;
   * `+` for positive remarks;
   * `-` for negative remarks;
+  * `v` for very negative remarks;
   * `~` for mixed remarks;
-  * `?` for impartial remarks.
+  * `?` for impartial remarks;
+  * `!` for warning remarks.
 
 Impartial remarks are good for judgements where the mood is left to be judged
 by a higher authority. For instance, when a teaching assistant is uncertain,
