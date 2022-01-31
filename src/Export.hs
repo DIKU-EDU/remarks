@@ -1,10 +1,11 @@
-module Export (FeedbackOpts(..), exportFeedback, exportHTML, exportCSV, exportHTMLTable, exportResultsTable, exportMD, unify, summary, exportPdfMark) where
+module Export (FeedbackOpts(..), exportFeedback, exportHTML, exportCSV, exportHTMLTable, exportSimpleTable, exportResultsTable, exportMD, unify, summary, exportPdfMark) where
 
 import Ast
 import Invalid
 import Export.Html
 import Export.CSV
 import Export.HtmlTable
+import Export.SimpleTable
 import Export.ResultsTable
 import Export.MD
 import Export.PdfMark
@@ -21,6 +22,10 @@ exportCSV delim ps js = (pure . render) =<< csvRemarks delim ps js
 
 exportHTMLTable :: [Judgement] -> String
 exportHTMLTable js = toHTML $ transp $ htmlTableRemarks js
+-- exportHTMLTable js = toHTML $ transp $ simpleTableRemarks js
+
+exportSimpleTable :: [Judgement] -> String
+exportSimpleTable js = toHTML $ transp $ simpleTableRemarks js
 
 exportMD :: [Judgement] -> String
 exportMD js = mdRemarks js
