@@ -20,7 +20,7 @@ formatJudgement _ _ (Feedback (_, t)) =
     0 -> empty
     _ -> text t $+$ text ""
 formatJudgement _ _ (Bonus (_, _, _)) = empty
-formatJudgement opts depth (j @ (Judgement (_, _, _, judgements))) =
+formatJudgement opts depth (j@(Judgement (_, _, _, judgements))) =
   case isEmpty subj of
     True -> empty
     False -> formatHeader (withPoints opts) depth j
