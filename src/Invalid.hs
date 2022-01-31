@@ -20,13 +20,13 @@ data Invalid
 instance Out Invalid
 
 reportInvalid :: Invalid -> String
-reportInvalid (PointsExceedMaxPoints s (j @ (Judgement ((Header (_, p, m)), _, _, _)))) =
+reportInvalid (PointsExceedMaxPoints s (j@(Judgement ((Header (_, p, m)), _, _, _)))) =
     "In " ++ s ++ " the total points (" ++ ppPoints p ++ ") exceeded maximum (" ++ ppPoints (Given m) ++ ") in the judgement\n" ++
     reportStrippedJudgement j
-reportInvalid (BadSubJudgementPointsSum s (j @ (Judgement (Header (_, p, _), _, _, _)))) =
+reportInvalid (BadSubJudgementPointsSum s (j@(Judgement (Header (_, p, _), _, _, _)))) =
     "In " ++ s ++ " the sum of points (" ++ ppPoints p ++ ") in judgement is not the sum of sub-judgements\n" ++
     reportJudgement 0 j
-reportInvalid (BadSubJudgementMaxPointsSum s (j @ (Judgement (Header (_, _, m), _, _, _)))) =
+reportInvalid (BadSubJudgementMaxPointsSum s (j@(Judgement (Header (_, _, m), _, _, _)))) =
     "In " ++ s ++ " the maximum points (" ++ ppPoints (Given m) ++ ") in judgement is not the sum of sub-judgements\n" ++
     reportJudgement 0 j
 reportInvalid (NoPointsInBottomJudgement s j) =

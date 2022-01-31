@@ -26,14 +26,14 @@ interpProps j =
     Left   invalid  -> Left invalid
 
 interpJudgement :: Judgement -> Either Invalid (Judgement, [(String, PropertyValue)])
-interpJudgement (j @ (Judgement (h, prop, cs, []))) = do
+interpJudgement (j@(Judgement (h, prop, cs, []))) = do
   -- updlist <- mapM interpJudgement js
   -- let (jupdates, jsPropVals) = unzip updlist
   predef <- generatePredefinedValues h
   propVals <- bindProp j [predef] (addPredifinedPropsLeaf prop)
   let newProps = map propValToProperties propVals
   pure (Judgement (h, newProps, cs, []), propVals)
-interpJudgement (j @ (Judgement (h, prop, cs, js))) = do
+interpJudgement (j@(Judgement (h, prop, cs, js))) = do
   updlist <- mapM interpJudgement js
   let (jupdates, jsPropVals) = unzip updlist
   predef <- generatePredefinedValues h

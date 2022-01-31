@@ -103,9 +103,9 @@ htmlTableHead (Judgement (_, _, _, js)) =
 
 htmlJudgement :: Judgement -> Doc
 htmlJudgement (Feedback _) = empty
-htmlJudgement (j @ (Bonus (_, _, comments))) =
+htmlJudgement (j@(Bonus (_, _, comments))) =
   (tr $ td $ lookupTotal j) $$ (trhidden $ htmlDetailComments comments)
-htmlJudgement (j @ (Judgement (_, _, comments, judgements))) =
+htmlJudgement (j@(Judgement (_, _, comments, judgements))) =
   (tr $ (td . toggle $ lookupTitle j) $$
     vcat (map htmlSubJudgement judgements) $$
     (td $ lookupTotal j)) $$
@@ -119,9 +119,9 @@ htmlDetailJudgements = vcat . (map htmlDetailJudgement)
 
 htmlDetailJudgement :: Judgement -> Doc
 htmlDetailJudgement (Feedback _) = empty
-htmlDetailJudgement (j @ (Bonus (_, _, comments))) =
+htmlDetailJudgement (j@(Bonus (_, _, comments))) =
   details (text "Bonus" <+> parens (lookupTotal j)) (htmlDetailComments comments)
-htmlDetailJudgement (j @ (Judgement (_, _, comments, judgements))) =
+htmlDetailJudgement (j@(Judgement (_, _, comments, judgements))) =
   details
     (lookupTitle j <+> parens (lookupTotal j <> text "/" <> lookupMaxPoints j))
     (htmlDetailComments comments $$ htmlDetailJudgements judgements)
