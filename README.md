@@ -1,8 +1,7 @@
 # `remarks` — A DSL for marking student work
 
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
-[![Travis CI (Linux + macOS) Status](https://travis-ci.org/DIKU-EDU/remarks.svg)](https://travis-ci.org/DIKU-EDU/remarks)
-[![AppVeyor (Windows) Status"](https://ci.appveyor.com/api/projects/status/g0hviw442o2bl8yi?svg=true)](https://ci.appveyor.com/project/DIKU-EDU/remarks)
+[![build](https://github.com/DIKU-EDU/remarks/actions/workflows/main.yml/badge.svg)](https://github.com/DIKU-EDU/remarks/actions/workflows/main.yml)
 
 When judging student performance, it is useful to make both small,
 composable, quantitative judgements, and to collect qualitative
