@@ -17,7 +17,7 @@ formatJudgement depth (j@(Bonus _)) =
 formatJudgement depth (Feedback (_, t)) =
   (text $ replicate depth '#') <+> text "Feedback" <> colon $+$ text "+" <>
     text t
-formatJudgement depth (j @ (Judgement (_, _, comments, judgements))) =
+formatJudgement depth (j@(Judgement (_, _, comments, judgements))) =
   formatHeader depth j $+$
   (nest 2 $ vcat $ map formatComment comments) $+$
   text "" $+$
