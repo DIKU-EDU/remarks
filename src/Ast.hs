@@ -58,7 +58,7 @@ newtype Property
 instance Out Property
 
 data PropertyExp
-  = Lookup (Int, String)
+  = Lookup (Int, PropertyExp)
   | ArithFun PropertyArithFun [PropertyExp]
   | Value String
   | List [String]
@@ -75,11 +75,14 @@ data PdfMarkType
 instance Out PdfMarkType
 
 data PropertyArithFun
-  = Sum
+  = Prod
+  | Div
+  | Sum
   | Min
   | Max
   | PointMap
   | Map
+  | If
   deriving (Eq, Show, Generic)
 
 instance Out PropertyArithFun

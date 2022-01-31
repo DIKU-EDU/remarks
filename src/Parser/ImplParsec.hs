@@ -175,6 +175,7 @@ parseProperty = try property
 parsePropertyExp :: MrkParser PropertyExp
 parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParent, try number, stringVal, value]
   where
+
     funProp = do
       fun <- parsePropertyArithFun
       void $ char '('
@@ -186,12 +187,16 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
       void $ char '['
       index <- integer
       void $ char '.'
-      name <- manyTill anyChar $ char ']'
+      -- name <- manyTill anyChar $ char ']'
+      name <- choice [try lookupPropChild, cleanValue]
       pure $ Lookup (fromInteger index, name)
+    cleanValue = do
+      v <- manyTill anyChar $ char ']'
+      pure $ Value v
     lookupPropParent = do
       void $ char '['
       name <- manyTill anyChar $ char ']'
-      pure $ Lookup (0, name)
+      pure $ Lookup (0, Value name)
     number = do
       p <- parsePointsNum
       pure $ Num p
@@ -201,7 +206,7 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
       --  '\n' -> pure $ Value ""
       --  _    -> do
       --    s <- manyTill (sepBy ";") endline
-      --    (\cs -> pure $ Value (c:cs)) =<< 
+      --    (\cs -> pure $ Value (c:cs)) =<<
     stringVal = do
       void $ char '"'
       name <- manyTill anyChar $ char '"'
@@ -232,10 +237,13 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
 parsePropertyArithFun :: MrkParser PropertyArithFun
 parsePropertyArithFun = choice
   [ string "sum" *> pure Sum
-  , string "min" *> pure Min
+  , try (string "min") *> pure Min
   , string "max" *> pure Max
-  , string "points" *> pure PointMap
-  , string "index" *> pure Map
+  , try (string "points") *> pure PointMap
+  , string "prod" *> pure Prod
+  , string "div" *> pure Div
+  , try (string "index") *> pure Map
+  , string "if" *> pure If
   ]
 
 parseComment :: Int -> MrkParser Comment

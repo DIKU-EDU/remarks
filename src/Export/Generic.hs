@@ -42,7 +42,7 @@ isIntegral :: Int -> Bool
 isIntegral x = 0 == x `mod` 100
 
 pointsDoc :: Points -> Doc
-pointsDoc NotGiven = text "*"
+pointsDoc NotGiven = text ""
 pointsDoc NotMade = text "-"
 pointsDoc (Given v) | isIntegral v = int (v `div` 100)
 pointsDoc (Given v) = int (v `div` 100) <> text "." <> int ((v `mod` 100) `div` 10) <> ppCent (v `mod` 10)
@@ -53,7 +53,7 @@ pointsDoc (Given v) = int (v `div` 100) <> text "." <> int ((v `mod` 100) `div` 
 
 propertyExpDoc :: PropertyExp -> Doc
 propertyExpDoc (Lookup (index, name)) =
-  brackets $ int index <> text "." <> text name
+  brackets $ int index <> text "." <> propertyExpDoc name
 propertyExpDoc (Value value) = text value
 propertyExpDoc (Num value) = pointsDoc $ Given value
 propertyExpDoc (ArithFun fun str) = propertyArithFunDoc fun <> (parens $ vcat $ intersperse (text ", ") $ map propertyExpDoc str)
@@ -62,6 +62,9 @@ propertyExpDoc (List strs) = text $ concat $ intersperse "; " $ strs
 propertyArithFunDoc :: PropertyArithFun -> Doc
 propertyArithFunDoc Sum = text "sum"
 propertyArithFunDoc Min = text "min"
+propertyArithFunDoc Prod = text "prod"
+propertyArithFunDoc Div = text "div"
+propertyArithFunDoc If = text "if"
 propertyArithFunDoc Max = text "max"
 propertyArithFunDoc PointMap = text "points"
 propertyArithFunDoc Map = text "index"
