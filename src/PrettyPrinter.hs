@@ -1,4 +1,4 @@
-module PrettyPrinter (ppJ_d, ppJs, ppPoints, ppComments, ppComment) where
+module PrettyPrinter (ppJ_d, ppJs, ppPoints, ppComments, ppComment, ppPropExp) where
 
 import Ast
 import Export.Generic (pointsDoc, propertyExpDoc)
@@ -21,6 +21,9 @@ ppComments = render . vcat . (map formatComment)
 
 ppComment :: Comment -> String
 ppComment = render . formatComment
+
+ppPropExp :: PropertyExp -> String
+ppPropExp = render . propertyExpDoc
 
 -- semicolon :: Doc
 -- semicolon = text ";"

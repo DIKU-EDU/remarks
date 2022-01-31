@@ -78,7 +78,7 @@ size (Node _ cs _ pt) = foldl tupAdd ((0, 0), cs) $ map size pt
 limitPendingTree :: Int -> PendingTree -> PendingTree
 limitPendingTree _    (Node s 0 b [])       = Node s 0 b []
 limitPendingTree 0 (t@(Node s _ b _))       = Node (s ++ showTasks (size t)) 0 b []
-limitPendingTree n (t@(Node s cs False ts)) = Node (s ++ showTasks (size t)) cs False []
+limitPendingTree _ (t@(Node s cs False _)) = Node (s ++ showTasks (size t)) cs False []
 limitPendingTree n    (Node s cs True  ts)  = Node s cs True (map (limitPendingTree (n-1)) ts)
 
 trimPendingTree :: PendingTree -> PendingTree
