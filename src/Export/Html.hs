@@ -121,7 +121,7 @@ htmlDetailJudgement :: Judgement -> Doc
 htmlDetailJudgement (Feedback _) = empty
 htmlDetailJudgement (j@(Bonus (_, _, comments))) =
   details (text "Bonus" <+> parens (lookupTotal j)) (htmlDetailComments comments)
-htmlDetailJudgement (j @ (Judgement (_, _, comments, judgements))) =
+htmlDetailJudgement (j@(Judgement (_, _, comments, judgements))) =
   details
     (lookupTitle j <+> parens (lookupTotal j <> text "/" <> lookupMaxPoints j))
     (htmlDetailComments comments $$ htmlDetailJudgements judgements)
