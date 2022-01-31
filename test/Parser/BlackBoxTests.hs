@@ -17,28 +17,28 @@ unitTests = testGroup "Unit tests"
   [ testCase "Lone header line" $
       parseString "# A: 0/0\n" @?=
         Right
-          [ Judgement (Header ("A",Just 0,0), [], [], [])
+          [ Judgement (Header ("A",Given 0,0), [], [], [])
           ]
   , testCase "A couple same-depth header lines" $
       parseString "# A: 0/0\n# B: 0/0\n" @?=
         Right
-          [ Judgement (Header ("A",Just 0,0), [], [], [])
-          , Judgement (Header ("B",Just 0,0), [], [], [])
+          [ Judgement (Header ("A",Given 0,0), [], [], [])
+          , Judgement (Header ("B",Given 0,0), [], [], [])
           ]
   , testCase "A simple hierarchy of headers" $
       parseString "# A: 0/0\n## B: 0/0\n" @?=
         Right
-          [ Judgement (Header ("A",Just 0,0), [], [],
-            [ Judgement (Header ("B",Just 0,0), [], [], [])
+          [ Judgement (Header ("A",Given 0,0), [], [],
+            [ Judgement (Header ("B",Given 0,0), [], [], [])
             ])
           ]
   , testCase "A couple simple hierarchies" $
       parseString "# A: 0/0\n## B: 0/0\n# C: 0/0\n" @?=
         Right
-          [ Judgement (Header ("A",Just 0,0), [], [],
-            [ Judgement (Header ("B",Just 0,0), [], [], [])
+          [ Judgement (Header ("A",Given 0,0), [], [],
+            [ Judgement (Header ("B",Given 0,0), [], [], [])
             ])
-          , Judgement (Header ("C",Just 0,0), [], [], [])
+          , Judgement (Header ("C",Given 0,0), [], [], [])
           ]
   ]
 

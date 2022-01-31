@@ -1,4 +1,4 @@
-[Judgement (Header ("Test", Just 0, 0),
+[Judgement (Header ("Test", Given 0, 0),
             [],
             [Comment (Positive,
                       [CommentStr "Very good.",CommentStr "More text."]),
