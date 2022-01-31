@@ -26,6 +26,7 @@ library
                      , Export.MD
                      , Export.PdfMark
                      , Export.ResultsTable
+                     , Export.SimpleTable
                      , Invalid
                      , MergeAsts
                      , Parser
