@@ -11,7 +11,7 @@ mdRemarks :: [Judgement] -> String
 mdRemarks = render . vcat . intersperse (text "") . map (formatJudgement 1)
 
 formatJudgement :: Int -> Judgement -> Doc
-formatJudgement depth (j @ (Bonus _)) =
+formatJudgement depth (j@(Bonus _)) =
   (text $ replicate depth '#') <+> text "Bonus" <> colon <+> text "+" <>
     lookupTotal j
 formatJudgement depth (Feedback (_, t)) =
