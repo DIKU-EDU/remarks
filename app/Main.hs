@@ -168,8 +168,9 @@ export format js = do
     Right docs -> putStrLn docs
     Left e -> report $ reportInvalid e
   where
-    delimiter = findDelimiter format
-    formatList = splitBy delimiter format
+    formatUpd = replaceTabs format
+    delimiter = findDelimiter formatUpd
+    formatList = splitBy delimiter formatUpd
 
 export_html :: [Judgement] -> IO ()
 export_html js = do
@@ -197,7 +198,7 @@ export_md js = do
 
 export_pdfMark :: [Judgement] -> IO ()
 export_pdfMark js = do
-  case (marshall js) of
+  case (mapM interpProps js) of
     Right newJs -> putStrLn $ exportPdfMark newJs
     -- Right newJs -> putStrLn $ show newJs
     Left e -> report $ reportInvalid e
@@ -229,6 +230,12 @@ status dl (fp,js) = do
   case findStatus dl js of
     Nothing  -> putStrLn "No pending corrections."
     (Just s) -> putStrLn "The following is the corrections status:" >> putStrLn s
+
+replaceTabs :: String -> String
+replaceTabs []  = []
+replaceTabs [s] = [s]
+replaceTabs ('\\':'t':str) = '\t':(replaceTabs str)
+replaceTabs (s1:s2:str) = s1:(replaceTabs (s2:str))
 
 findDelimiter :: String -> Char
 findDelimiter [] = ';' -- There is no delimiter so it doesn't matter

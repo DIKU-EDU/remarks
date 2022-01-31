@@ -54,7 +54,7 @@ formatPdfMarkType (("Comment"):rest) header points _ comms =
 formatPdfMarkType _ _ _ _ _ = empty
 
 formatComments :: [Comment] -> String
-formatComments cs = concat $ intersperse "\n" $ map (\x -> "" ++ ppComment x) cs
+formatComments cs = concat $ intersperse "\n" $ map (\x -> "" ++ (escapeParens $ ppComment x)) cs
 
 formatHeader :: Judgement -> Doc
 formatHeader j = text (getTitle j)
@@ -63,7 +63,11 @@ formatPoints :: Judgement -> Doc
 formatPoints j@(Judgement (Header (_, NotMade, _), _, _, _)) = parens $ (text "-" <> text "/" <> text (getMaxPoints j))
 formatPoints j = parens $ (text (getTotal j) <> text "/" <> text (getMaxPoints j))
 
-
+escapeParens :: String -> String
+escapeParens (')':xs) = '\\' : ')' : escapeParens xs
+escapeParens ('(':xs) = '\\' : '(' : escapeParens xs
+escapeParens (x:xs)       = x : escapeParens xs
+escapeParens ""           = ""
 
 
 
