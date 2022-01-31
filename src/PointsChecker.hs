@@ -25,7 +25,7 @@ checkPointsJ s (j@(Judgement (Header (_, NotGiven, maxP), _, _, subJs@(_:_)))) =
   try ((sum $ map maxPoints subJs) == maxP)
     (BadSubJudgementMaxPointsSum s j)
   checkPointsSubJs s j
-checkPointsJ s (j@ (Judgement (Header (_, NotMade, maxP), _, _, subJs))) = do
+checkPointsJ s (j@(Judgement (Header (_, NotMade, maxP), _, _, subJs))) = do
   case subJs of
     [] -> pure j
     _ -> do
@@ -65,7 +65,7 @@ validPointsJ s (j@(Judgement (Header (_, NotGiven, maxP), _, _, subJs@(_:_)))) =
   try ((sum $ map maxPoints subJs) == maxP)
     (BadSubJudgementMaxPointsSum s j)
   validPointsSubJs s j
-validPointsJ s (j@ (Judgement (Header (_, NotMade, maxP), _, _, subJs))) = do
+validPointsJ s (j@(Judgement (Header (_, NotMade, maxP), _, _, subJs))) = do
   case subJs of
     [] -> pure j
     _ -> do
