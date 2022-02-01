@@ -105,14 +105,14 @@ parseBonus _ = do
   void $ char '+'
   total <- parsePointsNum
   endline
-  properties <- many parseProperty
+  properties <- sepEndBy parseProperty newline
   comments <- many $ parseComment 1
   pure $ Bonus (total, properties, comments)
 
 parseFeedback :: Int -> MrkParser Judgement
 parseFeedback depth = do
   endline
-  properties <- many parseProperty
+  properties <- sepEndBy parseProperty newline
   text <- manyTill anyChar $ try (lookAhead (parseJudgement depth))
   pure $ Feedback (properties, text)
   -- where
@@ -128,7 +128,7 @@ parseRegularJudgement depth title = do
   void $ char '/'
   maxPoints <- parsePointsNum
   endline
-  properties <- many parseProperty
+  properties <- sepEndBy parseProperty newline
   comments <- many $ parseComment 1
   js <- many (parseJudgement (depth + 1))
   pure $ Judgement (Header (title, total, maxPoints), properties, comments, js)
@@ -152,7 +152,6 @@ parseProperty = try property
       name <- manyTill anyChar $ char ':'
       spaces
       value <- parsePropertyExp
-      void $ newline
       pure $ Property (name, value)
 
 -- parsePdfMarkType :: MrkParser PdfMarkType
