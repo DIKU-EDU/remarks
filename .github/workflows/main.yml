@@ -2,11 +2,13 @@ on: [push]
 name: build
 jobs:
   runhaskell:
-    name: cabal test
+    name: stack test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: haskell/actions/setup@v2
+        with:
+          enable-stack: true
       - uses: actions/cache@v3
         name: Caching
         with:
@@ -14,4 +16,4 @@ jobs:
             ~/.cabal/store
             dist-newstyle
           key: ${{ runner.os }}
-      - run: cabal test
+      - run: stack test
