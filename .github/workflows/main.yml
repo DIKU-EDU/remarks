@@ -15,5 +15,6 @@ jobs:
           path: |
             ~/.cabal/store
             dist-newstyle
+            .stack-work
           key: ${{ runner.os }}
       - run: stack test
