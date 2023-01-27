@@ -17,11 +17,14 @@ have been fully marked.
 
   1. One, or several, human-readable/editable file(s) _per student_.
      * This design goal has had the unfortunate consequence that
-       teaching assistants might by-go installing `remarks`, and merely
+       teaching assistants _skip_ installing `remarks`, and merely
        edit the source files. This works, but isn't the intended method
        of use.
      * However, having it be human-readable, has also had the fortunate
        consequence that reading remarks files has always been simple.
+       Even without `remarks` installed, it is feasible to run
+       cross-student statistics using standard Unix-like command-line
+       utilities.
   2. git-friendly file format.
   3. Export options to spreadsheet-formats.
   4. Synchronization options with Dropbox and/or Google Drive.
