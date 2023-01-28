@@ -1,2 +1,2 @@
-{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc801" }:
-nixpkgs.pkgs.haskell.packages.${compiler}.callPackage ./remarks.nix { }
+{ nixpkgs ? import <nixpkgs> {} }:
+(nixpkgs.pkgs.haskellPackages.callCabal2nix "remarks" ./. {})
