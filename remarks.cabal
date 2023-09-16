@@ -1,5 +1,5 @@
 name:                remarks
-version:             0.1.15
+version:             0.1.16
 synopsis:            A DSL for marking student work
 description:         A DSL for marking student work; see README.md for further details.
 homepage:            https://github.com/DIKU-EDU/remarks#readme
@@ -11,7 +11,7 @@ copyright:           2017 DIKU
 category:            Web
 build-type:          Simple
 extra-source-files:  README.md
-cabal-version:       >=1.10
+cabal-version:       1.12
 
 library
   hs-source-dirs:      src
@@ -37,8 +37,8 @@ library
                      , PropertyInterp
   ghc-options:         -Wall
   build-depends:       base >= 4.7 && < 5
-                     , regex-posix >= 0.94.0.0
-                     , GenericPretty >= 1.2.1
+                     , GenericPretty >= 1.2.2
+                     , regex-posix >= 0.96.0.0
                      , pretty >= 1.1.3.3
                      , containers >= 0.5.7.1
                      , parsec >= 3.1.11
@@ -49,9 +49,9 @@ executable remarks
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base
+  build-depends:       base >= 4.7 && < 5
                      , remarks
-                     , GenericPretty >= 1.2.1
+                     , GenericPretty >= 1.2.2
                      , directory >= 1.2.6.2
                      , filepath >= 1.4.1.0
   default-language:    Haskell2010
@@ -62,7 +62,7 @@ test-suite remarks-test
   main-is:             Tests.hs
   other-modules:       Parser.BlackBoxTests
                        PointsCheckerTests
-  build-depends:       base
+  build-depends:       base >= 4.7 && < 5
                      , remarks
                      , GenericPretty >= 1.2.1
                      , tasty >= 0.11.0.4
