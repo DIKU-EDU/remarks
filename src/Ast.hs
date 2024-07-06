@@ -1,14 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-{-|
-Module      : Ast
-Description : The remarks abstract-syntax tree
-Copyright   : (c) DIKU, 2016-present
-License     : EUPLv1.1
-Stability   : experimental
-
-All @.mrk@ files are parsed as a list of 'Judgement's, as defined below.
--}
 module Ast where
 
 import Text.PrettyPrint.GenericPretty
