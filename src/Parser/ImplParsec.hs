@@ -37,14 +37,14 @@ parseString input = parse parseRemarks "String" input
 -- * Implementation of the parser
 -------------------------------------------------------------------------------
 
+endline :: MrkParser ()
+endline = choice [void $ many1 newline, eof]
+
 parseLine :: MrkParser String
-parseLine = manyTill anyChar (many1 newline)
+parseLine = manyTill anyChar endline
 
 parseIndentation :: MrkParser ()
 parseIndentation = string indentation >> pure ()
-
-endline :: MrkParser ()
-endline = void $ many1 newline
 
 -- string :: String -> MrkParser ()
 -- string s = sequence_ $ mapM char s
@@ -105,14 +105,14 @@ parseBonus _ = do
   void $ char '+'
   total <- parsePointsNum
   endline
-  properties <- sepEndBy parseProperty newline
+  properties <- sepEndBy parseProperty endline
   comments <- many $ parseComment 1
   pure $ Bonus (total, properties, comments)
 
 parseFeedback :: Int -> MrkParser Judgement
 parseFeedback depth = do
   endline
-  properties <- sepEndBy parseProperty newline
+  properties <- sepEndBy parseProperty endline
   text <- manyTill anyChar $ try (lookAhead (parseJudgement depth))
   pure $ Feedback (properties, text)
   -- where
@@ -224,7 +224,7 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
       pure (s:ss)
     listH2 = do
       -- spaces
-      s <- manyTill anyChar $ char '\n'
+      s <- manyTill anyChar $ endline
       pure [s]
     nolineBreak = do
       c <- lookAhead anyChar

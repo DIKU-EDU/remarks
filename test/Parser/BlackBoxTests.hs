@@ -19,14 +19,32 @@ unitTests = testGroup "Unit tests"
         Right
           [ Judgement (Header ("A",Given 0,0), [], [], [])
           ]
+  , testCase "Lone header line (no line break at eof)" $
+      parseString "# A: 0/0" @?=
+        Right
+          [ Judgement (Header ("A",Given 0,0), [], [], [])
+          ]
   , testCase "A couple same-depth header lines" $
       parseString "# A: 0/0\n# B: 0/0\n" @?=
         Right
           [ Judgement (Header ("A",Given 0,0), [], [], [])
           , Judgement (Header ("B",Given 0,0), [], [], [])
           ]
+  , testCase "A couple same-depth header lines (no line break at eof)" $
+      parseString "# A: 0/0\n# B: 0/0" @?=
+        Right
+          [ Judgement (Header ("A",Given 0,0), [], [], [])
+          , Judgement (Header ("B",Given 0,0), [], [], [])
+          ]
   , testCase "A simple hierarchy of headers" $
       parseString "# A: 0/0\n## B: 0/0\n" @?=
+        Right
+          [ Judgement (Header ("A",Given 0,0), [], [],
+            [ Judgement (Header ("B",Given 0,0), [], [], [])
+            ])
+          ]
+  , testCase "A simple hierarchy of headers (no line break at eof)" $
+      parseString "# A: 0/0\n## B: 0/0" @?=
         Right
           [ Judgement (Header ("A",Given 0,0), [], [],
             [ Judgement (Header ("B",Given 0,0), [], [], [])
@@ -39,6 +57,37 @@ unitTests = testGroup "Unit tests"
             [ Judgement (Header ("B",Given 0,0), [], [], [])
             ])
           , Judgement (Header ("C",Given 0,0), [], [], [])
+          ]
+  , testCase "Simple bonus" $
+      parseString "# Bonus: +5\n" @?=
+        Right [Bonus (500, [], [])]
+  , testCase "Simple bonus (no line break at eof)" $
+      parseString "# Bonus: +5" @?=
+        Right [Bonus (500, [], [])]
+  , testCase "Bonus with props" $
+      parseString "# Bonus: +5\n  :x:y\n" @?=
+        Right [Bonus (500,[Property ("x",Value "y")],[])]
+  , testCase "Bonus with props (no line break at eof)" $
+      parseString "# Bonus: +5\n  :x:y" @?=
+        Right [Bonus (500,[Property ("x",Value "y")],[])]
+  , testCase "Judgement with comments (no line break at eof)" $
+      parseString "# A: 5/10\n  - Bad indentation\n    I'd say" @?=
+        Right
+          [
+            Judgement (Header ("A",Given 500,1000),[],[
+              Comment (Negative,[
+                CommentStr "Bad indentation",
+                CommentStr "I'd say"
+              ])],[])
+          ]
+  , testCase "Another judgement with comments (no line break at eof)" $
+      parseString "# A: 5/10\n  - Bad indentation\n  + Otherwise, OK" @?=
+        Right
+          [
+            Judgement (Header ("A",Given 500,1000),[],[
+              Comment (Negative,[CommentStr "Bad indentation"]),
+              Comment (Positive,[CommentStr "Otherwise, OK"])
+            ],[])
           ]
   ]
 
