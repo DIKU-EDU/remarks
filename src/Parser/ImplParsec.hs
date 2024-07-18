@@ -8,6 +8,7 @@ import Config
 import Text.ParserCombinators.Parsec hiding (parse,parseFromFile)
 import Text.Parsec.Prim (runP)
 import Control.Monad.Identity
+import Control.Monad (void, guard)
 
 type ParserState = [String]
 
