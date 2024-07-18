@@ -21,6 +21,7 @@ import System.FilePath
   ( (<.>), (</>), takeExtension, dropExtension, takeDirectory )
 import System.Exit ( exitWith, ExitCode ( ExitFailure ) )
 import System.IO ( hPutStrLn, stderr )
+import Text.Megaparsec (errorBundlePretty)
 
 import Text.PrettyPrint.GenericPretty
 
@@ -66,7 +67,7 @@ mustHaveJudgement path = do
 
 parseError :: ParseError -> IO a
 parseError e = do
-  report $ show e
+  report $ errorBundlePretty e
   exitWith (ExitFailure 1)
 
 parseTopFile :: FilePath -> IO [Judgement]
