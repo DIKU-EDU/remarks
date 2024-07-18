@@ -12,11 +12,13 @@ import MergeAsts
 
 import Control.Monad ( liftM, (<=<) )
 import Data.List ( sort )
+import Data.Maybe ( fromMaybe )
+import Options.Applicative hiding ( Parser, ParseError )
+import qualified Options.Applicative as App
 import System.Directory
   ( doesFileExist, doesDirectoryExist, listDirectory )
 import System.FilePath
   ( (<.>), (</>), takeExtension, dropExtension, takeDirectory )
-import System.Environment( getArgs )
 import System.Exit ( exitWith, ExitCode ( ExitFailure ) )
 import System.IO ( hPutStrLn, stderr )
 
@@ -234,8 +236,8 @@ status dl (fp,js) = do
 replaceTabs :: String -> String
 replaceTabs []  = []
 replaceTabs [s] = [s]
-replaceTabs ('\\':'t':str) = '\t':(replaceTabs str)
-replaceTabs (s1:s2:str) = s1:(replaceTabs (s2:str))
+replaceTabs ('\\':'t':rest) = '\t':(replaceTabs rest)
+replaceTabs (s1:s2:rest) = s1:(replaceTabs (s2:rest))
 
 findDelimiter :: String -> Char
 findDelimiter [] = ';' -- There is no delimiter so it doesn't matter
@@ -244,52 +246,127 @@ findDelimiter (s:ss) =
   then s
   else findDelimiter ss
 
+data Command
+  = CmdParse
+  | CmdFeedback Bool
+  | CmdCheck
+  | CmdValid
+  | CmdShow
+  | CmdPending (Maybe Int)
+  | CmdStatus (Maybe Int)
+  | CmdSummary (Maybe Word)
+  | CmdExport (Maybe String)
+  | CmdExportResults
+  | CmdExportTable
+  | CmdExportHTML
+  | CmdExportMD
+  | CmdExportPdfMark
+  deriving (Show)
+
+data Args = Args
+  { argsCommand :: Command
+  , argsPaths :: [String]
+  }
+  deriving (Show)
+
+cmdFeedbackParser :: App.Parser Command
+cmdFeedbackParser =
+  CmdFeedback
+    <$> switch
+      ( long "with-points" )
+  <**> helper
+
+cmdWithDepthParser :: Read a => (Maybe a -> Command) ->  App.Parser Command
+cmdWithDepthParser cmd =
+  cmd
+    <$> (optional $ option auto
+      ( long "depth" ))
+  <**> helper
+
+cmdExportParser :: App.Parser Command
+cmdExportParser =
+  CmdExport
+    <$> (optional $ strOption
+      ( long "format" ))
+  <**> helper
+
+argsParser :: App.Parser Args
+argsParser = Args
+  <$> subparser
+    ( command "parse" (info (pure CmdParse) (progDesc
+        "parse the given PATHs and show their ASTs"))
+   <> command "feedback" (info cmdFeedbackParser (progDesc
+        "accumulate feedback for PATHs"))
+   <> command "valid" (info (pure CmdValid) (progDesc
+        "validate structure of files at PATHs"))
+   <> command "check" (info (pure CmdCheck) (progDesc
+        "validate and check that points have been given at PATHs"))
+   <> command "show" (info (pure CmdShow) (progDesc
+        "validate, check, and pretty-print"))
+   <> command "pending" (info (cmdWithDepthParser CmdPending) (progDesc
+        "show judgements not yet marked"))
+   <> command "status" (info (cmdWithDepthParser CmdStatus) (progDesc
+        "show status(?)"))
+   <> command "summary" (info (cmdWithDepthParser CmdSummary) (progDesc
+        "validate, check, and summarise the points"))
+   <> command "export" (info cmdExportParser (progDesc
+        "exports corrections to a semicolon separated list; the format is a semicolon separated string of properties"))
+   <> command "exportTable" (info (pure CmdExportTable) (progDesc
+        "exports all corrections to a dynamic html-table"))
+   <> command "exportResults" (info (pure CmdExportResults) (progDesc
+        "export results to a table with result of each sub question"))
+   <> command "exportMD" (info (pure CmdExportMD) (progDesc
+        "exports remarks to a MarkDown file"))
+   <> command "exportHTML" (info (pure CmdExportHTML) (progDesc
+        "export remarks to an HTML file"))
+   <> command "exportPdfMark" (info (pure CmdExportPdfMark) (progDesc
+        "export remarks to format that can be inserted as comments in PDD with GhostScript"))
+    )
+  <*> some (strArgument
+        (metavar "PATH..."
+        <> help "List of paths to process" ))
+
+argsInfo :: ParserInfo Args
+argsInfo = info (argsParser <**> helper)
+  ( fullDesc
+  <> progDesc "remarks is a suite of tools for marking student work."
+  <> header "remarks - machinery for marking student work" )
+
 main :: IO ()
 main = do
-  args <- getArgs
-  case args of
-    [] -> noCommand
-    ("parse" : paths) ->
+  args <- execParser argsInfo
+  let paths = argsPaths args
+  case argsCommand args of
+    CmdParse ->
       with paths $ putStrLn . pretty
-    ("feedback" : "--with-points" : paths) ->
+    CmdFeedback points ->
       with paths $ mapM_ (export_feedback $
-        FeedbackOpts { withPoints = True })
-    ("feedback" : paths) ->
-      with paths $ mapM_ (export_feedback $
-        FeedbackOpts { withPoints = False })
-    ("check" : paths) ->
-      with paths $ mapM_ check
-    ("valid" : paths) ->
+        FeedbackOpts { withPoints = points })
+    CmdValid ->
       with paths $ mapM_ valid
-    ("show" : paths) ->
+    CmdCheck ->
+      with paths $ mapM_ check
+    CmdShow ->
       with paths $ mapM_ printJs
-    ("pending" : "--depth" : d : paths) ->
-      withpath paths $ mapM_ (pending (Just $ read d))
-    ("pending" : paths) ->
-      withpath paths $ mapM_ (pending Nothing)
-    ("status" : "--depth" : d : paths) ->
-      withpath paths $ mapM_ (status (Just $ read d))
-    ("status" : paths) ->
-      withpath paths $ mapM_ (status Nothing)
-    ("summary" : "--depth" : d : paths) ->
-      with paths $ mapM_ $ showSummary $ read d
-    ("summary" : paths) ->
-      with paths $ mapM_ $ showSummary 0
-    ("export" : "--format" : format : paths) ->
-      with paths $ mapM_ $ export format
-    ("export" : paths) ->
-      with paths $ mapM_ $ export "Title\tTotal\tMaxPoints"
-    ("exportTable" : paths) ->
+    CmdPending maybeDepth ->
+      withpath paths $ mapM_ (pending maybeDepth)
+    CmdStatus maybeDepth ->
+      withpath paths $ mapM_ (status maybeDepth)
+    CmdSummary maybeDepth ->
+      with paths $ mapM_ $ showSummary $ fromMaybe 0 maybeDepth
+    CmdExport maybeFormat ->
+      with paths $ mapM_ $ export $
+        fromMaybe "Title\tTotal\tMaxPoints" maybeFormat
+    CmdExportTable ->
       with paths $ mapM_ export_table
-    ("exportResults" : paths) ->
+    CmdExportResults ->
       with paths $ mapM_ export_results
-    ("exportMD" : paths) ->
+    CmdExportMD ->
       with paths $ mapM_ export_md
-    ("exportHTML" : paths) ->
+    CmdExportHTML ->
       with paths $ mapM_ export_html
-    ("exportPdfMark" : paths) ->
+    CmdExportPdfMark ->
       with paths $ mapM_ export_pdfMark
-    (c:rest) -> invalidCommand c rest
   where
     with :: [FilePath] -> ([[Judgement]] -> IO ()) -> IO ()
     with paths f = parsePaths paths >>= f

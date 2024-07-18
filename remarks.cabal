@@ -54,6 +54,7 @@ executable remarks
                      , GenericPretty >= 1.2.2
                      , directory >= 1.2.6.2
                      , filepath >= 1.4.1.0
+                     , optparse-applicative >= 0.17.1.0
   default-language:    Haskell2010
 
 test-suite remarks-test
