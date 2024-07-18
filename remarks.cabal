@@ -10,8 +10,10 @@ maintainer:          oleks@oleks.info
 copyright:           2017 DIKU
 category:            Web
 build-type:          Simple
-extra-source-files:  README.md
+extra-source-files:  README.md, test/golden/*.mrk, test/golden/*.ref
 cabal-version:       1.12
+tested-with:   GHC == 9.0.2, GHC == 9.2.4,  GHC == 9.4.4, GHC == 9.6.3,
+               GHC == 9.8.1, GHC == 9.10.1
 
 library
   hs-source-dirs:      src
