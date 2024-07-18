@@ -5,24 +5,22 @@ module Parser.ImplParsec (parseString, parseFile, ParseError) where
 import Ast
 import Config
 
-import Text.ParserCombinators.Parsec hiding (parse,parseFromFile)
-import Text.Parsec.Prim (runP)
-import Control.Monad.Identity
+import Data.Void
+import Text.Megaparsec hiding (parse, ParseError)
+import qualified Text.Megaparsec as P
+import Text.Megaparsec.Char
 import Control.Monad (void, guard)
 
-type ParserState = [String]
+type MrkParser = Parsec Void String
 
-initialState :: ParserState
-initialState = []
-
-type MrkParser = GenParser Char ParserState
+type ParseError = ParseErrorBundle String Void
 
 -------------------------------------------------------------------------------
 -- * Functions for parsing
 -------------------------------------------------------------------------------
 
-parse :: MrkParser a -> SourceName -> String -> Either ParseError a
-parse p = runP p initialState
+parse :: MrkParser a -> FilePath -> String -> Either ParseError a
+parse p = P.parse p
 
 -- |Parse a Remarks Judgement from a file
 parseFile :: String -> IO (Either ParseError [Judgement])
@@ -39,32 +37,29 @@ parseString input = parse parseRemarks "String" input
 -------------------------------------------------------------------------------
 
 endline :: MrkParser ()
-endline = choice [void $ many1 newline, eof]
+endline = choice [void $ some newline, eof]
 
 parseLine :: MrkParser String
-parseLine = manyTill anyChar endline
+parseLine = manyTill anySingle endline
 
 parseIndentation :: MrkParser ()
 parseIndentation = string indentation >> pure ()
-
--- string :: String -> MrkParser ()
--- string s = sequence_ $ mapM char s
 
 anyCharNoLineBreak :: MrkParser Char
 anyCharNoLineBreak =
   do
     notFollowedBy newline
-    anyChar
+    anySingle
 
 integral :: MrkParser String
-integral = many1 digit
+integral = some digitChar
 
 float :: MrkParser Int
 float = do
   i <- option "0" integral
   void $ char '.'
-  d1 <- digit
-  d2 <- option '0' digit
+  d1 <- digitChar
+  d2 <- option '0' digitChar
   pure $ read (i ++ [d1, d2])
 
 integer :: MrkParser Integer
@@ -85,15 +80,15 @@ parsePoints = try noAnswer <|> try point <|> (return NotGiven)
 
 parseRemarks :: MrkParser [Judgement]
 parseRemarks = do
-  js <- many1 (parseJudgement 1)
-  void spaces
+  js <- some (parseJudgement 1)
+  space
   eof
   pure js
 
 parseJudgement :: Int -> MrkParser Judgement
 parseJudgement depth = do
-  void $ try $ spaces >> (string $ replicate depth judgementMarker)
-  void $ spaces
+  void $ try $ space >> string (replicate depth judgementMarker)
+  space
   title <- manyTill anyCharNoLineBreak $ char ':'
   case title of
     "Bonus" -> parseBonus depth
@@ -102,7 +97,7 @@ parseJudgement depth = do
 
 parseBonus :: Int -> MrkParser Judgement
 parseBonus _ = do
-  void $ spaces
+  space
   void $ char '+'
   total <- parsePointsNum
   endline
@@ -114,17 +109,12 @@ parseFeedback :: Int -> MrkParser Judgement
 parseFeedback depth = do
   endline
   properties <- sepEndBy parseProperty endline
-  text <- manyTill anyChar $ try (lookAhead (parseJudgement depth))
+  text <- manyTill anySingle $ try (lookAhead (parseJudgement depth))
   pure $ Feedback (properties, text)
-  -- where
-  --   parseJudgementStart = do
-  --     _ <- char judgementMarker
-  --     void $ spaces
-  --     void $ manyTill (anyCharNoLineBreak) $ char ':'
 
 parseRegularJudgement :: Int -> String -> MrkParser Judgement
 parseRegularJudgement depth title = do
-  void $ spaces
+  space
   total <- parsePoints
   void $ char '/'
   maxPoints <- parsePointsNum
@@ -137,40 +127,13 @@ parseRegularJudgement depth title = do
 parseProperty :: MrkParser Property
 parseProperty = try property
   where
-  --   pdfmark :: MrkParser Property
-  --   pdfmark = do
-  --     parseIndentation
-  --     char ':'
-  --     string "pdfmark"
-  --     char ':'
-  --     space
-  --     pmtype <- parsePdfMarkType
-  --     pure $ PdfMark pmtype
     property = do
-      -- void $ try $ string $ indentation ++ ":"
       parseIndentation
       _ <- char ':'
-      name <- manyTill anyChar $ char ':'
-      spaces
+      name <- manyTill anySingle $ char ':'
+      space
       value <- parsePropertyExp
       pure $ Property (name, value)
-
--- parsePdfMarkType :: MrkParser PdfMarkType
--- parsePdfMarkType = try comment <|> try box
---   where
---     comment = do
---       string "Comment"
---       string ";"
---       space
---       page <- manyTill anyChar $ char ';'
---       loc  <- manyTill anyChar endline
---       pure $ PMComment page loc
---     box = do
---       string "Box"
---       string ";"
---       page <- manyTill anyChar $ char ';'
---       loc  <- manyTill anyChar $ char ';'
---       pure $ PMTickBox Nothing page loc
 
 parsePropertyExp :: MrkParser PropertyExp
 parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParent, try number, stringVal, value]
@@ -191,11 +154,11 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
       name <- choice [try lookupPropChild, cleanValue]
       pure $ Lookup (fromInteger index, name)
     cleanValue = do
-      v <- manyTill anyChar $ char ']'
+      v <- manyTill anySingle $ char ']'
       pure $ Value v
     lookupPropParent = do
       void $ char '['
-      name <- manyTill anyChar $ char ']'
+      name <- manyTill anySingle $ char ']'
       pure $ Lookup (0, Value name)
     number = do
       p <- parsePointsNum
@@ -209,7 +172,7 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
       --    (\cs -> pure $ Value (c:cs)) =<<
     stringVal = do
       void $ char '"'
-      name <- manyTill anyChar $ char '"'
+      name <- manyTill anySingle $ char '"'
       pure $ Value name
     value = do
       s <- list
@@ -225,12 +188,12 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
       pure (s:ss)
     listH2 = do
       -- spaces
-      s <- manyTill anyChar $ endline
+      s <- manyTill anySingle $ endline
       pure [s]
     nolineBreak = do
-      c <- lookAhead anyChar
+      c <- lookAhead anySingle
       guard (c /= '\n')
-      anyChar
+      anySingle
 
 
 
@@ -250,7 +213,7 @@ parseComment :: Int -> MrkParser Comment
 parseComment depth = do
   void $ try $ string $ concat $ replicate depth indentation
   mood <- parseMood
-  void $ spaces
+  space
   comment <- parseLine
   morecmt <- many contStr
   comments <- many (parseComment $ depth + 1)
