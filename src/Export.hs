@@ -1,17 +1,16 @@
-module Export (FeedbackOpts(..), exportFeedback, exportHTML, exportCSV, exportHTMLTable, exportSimpleTable, exportResultsTable, exportMD, unify, summary, exportPdfMark) where
+module Export (FeedbackOpts (..), exportFeedback, exportHTML, exportCSV, exportHTMLTable, exportSimpleTable, exportResultsTable, exportMD, unify, summary, exportPdfMark) where
 
 import Ast
-import Invalid
-import Export.Html
 import Export.CSV
+import Export.Feedback
+import Export.Generic (summary, toCSV, toHTML, transp, unify)
+import Export.Html
 import Export.HtmlTable
-import Export.SimpleTable
-import Export.ResultsTable
 import Export.MD
 import Export.PdfMark
-import Export.Feedback
-import Export.Generic ( unify, summary, toHTML, toCSV, transp )
-
+import Export.ResultsTable
+import Export.SimpleTable
+import Invalid
 import Text.PrettyPrint
 
 exportHTML :: [Judgement] -> String
@@ -22,6 +21,7 @@ exportCSV delim ps js = (pure . render) =<< csvRemarks delim ps js
 
 exportHTMLTable :: [Judgement] -> String
 exportHTMLTable js = toHTML $ transp $ htmlTableRemarks js
+
 -- exportHTMLTable js = toHTML $ transp $ simpleTableRemarks js
 
 exportSimpleTable :: [Judgement] -> String
@@ -35,6 +35,7 @@ exportFeedback opts js = feedbackRemarks opts js
 
 exportResultsTable :: [Judgement] -> String
 exportResultsTable js = toCSV ";" $ transp $ resultsTableRemarks js
+
 -- exportResultsTable js = toHTML $ resultsTableRemarks js
 
 exportPdfMark :: [Judgement] -> String

@@ -1,4 +1,4 @@
-module PointsChecker ( checkPoints, validPoints ) where
+module PointsChecker (checkPoints, validPoints) where
 
 import Ast
 import Invalid
@@ -18,31 +18,37 @@ checkPointsSubJs s (Judgement (Header (t, _, maxP), prop, cs, subJs)) = do
   pure $ Judgement (Header (t, Given newP, maxP), prop, cs, newSubJs)
 checkPointsSubJs _ j = pure j
 
-checkPointsJ :: String ->  Judgement -> Either Invalid Judgement
+checkPointsJ :: String -> Judgement -> Either Invalid Judgement
 checkPointsJ s (j@(Judgement ((Header (_, NotGiven, _)), _, _, []))) =
   Left $ NoPointsInBottomJudgement s j
-checkPointsJ s (j@(Judgement (Header (_, NotGiven, maxP), _, _, subJs@(_:_)))) = do
-  try ((sum $ map maxPoints subJs) == maxP)
+checkPointsJ s (j@(Judgement (Header (_, NotGiven, maxP), _, _, subJs@(_ : _)))) = do
+  try
+    ((sum $ map maxPoints subJs) == maxP)
     (BadSubJudgementMaxPointsSum s j)
   checkPointsSubJs s j
 checkPointsJ s (j@(Judgement (Header (_, NotMade, maxP), _, _, subJs))) = do
   case subJs of
     [] -> pure j
     _ -> do
-      try ((sum $ map points subJs) == 0)
+      try
+        ((sum $ map points subJs) == 0)
         (BadSubJudgementPointsSum s j)
-      try ((sum $ map maxPoints subJs) == maxP)
+      try
+        ((sum $ map maxPoints subJs) == maxP)
         (BadSubJudgementMaxPointsSum s j)
       checkPointsSubJs s j
 checkPointsJ s (j@(Judgement (Header (_, (Given p), maxP), _, _, subJs))) = do
-  try (p <= maxP)
+  try
+    (p <= maxP)
     (PointsExceedMaxPoints s j)
   case subJs of
     [] -> pure j
     _ -> do
-      try ((sum $ map points subJs) == p)
+      try
+        ((sum $ map points subJs) == p)
         (BadSubJudgementPointsSum s j)
-      try ((sum $ map maxPoints subJs) == maxP)
+      try
+        ((sum $ map maxPoints subJs) == maxP)
         (BadSubJudgementMaxPointsSum s j)
       checkPointsSubJs s j
 checkPointsJ _ j@(Bonus _) = pure j
@@ -59,30 +65,36 @@ validPointsSubJs s (Judgement (Header (t, _, maxP), prop, cs, subJs)) = do
   pure $ Judgement (Header (t, Given newP, maxP), prop, cs, newSubJs)
 validPointsSubJs _ j = pure j
 
-validPointsJ :: String ->  Judgement -> Either Invalid Judgement
+validPointsJ :: String -> Judgement -> Either Invalid Judgement
 validPointsJ _ (j@(Judgement ((Header (_, NotGiven, _)), _, _, []))) = pure j
-validPointsJ s (j@(Judgement (Header (_, NotGiven, maxP), _, _, subJs@(_:_)))) = do
-  try ((sum $ map maxPoints subJs) == maxP)
+validPointsJ s (j@(Judgement (Header (_, NotGiven, maxP), _, _, subJs@(_ : _)))) = do
+  try
+    ((sum $ map maxPoints subJs) == maxP)
     (BadSubJudgementMaxPointsSum s j)
   validPointsSubJs s j
 validPointsJ s (j@(Judgement (Header (_, NotMade, maxP), _, _, subJs))) = do
   case subJs of
     [] -> pure j
     _ -> do
-      try ((sum $ map points subJs) == 0)
+      try
+        ((sum $ map points subJs) == 0)
         (BadSubJudgementPointsSum s j)
-      try ((sum $ map maxPoints subJs) == maxP)
+      try
+        ((sum $ map maxPoints subJs) == maxP)
         (BadSubJudgementMaxPointsSum s j)
       validPointsSubJs s j
 validPointsJ s (j@(Judgement (Header (_, (Given p), maxP), _, _, subJs))) = do
-  try (p <= maxP)
+  try
+    (p <= maxP)
     (PointsExceedMaxPoints s j)
   case subJs of
     [] -> pure j
     _ -> do
-      try ((sum $ map points subJs) == p)
+      try
+        ((sum $ map points subJs) == p)
         (BadSubJudgementPointsSum s j)
-      try ((sum $ map maxPoints subJs) == maxP)
+      try
+        ((sum $ map maxPoints subJs) == maxP)
         (BadSubJudgementMaxPointsSum s j)
       validPointsSubJs s j
 validPointsJ _ j@(Bonus _) = pure j
