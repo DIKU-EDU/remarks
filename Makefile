@@ -1,4 +1,4 @@
-.PHONY: build interact
+.PHONY: build interact check_format
 
 name:=$(shell basename $(CURDIR))
 version:=9.4-slim_0
@@ -10,11 +10,17 @@ build: docker/Dockerfile Makefile
 	  docker
 
 interact: build docker/Dockerfile Makefile
-	mkdir -p .home
 	docker run \
 	  --interactive --tty --rm \
-	  --volume "$(shell pwd):/src" \
-	  --volume "$(shell pwd)/.home:/home/alis" \
-	  --workdir "/src" \
+	  --volume "$(shell pwd):/remarks" \
+	  --workdir "/remarks" \
 	  --entrypoint bash \
 	  $(tag)
+
+check_format: build Makefile
+	docker run \
+	  --rm \
+	  --volume "$(shell pwd):/remarks" \
+	  --workdir "/remarks" \
+	  $(tag) \
+	  ormolu --mode check $(shell find . -type f -name '*.hs')

@@ -5,7 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: haskell-actions/run-ormolu@v16
+      - uses: haskell-actions/run-ormolu@v16 # NB!
+# If you update the version of run-ormolu, please also update the
+# version in .docker/Dockerfile, so that the docker image will use the
+# same version of ormolu.
+#
+# See also
+#   https://github.com/haskell-actions/run-ormolu/releases
+#   https://github.com/tweag/ormolu/releases/
+
   test:
     name: stack test
     runs-on: ubuntu-latest
