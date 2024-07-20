@@ -1,6 +1,15 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Parser.ImplParsec (parseString, parseFile, ParseError) where
+{-|
+
+An implementation of "Parser" using
+[megaparsec](https://hackage.haskell.org/package/megaparsec).
+
+The module declaration does not limit its exports to enable white-box
+testing and debugging.
+
+-}
+module Parser.ImplMegaparsec where
 
 import Ast
 import Config
