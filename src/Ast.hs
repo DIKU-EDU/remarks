@@ -53,14 +53,14 @@ data PropertyExp
   | ArithFun PropertyArithFun [PropertyExp]
   | Value String
   | List [String]
-  | Num  Int
+  | Num Int
   deriving (Eq, Show, Generic)
 
 instance Out PropertyExp
 
 data PdfMarkType
   = PMComment String String -- Page Location
-  | PMTickBox     (Maybe Bool) String String -- Correct/Wrong Page Location
+  | PMTickBox (Maybe Bool) String String -- Correct/Wrong Page Location
   deriving (Eq, Show, Generic)
 
 instance Out PdfMarkType
@@ -80,39 +80,38 @@ instance Out PropertyArithFun
 
 data Judgement
   = Judgement (Header, [Property], [Comment], [Judgement])
-  | Bonus     (Int, [Property], [Comment])
-  | Feedback  ([Property], String)
+  | Bonus (Int, [Property], [Comment])
+  | Feedback ([Property], String)
   deriving (Eq, Show, Generic)
 
 instance Out Judgement
 
 data PropertyValue
   = ListVal [String]
-  | StrVal   String
-  | IntVal   Int
+  | StrVal String
+  | IntVal Int
   deriving (Eq, Show, Generic)
 
 instance Out PropertyValue
 
-
 isLeafJ :: Judgement -> Bool
-isLeafJ (Judgement (_, _, _, []))    = True
-isLeafJ (Judgement (_, _, _, (_:_))) = False
-isLeafJ (Bonus _)                    = False
-isLeafJ (Feedback _)                 = False
+isLeafJ (Judgement (_, _, _, [])) = True
+isLeafJ (Judgement (_, _, _, (_ : _))) = False
+isLeafJ (Bonus _) = False
+isLeafJ (Feedback _) = False
 
 isNodeJ :: Judgement -> Bool
-isNodeJ (Judgement (_, _, _, []))    = False
-isNodeJ (Judgement (_, _, _, (_:_))) = True
-isNodeJ (Bonus _)                    = False
-isNodeJ (Feedback _)                 = False
+isNodeJ (Judgement (_, _, _, [])) = False
+isNodeJ (Judgement (_, _, _, (_ : _))) = True
+isNodeJ (Bonus _) = False
+isNodeJ (Feedback _) = False
 
 isBonus :: Judgement -> Bool
-isBonus (Bonus _)     = True
-isBonus (Feedback _)  = False
+isBonus (Bonus _) = True
+isBonus (Feedback _) = False
 isBonus (Judgement _) = False
 
 isFeedback :: Judgement -> Bool
-isFeedback (Feedback _)  = True
-isFeedback (Bonus _)     = False
+isFeedback (Feedback _) = True
+isFeedback (Bonus _) = False
 isFeedback (Judgement _) = False

@@ -1,48 +1,50 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-{-|
-
-An implementation of "Parser" using
-[megaparsec](https://hackage.haskell.org/package/megaparsec).
-
-The module declaration does not limit its exports to enable white-box
-testing and debugging.
-
--}
+-- |
+--
+-- An implementation of "Parser" using
+-- [megaparsec](https://hackage.haskell.org/package/megaparsec).
+--
+-- The module declaration does not limit its exports to enable white-box
+-- testing and debugging.
 module Parser.ImplMegaparsec where
 
 import Ast
 import Config
-
+import Control.Monad (guard, void)
 import Data.Void
-import Text.Megaparsec hiding (parse, ParseError)
+import Text.Megaparsec hiding (ParseError, parse)
 import qualified Text.Megaparsec as P
 import Text.Megaparsec.Char
-import Control.Monad (void, guard)
 
 type MrkParser = Parsec Void String
 
 type ParseError = ParseErrorBundle String Void
 
 -------------------------------------------------------------------------------
+
 -- * Functions for parsing
+
 -------------------------------------------------------------------------------
 
 parse :: MrkParser a -> FilePath -> String -> Either ParseError a
 parse p = P.parse p
 
--- |Parse a Remarks Judgement from a file
+-- | Parse a Remarks Judgement from a file
 parseFile :: String -> IO (Either ParseError [Judgement])
-parseFile fname
-    = do input <- readFile fname
-         return (parse parseRemarks fname input)
+parseFile fname =
+  do
+    input <- readFile fname
+    return (parse parseRemarks fname input)
 
--- |Parse a Remarks Judgement from a string
+-- | Parse a Remarks Judgement from a string
 parseString :: String -> Either ParseError [Judgement]
 parseString input = parse parseRemarks "String" input
 
 -------------------------------------------------------------------------------
+
 -- * Implementation of the parser
+
 -------------------------------------------------------------------------------
 
 endline :: MrkParser ()
@@ -147,7 +149,6 @@ parseProperty = try property
 parsePropertyExp :: MrkParser PropertyExp
 parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParent, try number, stringVal, value]
   where
-
     funProp = do
       fun <- parsePropertyArithFun
       void $ char '('
@@ -173,12 +174,12 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
       p <- parsePointsNum
       pure $ Num p
     -- value = do
-      -- c <- satisfy (/='[')
-      -- case c of
-      --  '\n' -> pure $ Value ""
-      --  _    -> do
-      --    s <- manyTill (sepBy ";") endline
-      --    (\cs -> pure $ Value (c:cs)) =<<
+    -- c <- satisfy (/='[')
+    -- case c of
+    --  '\n' -> pure $ Value ""
+    --  _    -> do
+    --    s <- manyTill (sepBy ";") endline
+    --    (\cs -> pure $ Value (c:cs)) =<<
     stringVal = do
       void $ char '"'
       name <- manyTill anySingle $ char '"'
@@ -186,15 +187,15 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
     value = do
       s <- list
       case s of
-       []  -> pure $ Value ""
-       [v] -> pure $ Value v
-       _   -> pure $ List s
+        [] -> pure $ Value ""
+        [v] -> pure $ Value v
+        _ -> pure $ List s
     list = try listH1 <|> listH2
     listH1 = do
       -- spaces
-      s  <- manyTill nolineBreak $ char ';'
+      s <- manyTill nolineBreak $ char ';'
       ss <- list
-      pure (s:ss)
+      pure (s : ss)
     listH2 = do
       -- spaces
       s <- manyTill anySingle $ endline
@@ -204,19 +205,18 @@ parsePropertyExp = choice [try funProp, try lookupPropChild, try lookupPropParen
       guard (c /= '\n')
       anySingle
 
-
-
 parsePropertyArithFun :: MrkParser PropertyArithFun
-parsePropertyArithFun = choice
-  [ string "sum" *> pure Sum
-  , try (string "min") *> pure Min
-  , string "max" *> pure Max
-  , try (string "points") *> pure PointMap
-  , string "prod" *> pure Prod
-  , string "div" *> pure Div
-  , try (string "index") *> pure Map
-  , string "if" *> pure If
-  ]
+parsePropertyArithFun =
+  choice
+    [ string "sum" *> pure Sum,
+      try (string "min") *> pure Min,
+      string "max" *> pure Max,
+      try (string "points") *> pure PointMap,
+      string "prod" *> pure Prod,
+      string "div" *> pure Div,
+      try (string "index") *> pure Map,
+      string "if" *> pure If
+    ]
 
 parseComment :: Int -> MrkParser Comment
 parseComment depth = do
@@ -233,13 +233,14 @@ parseComment depth = do
       parseLine
 
 parseMood :: MrkParser Mood
-parseMood = choice
-  [ char '+' *> pure Positive
-  , char '-' *> pure Negative
-  , char '~' *> pure Mixed
-  , char '^' *> pure Positive
-  , char 'v' *> pure Negative
-  , char '*' *> pure Neutral
-  , char '?' *> pure Impartial
-  , char '!' *> pure Warning
-  ]
+parseMood =
+  choice
+    [ char '+' *> pure Positive,
+      char '-' *> pure Negative,
+      char '~' *> pure Mixed,
+      char '^' *> pure Positive,
+      char 'v' *> pure Negative,
+      char '*' *> pure Neutral,
+      char '?' *> pure Impartial,
+      char '!' *> pure Warning
+    ]
