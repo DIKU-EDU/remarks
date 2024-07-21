@@ -25,6 +25,6 @@ mergeMaybeJudgement j Nothing = j
 mergeMaybeJudgement j (Just jp) = mergeJudgement j jp
 
 mergeJudgement :: Judgement -> Judgement -> Judgement
-mergeJudgement (Judgement (header, p1, comments, subjs)) (Judgement (_, p2, [], subpjs)) =
-  Judgement (header, p1 ++ p2, comments, (mergeProps subjs subpjs))
+mergeJudgement (Judgement (header, p1, remarks, subjs)) (Judgement (_, p2, [], subpjs)) =
+  Judgement (header, p1 ++ p2, remarks, (mergeProps subjs subpjs))
 mergeJudgement j _ = j -- If there is something with bonus, just not add anything

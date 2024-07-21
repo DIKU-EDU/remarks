@@ -113,8 +113,8 @@ parseBonus _ = do
   total <- parsePointsNum
   endline
   properties <- sepEndBy parseProperty endline
-  comments <- many $ parseComment 1
-  pure $ Bonus (total, properties, comments)
+  remarks <- many $ parseRemark 1
+  pure $ Bonus (total, properties, remarks)
 
 parseFeedback :: Int -> MrkParser Judgement
 parseFeedback depth = do
@@ -131,9 +131,9 @@ parseRegularJudgement depth title = do
   maxPoints <- parsePointsNum
   endline
   properties <- sepEndBy parseProperty newline
-  comments <- many $ parseComment 1
+  remarks <- many $ parseRemark 1
   js <- many (parseJudgement (depth + 1))
-  pure $ Judgement (Header (title, total, maxPoints), properties, comments, js)
+  pure $ Judgement (Header (title, total, maxPoints), properties, remarks, js)
 
 parseProperty :: MrkParser Property
 parseProperty = try property
@@ -218,15 +218,15 @@ parsePropertyArithFun =
       string "if" *> pure If
     ]
 
-parseComment :: Int -> MrkParser Comment
-parseComment depth = do
+parseRemark :: Int -> MrkParser Remark
+parseRemark depth = do
   void $ try $ string $ concat $ replicate depth indentation
   mood <- parseMood
   space
-  comment <- parseLine
+  remark <- parseLine
   morecmt <- many contStr
-  comments <- many (parseComment $ depth + 1)
-  pure $ Comment (mood, [(CommentStr comment)] ++ (map CommentStr morecmt) ++ (map CommentCmt comments))
+  remarks <- many (parseRemark $ depth + 1)
+  pure $ Remark (mood, [(RemarkStr remark)] ++ (map RemarkStr morecmt) ++ (map RemarkCmt remarks))
   where
     contStr = do
       void $ try $ ((string $ concat $ replicate (depth + 1) indentation) >> notFollowedBy parseMood)

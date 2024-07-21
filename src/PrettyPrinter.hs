@@ -1,4 +1,4 @@
-module PrettyPrinter (ppJ_d, ppJs, ppPoints, ppComments, ppComment, ppPropExp) where
+module PrettyPrinter (ppJ_d, ppJs, ppPoints, ppRemarks, ppRemark, ppPropExp) where
 
 import Ast
 -- use (<>) from Text.PrettyPrint
@@ -17,11 +17,11 @@ ppJs = render . vcat . intersperse (text "") . map (formatJudgement 1)
 ppPoints :: Points -> String
 ppPoints = render . pointsDoc
 
-ppComments :: [Comment] -> String
-ppComments = render . vcat . (map formatComment)
+ppRemarks :: [Remark] -> String
+ppRemarks = render . vcat . (map formatRemark)
 
-ppComment :: Comment -> String
-ppComment = render . formatComment
+ppRemark :: Remark -> String
+ppRemark = render . formatRemark
 
 ppPropExp :: PropertyExp -> String
 ppPropExp = render . propertyExpDoc
@@ -37,7 +37,7 @@ formatJudgement depth (Bonus (p, properties, comments)) =
     <+> text "+"
     <> pointsDoc (Given p)
     $+$ (nest 2 $ vcat $ map formatProperty properties)
-    $+$ (nest 2 $ vcat $ map formatComment comments)
+    $+$ (nest 2 $ vcat $ map formatRemark comments)
 formatJudgement depth (Feedback (properties, feedback)) =
   (text $ replicate depth '#') <+> text "Feedback" <> colon
     $+$ (nest 2 $ vcat $ map formatProperty properties)
@@ -45,7 +45,7 @@ formatJudgement depth (Feedback (properties, feedback)) =
 formatJudgement depth (Judgement (header, properties, comments, judgements)) =
   formatHeader depth header
     $+$ (nest 2 $ vcat $ map formatProperty properties)
-    $+$ (nest 2 $ vcat $ map formatComment comments)
+    $+$ (nest 2 $ vcat $ map formatRemark comments)
     $+$ (vcat $ map (formatJudgement (depth + 1)) judgements)
 
 formatHeader :: Int -> Header -> Doc
@@ -67,13 +67,13 @@ formatProperty (Property (name, value)) =
 
 -- formatPMType :: PdfMarkType -> Doc
 -- formatPMType (PMComment page loc) =
---   text "Comment" <> semicolon <+> text page <> semicolon <+> text loc
+--   text "Remark" <> semicolon <+> text page <> semicolon <+> text loc
 -- formatPMType (PMTickBox _ page loc) =
 --   text "TickBox" <> semicolon <+> text page <> semicolon <+> text loc
 
-formatComment :: Comment -> Doc
-formatComment (Comment (mood, commentParts)) =
-  formatMood mood <+> (vcat $ map formatCommentPart commentParts)
+formatRemark :: Remark -> Doc
+formatRemark (Remark (mood, commentParts)) =
+  formatMood mood <+> (vcat $ map formatRemarkPart commentParts)
 
 formatMood :: Mood -> Doc
 formatMood Positive = text "+"
@@ -83,6 +83,6 @@ formatMood Impartial = text "?"
 formatMood Warning = text "!"
 formatMood Mixed = text "~"
 
-formatCommentPart :: CommentPart -> Doc
-formatCommentPart (CommentStr string) = text string
-formatCommentPart (CommentCmt comment) = formatComment comment
+formatRemarkPart :: RemarkPart -> Doc
+formatRemarkPart (RemarkStr string) = text string
+formatRemarkPart (RemarkCmt comment) = formatRemark comment

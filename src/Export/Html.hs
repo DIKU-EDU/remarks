@@ -111,15 +111,15 @@ htmlTableHead (Judgement (_, _, _, js)) =
 
 htmlJudgement :: Judgement -> Doc
 htmlJudgement (Feedback _) = empty
-htmlJudgement (j@(Bonus (_, _, comments))) =
-  (tr $ td $ lookupTotal j) $$ (trhidden $ htmlDetailComments comments)
-htmlJudgement (j@(Judgement (_, _, comments, judgements))) =
+htmlJudgement (j@(Bonus (_, _, remarks))) =
+  (tr $ td $ lookupTotal j) $$ (trhidden $ htmlDetailRemarks remarks)
+htmlJudgement (j@(Judgement (_, _, remarks, judgements))) =
   ( tr $
       (td . toggle $ lookupTitle j)
         $$ vcat (map htmlSubJudgement judgements)
         $$ (td $ lookupTotal j)
   )
-    $$ (trhidden $ tdspan (length judgements + 2) $ (htmlDetailComments comments $$ htmlDetailJudgements judgements))
+    $$ (trhidden $ tdspan (length judgements + 2) $ (htmlDetailRemarks remarks $$ htmlDetailJudgements judgements))
 
 htmlSubJudgement :: Judgement -> Doc
 htmlSubJudgement j = td $ lookupTotal j
@@ -129,21 +129,21 @@ htmlDetailJudgements = vcat . (map htmlDetailJudgement)
 
 htmlDetailJudgement :: Judgement -> Doc
 htmlDetailJudgement (Feedback _) = empty
-htmlDetailJudgement (j@(Bonus (_, _, comments))) =
-  details (text "Bonus" <+> parens (lookupTotal j)) (htmlDetailComments comments)
-htmlDetailJudgement (j@(Judgement (_, _, comments, judgements))) =
+htmlDetailJudgement (j@(Bonus (_, _, remarks))) =
+  details (text "Bonus" <+> parens (lookupTotal j)) (htmlDetailRemarks remarks)
+htmlDetailJudgement (j@(Judgement (_, _, remarks, judgements))) =
   details
     (lookupTitle j <+> parens (lookupTotal j <> text "/" <> lookupMaxPoints j))
-    (htmlDetailComments comments $$ htmlDetailJudgements judgements)
+    (htmlDetailRemarks remarks $$ htmlDetailJudgements judgements)
 
-htmlDetailComments :: [Comment] -> Doc
-htmlDetailComments [] = empty
-htmlDetailComments comments =
-  ul . vcat $ map htmlDetailComment comments
+htmlDetailRemarks :: [Remark] -> Doc
+htmlDetailRemarks [] = empty
+htmlDetailRemarks remarks =
+  ul . vcat $ map htmlDetailRemark remarks
 
-htmlDetailComment :: Comment -> Doc
-htmlDetailComment (Comment (mood, commentParts)) =
-  liclass (htmlDetailMood mood) $ vcat $ map htmlDetailCommentPart commentParts
+htmlDetailRemark :: Remark -> Doc
+htmlDetailRemark (Remark (mood, remarkParts)) =
+  liclass (htmlDetailMood mood) $ vcat $ map htmlDetailRemarkPart remarkParts
 
 htmlDetailMood :: Mood -> String
 htmlDetailMood Positive = "plus"
@@ -153,7 +153,7 @@ htmlDetailMood Neutral = "star"
 htmlDetailMood Impartial = "quest"
 htmlDetailMood Warning = "excl"
 
-htmlDetailCommentPart :: CommentPart -> Doc
-htmlDetailCommentPart (CommentStr string) = text string
-htmlDetailCommentPart (CommentCmt comment) =
-  ul $ htmlDetailComment comment
+htmlDetailRemarkPart :: RemarkPart -> Doc
+htmlDetailRemarkPart (RemarkStr string) = text string
+htmlDetailRemarkPart (RemarkCmt remark) =
+  ul $ htmlDetailRemark remark
