@@ -9,7 +9,7 @@ import Prelude hiding ((<>))
 
 data PendingTree
   = Node String Int Bool [PendingTree]
-  -- Name, Number of Comments, Is pending, Subtree
+  -- Name, Number of Remarks, Is pending, Subtree
   deriving (Eq, Show)
 
 data FormatTree
@@ -65,14 +65,14 @@ formatSubTrees ft (t : ts) =
 
 formatSubTree :: (FormatTree -> FormatTree) -> PendingTree -> Doc
 -- formatSubTree ft (Node "" _ _ _)  = empty
-formatSubTree ft (Node s cs _ ts) = text s <> formatTreeComments ft cs <> formatSubTrees ft ts
+formatSubTree ft (Node s cs _ ts) = text s <> formatTreeRemarks ft cs <> formatSubTrees ft ts
 
-formatTreeComments :: (FormatTree -> FormatTree) -> Int -> Doc
-formatTreeComments _ 0 = empty
-formatTreeComments ft cs =
-  linebreak <> showTree (ft TQuest) <> text (makePlural cs "impartial comment")
+formatTreeRemarks :: (FormatTree -> FormatTree) -> Int -> Doc
+formatTreeRemarks _ 0 = empty
+formatTreeRemarks ft cs =
+  linebreak <> showTree (ft TQuest) <> text (makePlural cs "impartial remark")
 
-size :: PendingTree -> ((Int, Int), Int) -- (Pending, Total), Comments
+size :: PendingTree -> ((Int, Int), Int) -- (Pending, Total), Remarks
 size (Node _ cs True []) = ((1, 1), cs)
 size (Node _ cs False []) = ((0, 1), cs)
 size (Node _ cs _ pt) = foldl tupAdd ((0, 0), cs) $ map size pt
@@ -93,8 +93,8 @@ trimPendingTree (Node s cs True ts) = Node s cs True (map trimPendingTree ts)
 
 showTasks :: ((Int, Int), Int) -> String
 showTasks ((n, s), 0) = " : " ++ show n ++ " of " ++ show s ++ " " ++ makePlural n "task" ++ " (" ++ showPercentage n s ++ ")"
-showTasks ((0, _), m) = " : " ++ show m ++ " " ++ makePlural m "comment" ++ ")"
-showTasks ((n, s), m) = " : " ++ show n ++ " of " ++ show s ++ " " ++ makePlural n "task" ++ " (" ++ showPercentage n s ++ ")" ++ " and " ++ show m ++ " " ++ makePlural m "comment"
+showTasks ((0, _), m) = " : " ++ show m ++ " " ++ makePlural m "remark" ++ ")"
+showTasks ((n, s), m) = " : " ++ show n ++ " of " ++ show s ++ " " ++ makePlural n "task" ++ " (" ++ showPercentage n s ++ ")" ++ " and " ++ show m ++ " " ++ makePlural m "remark"
 
 showPercentage :: Int -> Int -> String
 showPercentage n s = show (div (n * 100) (s)) ++ "%"
@@ -119,16 +119,16 @@ pendingJudgement (Judgement (Header (t, _, _), _, cs, subJs)) =
     sub_pending = concatMap pendingJudgement subJs
     has_pending = or $ map (\(Node _ _ b _) -> b) sub_pending
 
-countImpartials :: [Comment] -> Int
+countImpartials :: [Remark] -> Int
 countImpartials = sum . (map countImpartial)
 
-countImpartial :: Comment -> Int
-countImpartial (Comment (Impartial, cps)) = 1 + (sum $ map countImpartialCP cps)
-countImpartial (Comment (_, cps)) = sum $ map countImpartialCP cps
+countImpartial :: Remark -> Int
+countImpartial (Remark (Impartial, cps)) = 1 + (sum $ map countImpartialCP cps)
+countImpartial (Remark (_, cps)) = sum $ map countImpartialCP cps
 
-countImpartialCP :: CommentPart -> Int
-countImpartialCP (CommentStr _) = 0
-countImpartialCP (CommentCmt c) = countImpartial c
+countImpartialCP :: RemarkPart -> Int
+countImpartialCP (RemarkStr _) = 0
+countImpartialCP (RemarkCmt c) = countImpartial c
 
 findPending :: Maybe Int -> [Judgement] -> Maybe (String)
 findPending detailLevel js =

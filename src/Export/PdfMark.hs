@@ -23,23 +23,23 @@ genPdfMark js = render $ (header $+$ text "" $+$ jmts)
         $+$ text "  /DOCINFO pdfmark"
 
 formatJudgement :: Judgement -> Doc
-formatJudgement j@(Judgement (_, properties, comments, judgements)) =
-  (vcat $ map (formatPdfMark (formatHeader j) (formatPoints j) properties comments) properties)
+formatJudgement j@(Judgement (_, properties, remarks, judgements)) =
+  (vcat $ map (formatPdfMark (formatHeader j) (formatPoints j) properties remarks) properties)
     $+$ (vcat $ map formatJudgement judgements)
-formatJudgement j@(Bonus (_, properties, comments)) =
-  (vcat $ map (formatPdfMark (text "Bonus") (formatPoints j) properties comments) properties)
+formatJudgement j@(Bonus (_, properties, remarks)) =
+  (vcat $ map (formatPdfMark (text "Bonus") (formatPoints j) properties remarks) properties)
 formatJudgement (Feedback (properties, txt)) =
   (vcat $ map (formatPdfMark (text "Feedback") (text txt) properties []) properties)
 
-formatPdfMark :: Doc -> Doc -> [Property] -> [Comment] -> Property -> Doc
+formatPdfMark :: Doc -> Doc -> [Property] -> [Remark] -> Property -> Doc
 formatPdfMark header points props comms (Property ("pdfmark", List pmtype)) =
   formatPdfMarkType pmtype header points props comms
 formatPdfMark _ _ _ _ _ = empty
 
-formatPdfMarkType :: [String] -> Doc -> Doc -> [Property] -> [Comment] -> Doc
-formatPdfMarkType (("Comment") : rest) header points _ comms =
+formatPdfMarkType :: [String] -> Doc -> Doc -> [Property] -> [Remark] -> Doc
+formatPdfMarkType (("Remark") : rest) header points _ comms =
   text "[" <+> text "/Title" <+> (parens header)
-    $+$ text "  /Contents" <+> parens (points <> text "\n" <> (text $ formatComments comms))
+    $+$ text "  /Contents" <+> parens (points <> text "\n" <> (text $ formatRemarks comms))
     $+$ text "  /SrcPg" <+> text page
     $+$ text "  /Rect" <+> text loc
     $+$ text "  /Subtype /Text"
@@ -52,8 +52,8 @@ formatPdfMarkType (("Comment") : rest) header points _ comms =
     loc = head $ tail rest
 formatPdfMarkType _ _ _ _ _ = empty
 
-formatComments :: [Comment] -> String
-formatComments cs = concat $ intersperse "\n" $ map (\x -> "" ++ (escapeParens $ ppComment x)) cs
+formatRemarks :: [Remark] -> String
+formatRemarks cs = concat $ intersperse "\n" $ map (\x -> "" ++ (escapeParens $ ppRemark x)) cs
 
 formatHeader :: Judgement -> Doc
 formatHeader j = text (getTitle j)

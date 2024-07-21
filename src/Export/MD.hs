@@ -22,9 +22,9 @@ formatJudgement depth (Feedback (_, t)) =
   (text $ replicate depth '#') <+> text "Feedback" <> colon
     $+$ text "+"
       <> text t
-formatJudgement depth (j@(Judgement (_, _, comments, judgements))) =
+formatJudgement depth (j@(Judgement (_, _, remarks, judgements))) =
   formatHeader depth j
-    $+$ (nest 2 $ vcat $ map formatComment comments)
+    $+$ (nest 2 $ vcat $ map formatRemark remarks)
     $+$ text ""
     $+$ (vcat $ map (formatJudgement (depth + 1)) judgements)
 
@@ -38,9 +38,9 @@ formatHeader depth j =
     <> text "/"
     <> lookupMaxPoints j
 
-formatComment :: Comment -> Doc
-formatComment (Comment (mood, commentParts)) =
-  text "*" <+> formatMood mood <+> (vcat $ map formatCommentPart commentParts)
+formatRemark :: Remark -> Doc
+formatRemark (Remark (mood, remarkParts)) =
+  text "*" <+> formatMood mood <+> (vcat $ map formatRemarkPart remarkParts)
 
 formatMood :: Mood -> Doc
 formatMood Positive = text "(+)"
@@ -50,6 +50,6 @@ formatMood Mixed = text "(~)"
 formatMood Impartial = text "(?)"
 formatMood Warning = text "(!)"
 
-formatCommentPart :: CommentPart -> Doc
-formatCommentPart (CommentStr string) = text string
-formatCommentPart (CommentCmt comment) = nest 2 $ formatComment comment
+formatRemarkPart :: RemarkPart -> Doc
+formatRemarkPart (RemarkStr string) = text string
+formatRemarkPart (RemarkCmt remark) = nest 2 $ formatRemark remark

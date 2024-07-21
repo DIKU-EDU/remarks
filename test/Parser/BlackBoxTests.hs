@@ -82,30 +82,30 @@ unitTests =
       testCase "Bonus with props (no line break at eof)" $
         parseString "# Bonus: +5\n  :x:y"
           @?= Right [Bonus (500, [Property ("x", Value "y")], [])],
-      testCase "Judgement with comments (no line break at eof)" $
+      testCase "Judgement with remarks (no line break at eof)" $
         parseString "# A: 5/10\n  - Bad indentation\n    I'd say"
           @?= Right
             [ Judgement
                 ( Header ("A", Given 500, 1000),
                   [],
-                  [ Comment
+                  [ Remark
                       ( Negative,
-                        [ CommentStr "Bad indentation",
-                          CommentStr "I'd say"
+                        [ RemarkStr "Bad indentation",
+                          RemarkStr "I'd say"
                         ]
                       )
                   ],
                   []
                 )
             ],
-      testCase "Another judgement with comments (no line break at eof)" $
+      testCase "Another judgement with remarks (no line break at eof)" $
         parseString "# A: 5/10\n  - Bad indentation\n  + Otherwise, OK"
           @?= Right
             [ Judgement
                 ( Header ("A", Given 500, 1000),
                   [],
-                  [ Comment (Negative, [CommentStr "Bad indentation"]),
-                    Comment (Positive, [CommentStr "Otherwise, OK"])
+                  [ Remark (Negative, [RemarkStr "Bad indentation"]),
+                    Remark (Positive, [RemarkStr "Otherwise, OK"])
                   ],
                   []
                 )

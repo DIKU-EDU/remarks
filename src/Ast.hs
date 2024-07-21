@@ -29,18 +29,18 @@ data Mood
 
 instance Out Mood
 
-data CommentPart
-  = CommentStr String
-  | CommentCmt Comment
+data RemarkPart
+  = RemarkStr String
+  | RemarkCmt Remark
   deriving (Eq, Show, Generic)
 
-instance Out CommentPart
+instance Out RemarkPart
 
-newtype Comment
-  = Comment (Mood, [CommentPart])
+newtype Remark
+  = Remark (Mood, [RemarkPart])
   deriving (Eq, Show, Generic)
 
-instance Out Comment
+instance Out Remark
 
 newtype Property
   = Property (String, PropertyExp)
@@ -79,8 +79,8 @@ data PropertyArithFun
 instance Out PropertyArithFun
 
 data Judgement
-  = Judgement (Header, [Property], [Comment], [Judgement])
-  | Bonus (Int, [Property], [Comment])
+  = Judgement (Header, [Property], [Remark], [Judgement])
+  | Bonus (Int, [Property], [Remark])
   | Feedback ([Property], String)
   deriving (Eq, Show, Generic)
 
