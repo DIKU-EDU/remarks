@@ -1,7 +1,7 @@
 module Main where
 
 import Ast
-import Control.Monad (liftM, (<=<))
+import Control.Monad (liftM, (<=<), zipWithM_)
 import Data.List (sort)
 import Data.Maybe (fromMaybe)
 import Export
@@ -155,12 +155,12 @@ parsePaths = mapM parsePath
 marshall :: [Judgement] -> Either Invalid [Judgement]
 marshall = mapM (interpProps <=< checkPoints)
 
-check :: [Judgement] -> IO ()
-check js = do
+check :: FilePath -> [Judgement] -> IO ()
+check fname js = do
   case marshall js of
     -- Right newJs -> printJs newJs
     Right _ -> return ()
-    Left e -> report $ reportInvalid e
+    Left e -> report $ fname <> ":\n" <> reportInvalid e
 
 valid :: [Judgement] -> IO ()
 valid js = do
@@ -453,7 +453,7 @@ main = do
     CmdValid ->
       with paths $ mapM_ valid
     CmdCheck ->
-      with paths $ mapM_ check
+      with paths $ zipWithM_ check paths
     CmdShow ->
       with paths $ mapM_ printJs
     CmdPending maybeDepth ->
