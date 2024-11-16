@@ -1,7 +1,7 @@
 module Main where
 
 import Ast
-import Control.Monad (liftM, (<=<), zipWithM_)
+import Control.Monad (liftM, zipWithM_, (<=<))
 import Data.List (sort)
 import Data.Maybe (fromMaybe)
 import Export
