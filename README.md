@@ -7,6 +7,8 @@
 [![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 [![build](https://github.com/DIKU-EDU/remarks/actions/workflows/main.yml/badge.svg)](https://github.com/DIKU-EDU/remarks/actions/workflows/main.yml)
 
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/9T8H8JjthJ)
+
 When judging student performance, it is useful to make both small,
 composable, quantitative judgements, and to collect qualitative
 remarks. This makes both spreadsheets and mere text-files ill-suited
