@@ -141,6 +141,7 @@ parsePath path = do
         then parseDir path
         else noMrkFile pathWithExt
     else -- we have a .mrk file
+
       if not hasDir
         then parseTopFile pathWithExt
         else do

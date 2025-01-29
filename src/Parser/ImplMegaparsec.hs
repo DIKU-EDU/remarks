@@ -129,6 +129,7 @@ parseRegularJudgement depth title = do
   total <- parsePoints
   void $ char '/'
   maxPoints <- parsePointsNum
+  hspace
   endline
   properties <- sepEndBy parseProperty newline
   remarks <- many $ parseRemark 1
