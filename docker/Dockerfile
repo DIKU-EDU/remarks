@@ -1,6 +1,6 @@
 FROM haskell:9.4-slim
 
-ARG ORMOLU_VERSION=0.7.7.0
+ARG ORMOLU_VERSION=0.8.0.0
 # NB! The version of ormolu here should correspond to whatever version
 # the current haskell-actions/run-ormolu is using in
 # .github/workflows/main.yml
