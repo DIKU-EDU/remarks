@@ -238,11 +238,11 @@ bottom-most judgements. Given the template above you can do a `remarks check`
 to check if all necessary points have been given. This makes a "pointless"
 template a rather useful starting point for grading.
 
-Points can be integers or half-points, that is, the number may end in `.5`.
-Please note, `.5` is exactly representable in an IEEE-754 (the internal
-representation of points), so no numerical imprecision occurs when dealing with
-half-points. Maximum points may only be integers (the internal representation
-of maximum points is still an IEEE-754 double to avoid numerical conversions).
+Points can be integers or down to a hundredth of a points, that is, the number 
+may end in `.01`.
+Please note, numbers are internally represented by integers multiplied by 100.,
+so no numerical imprecision occurs when dealing with any number of fractional
+points. Maximum points may only be non-negative integers.
 
 ## Files and Directories
 
